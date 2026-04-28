@@ -742,25 +742,9 @@ async function sendScheduledLiftNotification(bridge, time) {
 
 // Track when bridge became disponible to avoid spurious notifications
 const disponibleSince = { gonzague: null, larocque: null };
-const DISPONIBLE_MIN_MS = 90 * 1000; // 90 seconds minimum before sending disponible notif
 
 async function sendNotifications(bridge, status, bridgeData = {}) {
-  // For disponible, wait minimum 90s to avoid spurious notifications
-  if (status === 'disponible') {
-    if (!disponibleSince[bridge]) {
-      disponibleSince[bridge] = Date.now();
-      // Schedule the notification after delay
-      setTimeout(() => {
-        // Only send if still disponible
-        if (lastStatus[bridge] === 'disponible') {
-          sendNotifications(bridge, 'disponible', bridgeData);
-        }
-        disponibleSince[bridge] = null;
-      }, DISPONIBLE_MIN_MS);
-      return;
-    }
-  } else {
-    // Reset timer if bridge is no longer disponible
+  if (status !== 'disponible') {
     disponibleSince[bridge] = null;
   }
   let sent = 0, skippedRange = 0, skippedBridge = 0, skippedNoMsg = 0, failed = 0;
