@@ -414,6 +414,8 @@
       <div id="ob-dot-2" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-3" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-4" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+      <div id="ob-dot-5" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+      <div id="ob-dot-6" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
     </div>
 
     <!-- Step 1: Prénom -->
@@ -524,8 +526,19 @@
       <button class="name-modal-skip" onclick="obSkipNotifs()" id="obSkipNotifsBtn">Plus tard</button>
     </div>
 
-    <!-- Step 5: Confirmation -->
+    <!-- Step 5: Météo -->
     <div id="ob-step-5" style="display:none;text-align:center;padding:8px 0;">
+      <div style="display:flex;justify-content:center;margin-bottom:16px;">
+        <span style="display:inline-flex;width:56px;height:56px;color:var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="22" cy="28" r="10"/><path d="M38 44 H16 a12 12 0 0 1 0-24 h1 a14 14 0 0 1 26 4 10 10 0 0 1 0 20 H38"/></svg></span>
+      </div>
+      <div class="name-modal-title" id="obWeatherTitle">Afficher la météo locale ?</div>
+      <div class="name-modal-sub" id="obWeatherSub" style="margin-bottom:20px;">Température et conditions météo dans la salutation. Nécessite l'accès à votre position.</div>
+      <button class="name-modal-btn" onclick="obEnableWeather()" id="obWeatherBtn">Activer la météo</button>
+      <button class="name-modal-skip" onclick="obSkipWeather()" id="obWeatherSkip">Passer</button>
+    </div>
+
+    <!-- Step 6: Confirmation -->
+    <div id="ob-step-6" style="display:none;text-align:center;padding:8px 0;">
       <div style="display:flex;justify-content:center;margin-bottom:16px;">
         <span style="display:inline-flex;width:56px;height:56px;color:var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22"/><path d="M20 32 L28 42 L44 24"/></svg></span>
       </div>
@@ -1057,6 +1070,10 @@ const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 const isPWA=window.matchMedia('(display-mode:standalone)').matches;
 const ua=navigator.userAgent||'';
 const isFBWebView=ua.includes('FBAN')||ua.includes('FBAV')||ua.includes('Instagram')||ua.includes('FB_IAB');
+const isChrome=ua.includes('Chrome')&&!ua.includes('Edg')&&!ua.includes('OPR')&&!ua.includes('FBAN')&&!ua.includes('FBAV');
+const isSafari=/^((?!chrome|android).)*safari/i.test(ua)&&!ua.includes('FBAN')&&!ua.includes('FBAV');
+const isNativeBrowser=isChrome||isSafari;
+const isExternalBrowser=isMobile&&!isPWA&&!isFBWebView&&!isNativeBrowser;
 
 // WMO weather code → emoji
 function wmoEmoji(code){
@@ -1171,9 +1188,8 @@ function closeGeoModal(){
 function initWeatherToggle(){
   const enabled=localStorage.getItem('weatherEnabled');
   const tog=document.getElementById('weatherToggleInput');
-  if(enabled!=='0'){
+  if(enabled==='1'){
     if(tog){tog.checked=true;tog.setAttribute('aria-checked','true');}
-    // Show cached weather instantly while fetching
     const cached=localStorage.getItem('weatherCache');
     const wt=document.getElementById('weatherText');
     if(cached && wt) wt.innerHTML=cached;
@@ -1207,7 +1223,7 @@ let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstallPrompt = e; });
 
 function obSetStep(n) {
-  [1,2,3,4,5].forEach(i => {
+  [1,2,3,4,5,6].forEach(i => {
     const step = document.getElementById(`ob-step-${i}`);
     if(step) step.style.display = i===n ? 'block' : 'none';
     const dot = document.getElementById(`ob-dot-${i}`);
@@ -1271,17 +1287,31 @@ function obSkipNotifs() {
 
 function obShowConfirmation() {
   localStorage.setItem('nameAsked','1');
+  obSetStep(5); // weather step before final
+}
+
+function obEnableWeather() {
+  localStorage.setItem('weatherEnabled','1');
+  fetchWeather();
+  obGoToFinal();
+}
+
+function obSkipWeather() {
+  localStorage.setItem('weatherEnabled','0');
+  obGoToFinal();
+}
+
+function obGoToFinal() {
   const notifEnabled = localStorage.getItem('notificationsEnabled') === 'true';
   const sub = document.getElementById('obDoneSub');
   if(sub) sub.textContent = notifEnabled
     ? (currentLang==='fr' ? 'Vous recevrez des notifications lors des levées de ponts.' : 'You will receive notifications for bridge lifts.')
     : (currentLang==='fr' ? 'Vous pouvez activer les notifications à tout moment dans les réglages.' : 'You can enable notifications anytime in settings.');
-  // Always show install CTA if not already installed
   if(!isInstalled) {
     const ic = document.getElementById('obInstallCta');
     if(ic) ic.style.display = 'block';
   }
-  obSetStep(5);
+  obSetStep(6);
 }
 
 function obTriggerInstall() {
@@ -1321,6 +1351,7 @@ function updatePrenom(){
 }
 
 function showNameModalIfNeeded(){
+  if(isFBWebView||isExternalBrowser){ setTimeout(showBrowserGate, 800); return; }
   if(localStorage.getItem('nameAsked')) return;
   const t=TR[currentLang];
   // Step 1 labels
@@ -1886,6 +1917,8 @@ function toggleBridgeNotifSection(bridge) {
   const C = capitalize(bridge);
   const content = document.getElementById('perBridge'+C+'Content');
   if (!content) return;
+  const tog = document.getElementById('bridgeNotif'+C);
+  if (tog && !tog.checked) return;
   const open = content.style.display === 'none';
   content.style.display = open ? 'block' : 'none';
   if (open) renderPerBridgeCheckboxes(bridge);
@@ -2372,11 +2405,37 @@ function applyTrans(){
 }
 function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();}
 
+// ── Cache-first status loading ────────────────────────────────────────
+const STATUS_CACHE_KEY = 'pb:cachedStatus';
+const STATUS_CACHE_MAX_AGE = 2 * 60 * 1000;
+
+function loadCachedStatus() {
+  try {
+    const raw = localStorage.getItem(STATUS_CACHE_KEY);
+    if (!raw) return false;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > STATUS_CACHE_MAX_AGE) return false;
+    lastData = data;
+    updateDisplay();
+    refreshTimers();
+    return true;
+  } catch(e) { return false; }
+}
+
+function saveCachedStatus(d) {
+  try {
+    localStorage.setItem(STATUS_CACHE_KEY, JSON.stringify({ data: d, ts: Date.now() }));
+  } catch(e) {}
+}
+
 let retries=0;
 async function fetchStatus(){
   try{
-    const r=await fetch(BACKEND+'/status',{signal:AbortSignal.timeout(10000)});
-    const d=await r.json();lastData=d;retries=0;document.getElementById('errorMsg').textContent='';
+    const errEl=document.getElementById('errorMsg');
+    const r=await fetch(BACKEND+'/status',{signal:AbortSignal.timeout(60000)});
+    const d=await r.json();lastData=d;retries=0;
+    saveCachedStatus(d);
+    if(errEl) errEl.textContent='';
     trackLiftStatus('gonzague',d.gonzague.status,d.gonzague.raisedSince);
     trackLiftStatus('larocque',d.larocque.status,d.larocque.raisedSince);
     updateDisplay();
@@ -2392,7 +2451,7 @@ async function fetchStatus(){
     }
   }catch(e){
     const t=TR[currentLang];retries++;
-    if(retries<3){setTimeout(fetchStatus,10000);document.getElementById('errorMsg').textContent=t.rc+'... ('+retries+'/3)';}
+    if(retries<=10){setTimeout(fetchStatus,5000);if(retries>1)document.getElementById('errorMsg').textContent=t.rc+'... ('+retries+'/10)';}
     else{retries=0;document.getElementById('errorMsg').innerHTML=t.se+' <a href="#" onclick="fetchStatus();return false;">'+t.re+'</a>';}
   }
 }
@@ -2448,9 +2507,26 @@ function openDrawerToNotifs(){
   }, 320);
 }
 
+function openInNativeBrowser() {
+  const url = window.location.href;
+  if (isIOS) {
+    showInstallModal();
+  } else {
+    const intentUrl = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+    window.location.href = intentUrl;
+    setTimeout(() => { window.open(url, '_blank'); }, 1500);
+  }
+}
+
+function showBrowserGate() {
+  const overlay = document.getElementById('browserGateOverlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
 async function toggleNotifications(){
   const t=TR[currentLang];
-  if(isFBWebView){alert(t.ns||'Non supporté dans ce navigateur');return;}
+  if(isFBWebView||isExternalBrowser){showBrowserGate();return;}
+  if(!isPWA){showBrowserGate();return;}
   if(!('Notification'in window)||!('serviceWorker'in navigator)){alert(t.ns);return;}
   try{
     const p=await Notification.requestPermission();
@@ -3178,6 +3254,7 @@ showInstallModalIfNeeded();
 const savedName=getUserName();
 if(savedName) document.getElementById('prenomInput').value=savedName;
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+loadCachedStatus();
 fetchStatus();
 fetchLiftHistory();
 
@@ -3305,3 +3382,54 @@ document.addEventListener('visibilitychange',()=>{
 </div>
 
 
+
+<!-- Browser gate modal -->
+<div id="browserGateOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;">
+  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:28px 24px 48px;animation:slideUp .35s cubic-bezier(.4,0,.2,1) both;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <span style="display:inline-flex;width:48px;height:48px;color:var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="22"/><path d="M32 10 Q20 32 32 54 Q44 32 32 10"/><line x1="10" y1="32" x2="54" y2="32"/><path d="M14 20 Q32 26 50 20"/><path d="M14 44 Q32 38 50 44"/></svg></span>
+    </div>
+    <div style="font-size:20px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px;font-family:var(--sans);" id="browserGateTitle">Ouvrir dans Chrome ou Safari</div>
+    <div style="font-size:13px;color:var(--text3);text-align:center;margin-bottom:24px;line-height:1.6;font-family:var(--sans);" id="browserGateDesc">Pour installer l'app et recevoir des notifications, ouvrez cette page dans Chrome ou Safari.</div>
+    <div id="browserGateSteps" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
+    <button onclick="openInNativeBrowser()" id="browserGateBtn" style="width:100%;padding:16px;border-radius:50px;border:none;background:var(--accent);color:white;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:12px;">Ouvrir dans Chrome</button>
+    <button onclick="document.getElementById('browserGateOverlay').style.display='none'" style="width:100%;padding:13px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;">Continuer dans le navigateur</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const overlay = document.getElementById('browserGateOverlay');
+  if (!overlay) return;
+  const title = document.getElementById('browserGateTitle');
+  const desc = document.getElementById('browserGateDesc');
+  const steps = document.getElementById('browserGateSteps');
+  const btn = document.getElementById('browserGateBtn');
+
+  function makeStep(num, html){
+    return '<div style="display:flex;align-items:center;gap:14px;font-size:14px;color:var(--text2);line-height:1.4;"><span style="width:28px;height:28px;min-width:28px;background:var(--accent);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">'+num+'</span><span>'+html+'</span></div>';
+  }
+
+  if (isIOS) {
+    title.textContent = 'Ouvrir dans Safari';
+    desc.textContent = 'Pour installer l\'app et recevoir des notifications, ouvrez cette page dans Safari.';
+    btn.textContent = 'Ouvrir dans Safari';
+    btn.onclick = () => showInstallModal();
+    if (isFBWebView) {
+      steps.innerHTML = [makeStep(1,'Appuyez sur <strong>···</strong> en bas à droite'),makeStep(2,'Sélectionnez <strong>Ouvrir dans Safari</strong>')].join('');
+    } else {
+      steps.innerHTML = [makeStep(1,'Appuyez sur le bouton <strong>Partager</strong> dans votre navigateur'),makeStep(2,'Sélectionnez <strong>Ouvrir dans Safari</strong>')].join('');
+      btn.style.display = 'none';
+    }
+  } else {
+    title.textContent = 'Ouvrir dans Chrome';
+    desc.textContent = 'Pour installer l\'app et recevoir des notifications, ouvrez cette page dans Chrome.';
+    btn.textContent = 'Ouvrir dans Chrome';
+    if (isFBWebView) {
+      steps.innerHTML = [makeStep(1,'Appuyez sur <strong>⋮</strong> en haut à droite'),makeStep(2,'Sélectionnez <strong>Ouvrir dans Chrome</strong>')].join('');
+    } else {
+      steps.innerHTML = [makeStep(1,'Copiez le lien de votre navigateur'),makeStep(2,'Ouvrez <strong>Chrome</strong> et collez-le')].join('');
+    }
+  }
+})();
+</script>
