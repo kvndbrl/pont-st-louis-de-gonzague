@@ -492,6 +492,9 @@ async function fetchBridgeStatus() {
 
     if (combined.includes('unavailable')) return { status: 'leve', raisedSince: null };
 
+    // "Available" without "un" = bridge is open
+    if (combined.includes('available')) return { status: 'disponible', raisedSince: null };
+
     return { status: null, raisedSince: null, titles };
   }
 
