@@ -3193,6 +3193,9 @@ function updateDonationTexts() {
 }
 
 function checkDonationPrompt() {
+  // Don't show during onboarding
+  if (!localStorage.getItem('nameAsked')) return;
+
   const now = Date.now();
   const donated = localStorage.getItem('donationDate');
   const snoozedUntil = localStorage.getItem('donationSnoozedUntil');
