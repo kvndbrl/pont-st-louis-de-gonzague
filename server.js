@@ -869,7 +869,7 @@ setInterval(async () => {
 
 // ── Routes ────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.send('Ponts Beauharnois API'));
-app.get('/ping', (req, res) => res.send('OK'));
+app.get('/ping', (req, res) => res.json({ ok: true, subs: subscriptions.length }));
 
 // ── Vessel update from frontend AIS ──────────────────────────────────
 app.post('/vessel-update', (req, res) => {
