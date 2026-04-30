@@ -288,6 +288,7 @@ async function removeSubscription(sub) {
 
 let subscriptions = [];
 let lastStatus = { gonzague: null, larocque: null };
+let monitorTimeout = null;
 
 // ── Persist lastStatus in Redis ───────────────────────────────────────
 async function saveLastStatus() {
@@ -845,15 +846,19 @@ async function monitor() {
     lastStatus.larocque = data.larocque.status;
     await saveLastStatus();
 
-    // Start VesselFinder polling when any bridge is active, stop when all disponible
+    // Adaptive polling — 5s if any bridge is active, 15s otherwise
     const anyActive = ['gonzague','larocque'].some(b =>
-      ['raising','leve','bientot_leve'].includes(data[b].status)
+      ['bientot_leve','raising','leve','lowering'].includes(data[b].status)
     );
-    // VesselFinder polling disabled — no reliable free AIS source for this area
+    if (anyActive) log(`⚡ Pont actif — polling toutes les 5s`);
+    clearTimeout(monitorTimeout);
+    monitorTimeout = setTimeout(monitor, anyActive ? 5000 : 15000);
 
   } catch(e) {
     log(`🚨 Monitor error: ${e.message}`);
     console.error(e);
+    clearTimeout(monitorTimeout);
+    monitorTimeout = setTimeout(monitor, 15000);
   }
 }
 
@@ -1164,7 +1169,7 @@ async function start() {
   // AIS tracking moved to frontend to avoid Render IP rate limiting
   // startAISTracking();
   await monitor();
-  setInterval(monitor, 15000); // 15s to catch short status windows
+  // Adaptive polling managed inside monitor() via setTimeout
 }
 
 start();
