@@ -356,6 +356,22 @@
 </head>
 <body>
 
+<!-- Desktop warning banner -->
+<div id="desktopBanner" style="display:none;background:#1a2a4a;color:#a8c8ff;text-align:center;padding:10px 16px;font-size:13px;font-family:var(--sans);border-bottom:1px solid rgba(255,255,255,.1);">
+  📱 Pour une expérience optimale, utilisez cette app sur un téléphone ou une tablette.
+</div>
+<script>
+  function checkDesktop() {
+    if(window.innerWidth >= 1024) {
+      document.getElementById('desktopBanner').style.display = 'block';
+    } else {
+      document.getElementById('desktopBanner').style.display = 'none';
+    }
+  }
+  checkDesktop();
+  window.addEventListener('resize', checkDesktop);
+</script>
+
 <div class="pull-indicator" id="pullIndicator">
   <div class="pull-spinner" id="pullSpinner" style="display:none;"></div>
   <span id="pullText">Tirer pour rafraîchir</span>
