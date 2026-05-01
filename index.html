@@ -1001,21 +1001,15 @@ function updateTimeline(bridge, status, data) {
 }
 
 // ── Changelog ────────────────────────────────────────────────────────
-const CHANGELOG_VERSION = '1.5';
+const CHANGELOG_VERSION = '1.6';
 const CHANGELOG = {
   fr: [
-    { icon: 'bridge',  text: '"Bientôt levé" — nouvel état pour savoir que le pont va se lever, avant qu\'il commence à bouger' },
-    { icon: 'notif',   text: 'Notifications par pont — désactivez un pont ou choisissez quelles alertes recevoir pour chaque pont' },
-    { icon: 'history', text: 'Toutes les levées prévues affichées dans la carte, pas seulement la première' },
-    { icon: 'vibrate', text: 'Vibrations distinctes selon le statut — chaque type de levée a son propre signal (Android)' },
-    { icon: 'fact',    text: '"Saviez-vous que ?" — un fait local sur la région à chaque ouverture de l\'app' },
+    { icon: 'vessel',   text: 'Vue en temps réel — carte interactive des navires à chaque pont, directement dans l\'app' },
+    { icon: 'notif',    text: 'Notifications instantanées — les alertes "Disponible" arrivent maintenant immédiatement' },
   ],
   en: [
-    { icon: 'bridge',  text: '"Soon lifted" — new state to know the bridge is about to rise, before it starts moving' },
-    { icon: 'notif',   text: 'Per-bridge notifications — disable a bridge or choose which alerts to receive for each one' },
-    { icon: 'history', text: 'All scheduled lifts shown on the card, not just the first one' },
-    { icon: 'vibrate', text: 'Distinct vibration patterns by status — each lift type has its own signal (Android)' },
-    { icon: 'fact',    text: '"Did you know?" — a local fact about the region every time you open the app' },
+    { icon: 'vessel',   text: 'Real-time View — interactive vessel map for each bridge, directly in the app' },
+    { icon: 'notif',    text: 'Instant notifications — "Available" alerts now arrive immediately' },
   ]
 };
 
@@ -1043,6 +1037,12 @@ function showChangelog() {
   const lang = currentLang || 'fr';
   if (titleEl) titleEl.textContent = lang === 'fr' ? 'Nouveautés' : "What's New";
   if (ctaEl) ctaEl.textContent = lang === 'fr' ? 'C\'est compris !' : 'Got it!';
+  const donTitle = document.getElementById('changelogDonTitle');
+  const donText = document.getElementById('changelogDonText');
+  if (donTitle) donTitle.textContent = lang === 'fr' ? 'Vous aimez l\'app ?' : 'Enjoying the app?';
+  if (donText) donText.textContent = lang === 'fr'
+    ? 'Votre soutien garde ce projet vivant et gratuit.'
+    : 'Your support keeps this project alive and free.';
   itemsEl.innerHTML = CHANGELOG[lang].map(item => `
     <div style="display:flex;align-items:flex-start;gap:12px;">
       <span style="display:inline-flex;width:22px;height:22px;flex-shrink:0;color:var(--accent);margin-top:2px;">${CHANGELOG_ICONS[item.icon]}</span>
@@ -3319,11 +3319,25 @@ document.addEventListener('visibilitychange',()=>{
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
       <span style="display:inline-flex;width:26px;height:26px;color:var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22 L8 42 L20 42 L20 22 Z"/><path d="M20 22 Q44 14 52 10 L52 54 Q44 50 20 42"/><line x1="20" y1="42" x2="20" y2="54"/><line x1="28" y1="44" x2="26" y2="54"/><path d="M52 28 Q58 30 58 32 Q58 34 52 36"/></svg></span>
       <span style="font-size:18px;font-weight:700;color:var(--text);font-family:var(--sans);" id="changelogTitle">Nouveautés</span>
-      <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono);">v1.5</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono);">v1.6</span>
     </div>
     <div style="width:32px;height:3px;background:var(--accent);border-radius:2px;margin-bottom:20px;"></div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;" id="changelogItems"></div>
     <button onclick="dismissChangelog()" style="width:100%;padding:15px;border-radius:50px;border:none;background:var(--accent);color:white;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;" id="changelogCta">C'est compris !</button>
+    <div style="margin-top:14px;">
+      <div style="background:rgba(var(--accent-rgb),.07);border:1.5px solid rgba(var(--accent-rgb),.2);border-radius:16px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:16px;">❤️</span>
+          <span style="font-size:14px;font-weight:700;color:var(--text);font-family:var(--sans);" id="changelogDonTitle">Vous aimez l'app ?</span>
+        </div>
+        <div style="font-size:12px;color:var(--text3);font-family:var(--sans);margin-bottom:10px;line-height:1.5;" id="changelogDonText">Votre soutien garde ce projet vivant et gratuit.</div>
+        <div style="display:flex;gap:6px;">
+          <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">2 $</a>
+          <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">5 $</a>
+          <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">10 $</a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
