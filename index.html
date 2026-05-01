@@ -789,6 +789,21 @@
     </div>
   </label>
 
+  <!-- Font size slider -->
+  <div style="border-top:1px solid var(--border);padding:12px 16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <span class="pref-row-label" id="fontSizeLabel">Taille du texte</span>
+      <span style="font-size:11px;color:var(--text3);font-family:var(--mono);" id="fontSizeValue">Normal</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:11px;color:var(--text3);font-family:var(--sans);">A</span>
+      <input type="range" id="fontSizeSlider" min="0" max="3" step="1" value="1"
+        oninput="applyFontSize(this.value)"
+        style="flex:1;accent-color:var(--accent);height:4px;cursor:pointer;"/>
+      <span style="font-size:16px;color:var(--text3);font-family:var(--sans);">A</span>
+    </div>
+  </div>
+
   <label class="pref-row" style="border-top:1px solid var(--border);cursor:pointer;" onclick="toggleWeather()">
     <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
       <span class="pref-row-label" id="weatherToggleLabel">Météo</span>
@@ -1001,15 +1016,17 @@ function updateTimeline(bridge, status, data) {
 }
 
 // ── Changelog ────────────────────────────────────────────────────────
-const CHANGELOG_VERSION = '1.6';
+const CHANGELOG_VERSION = '1.7';
 const CHANGELOG = {
   fr: [
     { icon: 'vessel',   text: 'Vue en temps réel — carte interactive des navires à chaque pont, directement dans l\'app' },
     { icon: 'notif',    text: 'Notifications instantanées — les alertes "Disponible" arrivent maintenant immédiatement' },
+    { icon: 'fact',     text: 'Taille du texte — ajustez la grosseur du texte dans les réglages selon vos préférences' },
   ],
   en: [
     { icon: 'vessel',   text: 'Real-time View — interactive vessel map for each bridge, directly in the app' },
     { icon: 'notif',    text: 'Instant notifications — "Available" alerts now arrive immediately' },
+    { icon: 'fact',     text: 'Text size — adjust the text size in settings to your preference' },
   ]
 };
 
@@ -1663,6 +1680,25 @@ let currentLang=localStorage.getItem('appLang')||(bLang.startsWith('en')?'en':'f
 
 function applyDark(d){document.body.classList.toggle('dark',d);const i=document.getElementById('darkToggleInput');i.checked=d;i.setAttribute('aria-checked',d?'true':'false');}
 function toggleDark(){const d=document.getElementById('darkToggleInput').checked;localStorage.setItem('darkMode',d?'1':'0');applyDark(d);}
+
+const FONT_SIZE_LEVELS = [0.9, 1.0, 1.15, 1.30];
+const FONT_SIZE_LABELS = { fr: ['Petit','Normal','Grand','Très grand'], en: ['Small','Normal','Large','Extra large'] };
+
+function applyFontSize(level) {
+  const zoom = FONT_SIZE_LEVELS[level] || 1.0;
+  document.documentElement.style.zoom = zoom;
+  localStorage.setItem('fontSize', level);
+  const lang = currentLang || 'fr';
+  const label = document.getElementById('fontSizeValue');
+  if (label) label.textContent = (FONT_SIZE_LABELS[lang] || FONT_SIZE_LABELS.fr)[level];
+  const slider = document.getElementById('fontSizeSlider');
+  if (slider) slider.value = level;
+}
+
+function initFontSize() {
+  const saved = parseInt(localStorage.getItem('fontSize') ?? '1');
+  applyFontSize(saved);
+}
 const sd=localStorage.getItem('darkMode');
 if(sd!==null)applyDark(sd==='1');else applyDark(window.matchMedia('(prefers-color-scheme:dark)').matches);
 
@@ -3131,7 +3167,7 @@ function hexToRgba(hex, alpha) {
   const b = parseInt(hex.slice(4,6),16);
   return `rgba(${r},${g},${b},${alpha})`;
 }
-loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWeatherToggle();updateCardVisibility();
+loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWeatherToggle();updateCardVisibility();initFontSize();
 
 renderFunFact();
 
@@ -3319,7 +3355,7 @@ document.addEventListener('visibilitychange',()=>{
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
       <span style="display:inline-flex;width:26px;height:26px;color:var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22 L8 42 L20 42 L20 22 Z"/><path d="M20 22 Q44 14 52 10 L52 54 Q44 50 20 42"/><line x1="20" y1="42" x2="20" y2="54"/><line x1="28" y1="44" x2="26" y2="54"/><path d="M52 28 Q58 30 58 32 Q58 34 52 36"/></svg></span>
       <span style="font-size:18px;font-weight:700;color:var(--text);font-family:var(--sans);" id="changelogTitle">Nouveautés</span>
-      <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono);">v1.6</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--mono);">v1.7</span>
     </div>
     <div style="width:32px;height:3px;background:var(--accent);border-radius:2px;margin-bottom:20px;"></div>
     <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;" id="changelogItems"></div>
