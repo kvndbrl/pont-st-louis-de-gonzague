@@ -3448,10 +3448,11 @@ document.addEventListener('visibilitychange',()=>{
 
 <!-- Map modal -->
 <div id="mapModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeMapModal()">
-  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:0 0 32px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 12px;">
-      <div style="font-size:15px;font-weight:700;color:var(--text);font-family:var(--sans);" id="mapModalTitle">Vue en temps réel</div>
-      <button onclick="closeMapModal()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;">✕</button>
+  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:0 0 32px;position:relative;">
+    <div style="padding:16px 20px 12px;" id="mapModalHeader">
+      <button onclick="closeMapModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;">✕</button>
+      <div id="mapModalBridgeName"></div>
+      <div id="mapModalPill" style="margin-top:8px;display:none;"></div>
     </div>
     <div style="padding:0 16px;">
       <iframe id="mapModalFrame" src="" width="100%" height="380" frameborder="0" style="border-radius:16px;display:block;"></iframe>
@@ -3477,8 +3478,28 @@ function updateMapBtnLabels() {
 function showMapModal(bridge) {
   const b = BRIDGE_MAP_COORDS[bridge];
   if (!b) return;
-  const isFr = currentLang === 'fr';
-  document.getElementById('mapModalTitle').textContent = isFr ? b.nameFr : b.nameEn;
+  const C = bridge.charAt(0).toUpperCase() + bridge.slice(1);
+  const sourceCard = document.getElementById('card' + C);
+
+  // Clone bridge name
+  const bridgeNameEl = sourceCard ? sourceCard.querySelector('.bridge-name') : null;
+  const bridgeNameContainer = document.getElementById('mapModalBridgeName');
+  if (bridgeNameContainer && bridgeNameEl) {
+    bridgeNameContainer.innerHTML = bridgeNameEl.outerHTML;
+  }
+
+  // Clone status pill
+  const sourcePill = sourceCard ? sourceCard.querySelector('.status-pill') : null;
+  const pillContainer = document.getElementById('mapModalPill');
+  if (pillContainer) {
+    if (sourcePill) {
+      pillContainer.innerHTML = sourcePill.outerHTML;
+      pillContainer.style.display = 'block';
+    } else {
+      pillContainer.style.display = 'none';
+    }
+  }
+
   const url = `https://www.vesselfinder.com/aismap?zoom=${b.zoom}&lat=${b.lat}&lon=${b.lon}&width=100%25&height=380&names=1&track=1`;
   document.getElementById('mapModalFrame').src = url;
   document.getElementById('mapModalOverlay').style.display = 'flex';
