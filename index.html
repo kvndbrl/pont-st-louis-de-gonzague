@@ -3190,6 +3190,12 @@ function isLandscapeMode() {
   return vw > vh;
 }
 
+// Debug overlay
+const _dbg = document.createElement('div');
+_dbg.id = 'orientDebug';
+_dbg.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;background:rgba(0,0,0,.8);color:#fff;font-size:11px;padding:4px 8px;pointer-events:none;';
+document.body.appendChild(_dbg);
+
 function updateOrientation() {
   const main = document.getElementById('cardsMain');
   const wrapper = document.getElementById('appWrapper');
@@ -3197,6 +3203,10 @@ function updateOrientation() {
   const isLandscape = isLandscapeMode();
   main.classList.toggle('landscape', isLandscape);
   if (wrapper) wrapper.classList.toggle('landscape', isLandscape);
+  const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const ot = screen.orientation ? screen.orientation.type : 'n/a';
+  _dbg.textContent = `${vw}x${vh} | ${ot} | landscape:${isLandscape}`;
 }
 
 window.addEventListener('resize', updateOrientation);
