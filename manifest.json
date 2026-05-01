@@ -1,0 +1,16 @@
+{
+  "name": "Ponts du canal de Beauharnois",
+  "short_name": "Ponts Beauharnois",
+  "description": "Statut en temps réel des ponts St-Louis-de-Gonzague et Larocque",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080f06",
+  "theme_color": "#080f06",
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "categories": ["navigation", "utilities"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
