@@ -113,6 +113,16 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     html,body{height:100%;}
     body{font-family:var(--sans);background:var(--bg);min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 16px;transition:background .3s;overflow-y:auto;overflow-x:hidden;}
+
+    #appWrapper.landscape { width: 100vw !important; max-width: 100vw !important; padding: 0 16px; box-sizing: border-box; }
+    #appWrapper.landscape .header { width: 100% !important; max-width: 100% !important; }
+    #appWrapper.landscape #cardsMain { width: 100% !important; max-width: 100% !important; }
+    #appWrapper.landscape #belowCardsSection { width: 100% !important; max-width: 100% !important; display: flex; flex-direction: column; align-items: center; }
+    #appWrapper.landscape #belowCardsSection .notify-btn { width: 50% !important; }
+    #appWrapper.landscape #belowCardsSection #funFactCard { width: 100% !important; max-width: 100% !important; box-sizing: border-box; }
+    #cardsMain.landscape { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; width: 100%; box-sizing: border-box; }
+    #cardsMain.landscape .bridge-card { margin-bottom: 0; min-width: 0; width: 100%; }
+    #cardsMain.landscape .fun-fact-card { grid-column: 1 / -1; }
     .waves-bg{position:fixed;bottom:0;left:0;width:100%;height:130px;z-index:0;pointer-events:none;overflow:hidden;}
     .waves-svg{position:absolute;bottom:0;left:0;width:200%;height:100%;pointer-events:none;}
     .wave1{fill:var(--wave-color);opacity:var(--wave-opacity);}
@@ -355,8 +365,7 @@
   <script async src="https://cloud.umami.is/script.js" data-website-id="1786c8da-b13f-4fec-b8d2-7d2e7102c29b"></script>
 </head>
 <body>
-
-<!-- Desktop warning modal -->
+<div id="appWrapper">
 <div id="desktopOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;backdrop-filter:blur(6px);align-items:center;justify-content:center;">
   <div style="background:var(--surface);border-radius:24px;width:90%;max-width:420px;padding:32px 28px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.6);">
     <div style="font-size:48px;margin-bottom:16px;">📱</div>
@@ -584,7 +593,7 @@
   </div>
 </div>
 
-<header class="header">
+<header class="header" id="appHeader">
   <div class="greeting-block" aria-live="polite">
     <span class="greeting-text" id="greetingText">Bonjour !</span>
     <span class="weather-text" id="weatherText"></span>
@@ -596,7 +605,7 @@
   </button>
 </header>
 
-<main>
+<main id="cardsMain">
 
   <section class="bridge-card" id="cardGonzague" aria-label="Pont St-Louis">
     <div class="bridge-name" aria-hidden="true">
@@ -708,6 +717,8 @@
     </div>
   </section>
 
+  <!-- Full-width section below cards -->
+  <div id="belowCardsSection" style="width:100%;grid-column:1/-1;">
   <!-- WebView banner (Facebook/Instagram browser) -->
   <!-- Unified install modal -->
   <button class="notify-btn" id="notifyBtn" onclick="toggleNotifications()" aria-hidden="true" style="display:none;">
@@ -732,8 +743,11 @@
   </div>
 
   <div class="error" id="errorMsg" role="alert" aria-live="assertive"></div>
+  </div><!-- end belowCardsSection -->
 
 </main>
+
+</div><!-- end appWrapper -->
 
 <!-- Settings drawer -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
@@ -3168,6 +3182,31 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWeatherToggle();updateCardVisibility();initFontSize();
+
+function isLandscapeMode() {
+  if (screen.orientation && screen.orientation.type) {
+    return screen.orientation.type.includes('landscape');
+  }
+  const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  return vw > vh;
+}
+
+function updateOrientation() {
+  const main = document.getElementById('cardsMain');
+  const wrapper = document.getElementById('appWrapper');
+  if (!main) return;
+  const isLandscape = isLandscapeMode();
+  main.classList.toggle('landscape', isLandscape);
+  if (wrapper) wrapper.classList.toggle('landscape', isLandscape);
+}
+
+window.addEventListener('resize', updateOrientation);
+window.addEventListener('orientationchange', () => setTimeout(updateOrientation, 150));
+if (screen.orientation) screen.orientation.addEventListener('change', () => setTimeout(updateOrientation, 150));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', updateOrientation);
+setInterval(updateOrientation, 500);
+updateOrientation();
 
 renderFunFact();
 
