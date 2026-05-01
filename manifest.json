@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#080f06",
   "theme_color": "#080f06",
-  "orientation": "portrait",
+  "orientation": "any",
   "prefer_related_applications": false,
   "categories": ["navigation", "utilities"],
   "icons": [
