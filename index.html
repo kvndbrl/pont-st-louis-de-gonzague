@@ -644,9 +644,12 @@
       </div>
       <div class="refresh-time" id="refreshGonzague">—</div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 10px;">
-      <div id="lastLiftGonzague" style="font-size:11px;color:var(--text3);font-family:var(--mono);"></div>
-      <button class="heatmap-btn" onclick="showHeatmap('gonzague')" id="heatmapBtnGonzague" style="display:none;">📊 Historique</button>
+    <div style="padding:4px 16px 10px;">
+      <div id="lastLiftGonzague" style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button class="heatmap-btn" onclick="showMapModal('gonzague')" id="mapBtnGonzague">🚢 <span class="map-btn-label">Real-time View</span></button>
+        <button class="heatmap-btn" onclick="showHeatmap('gonzague')" id="heatmapBtnGonzague" style="display:none;">📊 Historique</button>
+      </div>
     </div>
   </section>
 
@@ -696,9 +699,12 @@
       </div>
       <div class="refresh-time" id="refreshLarocque">—</div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 10px;">
-      <div id="lastLiftLarocque" style="font-size:11px;color:var(--text3);font-family:var(--mono);"></div>
-      <button class="heatmap-btn" onclick="showHeatmap('larocque')" id="heatmapBtnLarocque" style="display:none;">📊 Historique</button>
+    <div style="padding:4px 16px 10px;">
+      <div id="lastLiftLarocque" style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:6px;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button class="heatmap-btn" onclick="showMapModal('larocque')" id="mapBtnLarocque">🚢 <span class="map-btn-label">Real-time View</span></button>
+        <button class="heatmap-btn" onclick="showHeatmap('larocque')" id="heatmapBtnLarocque" style="display:none;">📊 Historique</button>
+      </div>
     </div>
   </section>
 
@@ -2406,7 +2412,7 @@ function applyTrans(){
     }
   });
 }
-function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();}
+function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();}
 
 // ── Cache-first status loading ────────────────────────────────────────
 const STATUS_CACHE_KEY = 'pb:cachedStatus';
@@ -3438,4 +3444,51 @@ document.addEventListener('visibilitychange',()=>{
     }
   }
 })();
+</script>
+
+<!-- Map modal -->
+<div id="mapModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9999;backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeMapModal()">
+  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:0 0 32px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 12px;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);font-family:var(--sans);" id="mapModalTitle">Vue en temps réel</div>
+      <button onclick="closeMapModal()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;">✕</button>
+    </div>
+    <div style="padding:0 16px;">
+      <iframe id="mapModalFrame" src="" width="100%" height="380" frameborder="0" style="border-radius:16px;display:block;"></iframe>
+    </div>
+    <div style="padding:12px 16px 0;font-size:11px;color:var(--text3);font-family:var(--mono);text-align:center;">Powered by VesselFinder</div>
+  </div>
+</div>
+
+<script>
+const BRIDGE_MAP_COORDS = {
+  gonzague: { nameFr: 'Pont St-Louis', nameEn: 'St-Louis Bridge', lat: '45.2314064', lon: '-74.0004653', zoom: 14 },
+  larocque: { nameFr: 'Pont Larocque', nameEn: 'Larocque Bridge', lat: '45.2240497', lon: '-74.1177633', zoom: 14 },
+};
+
+// Update map button labels based on language
+function updateMapBtnLabels() {
+  const isFr = currentLang === 'fr';
+  document.querySelectorAll('.map-btn-label').forEach(el => {
+    el.textContent = isFr ? 'Vue en temps réel' : 'Real-time View';
+  });
+}
+
+function showMapModal(bridge) {
+  const b = BRIDGE_MAP_COORDS[bridge];
+  if (!b) return;
+  const isFr = currentLang === 'fr';
+  document.getElementById('mapModalTitle').textContent = isFr ? b.nameFr : b.nameEn;
+  const url = `https://www.vesselfinder.com/aismap?zoom=${b.zoom}&lat=${b.lat}&lon=${b.lon}&width=100%25&height=380&names=1&track=1`;
+  document.getElementById('mapModalFrame').src = url;
+  document.getElementById('mapModalOverlay').style.display = 'flex';
+}
+
+function closeMapModal() {
+  document.getElementById('mapModalOverlay').style.display = 'none';
+  document.getElementById('mapModalFrame').src = '';
+}
+
+// Call once on load to set initial labels
+document.addEventListener('DOMContentLoaded', updateMapBtnLabels);
 </script>
