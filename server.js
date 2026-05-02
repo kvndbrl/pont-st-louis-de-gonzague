@@ -491,7 +491,9 @@ async function fetchBridgeStatus() {
     const raisedMatch = combined.match(/raised since\s+(\d{1,2}:\d{2})/i);
     if (raisedMatch) return { status: 'leve', raisedSince: raisedMatch[1] };
 
-    if (combined.includes('unavailable')) return { status: 'leve', raisedSince: null };
+    // "unavailable" without "lowering" context — could be lowering phase
+    // Map to lowering instead of leve to avoid getting stuck
+    if (combined.includes('unavailable')) return { status: 'lowering', raisedSince: null };
 
     // "Available" without "un" = bridge is open
     if (combined.includes('available')) return { status: 'disponible', raisedSince: null };
