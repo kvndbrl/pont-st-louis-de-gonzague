@@ -2665,6 +2665,24 @@ function applyTrans(){
       }
     }
   });
+
+  const isFr = currentLang === 'fr';
+
+  // Font size label
+  const fsl = document.getElementById('fontSizeLabel');
+  if(fsl) fsl.textContent = isFr ? 'Taille du texte' : 'Text size';
+
+  // View mode labels
+  const vml = document.getElementById('viewModeLabel');
+  if(vml) vml.textContent = isFr ? "Mode d'affichage" : 'View mode';
+  const vsl = document.getElementById('viewSimpleLabel');
+  if(vsl) vsl.textContent = 'Simple';
+  const vsd = document.getElementById('viewSimpleDesc');
+  if(vsd) vsd.textContent = isFr ? 'Statut seulement. Épuré et minimal.' : 'Status only. Clean and minimal.';
+  const advLabel = document.getElementById('viewAdvancedLabel');
+  if(advLabel) advLabel.textContent = isFr ? 'Avancé' : 'Advanced';
+  const advDesc = document.getElementById('viewAdvancedDesc');
+  if(advDesc) advDesc.textContent = isFr ? "Inclut la carte, l'historique et la dernière levée." : 'Includes map, history and last lift.';
 }
 function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();initDonCompar();const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=currentLang==='fr'?'Vous aimez l\'app ?':'Enjoying the app?';}
 
