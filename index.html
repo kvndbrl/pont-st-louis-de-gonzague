@@ -995,11 +995,20 @@
         <span style="font-size:14px;font-weight:700;color:var(--text);font-family:var(--sans);" id="drawerDonTitle">Vous aimez l'app ?</span>
       </div>
       <div style="font-size:12px;color:var(--text3);font-family:var(--sans);margin-bottom:8px;line-height:1.5;" id="drawerDonDesc">Votre soutien garde ce projet vivant et gratuit.</div>
-      <div style="font-size:11px;color:var(--accent);font-family:var(--sans);line-height:1.5;margin-bottom:10px;min-height:32px;transition:opacity .2s;" id="donComparText"></div>
-      <div style="display:flex;gap:6px;">
-        <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'drawer'});closeDonationModal(true);" onmouseenter="showDonCompar(2)" ontouchstart="showDonCompar(2)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">2 $</a>
-        <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'drawer'});closeDonationModal(true);" onmouseenter="showDonCompar(5)" ontouchstart="showDonCompar(5)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">5 $</a>
-        <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'drawer'});closeDonationModal(true);" onmouseenter="showDonCompar(10)" ontouchstart="showDonCompar(10)" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">10 $</a>
+      <div style="font-size:11px;color:var(--text3);font-family:var(--sans);margin-bottom:10px;line-height:1.5;font-style:italic;" id="donComparText"></div>
+      <div style="display:flex;gap:6px;width:100%;">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+          <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">2 $</a>
+          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar2"></div>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+          <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">5 $</a>
+          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar5"></div>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+          <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">10 $</a>
+          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar10"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2566,7 +2575,7 @@ function applyTrans(){
     }
   });
 }
-function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();}
+function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();initDonCompar();}
 
 // ── Cache-first status loading ────────────────────────────────────────
 const STATUS_CACHE_KEY = 'pb:cachedStatus';
@@ -3288,43 +3297,32 @@ function hexToRgba(hex, alpha) {
 loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWeatherToggle();updateCardVisibility();initFontSize();
 
 const DON_COMPARS = {
-  2: [
-    "Le prix d'un gratteux au dépanneur 🎟️ — mais ici t'es sûr de gagner.",
-    "Le prix d'un timbre à la poste 📬 — pour des alertes qui arrivent ben plus vite.",
-    "Moins qu'un billet de loterie 🎰 — mais la récompense c'est de ne plus jamais être pogné au pont.",
-    "Moins qu'un café de la machine au bureau ☕ — pour un développeur qui code à 2h du matin.",
-    "Moins qu'un péage sur l'autoroute 🚗 — et ça fait la même job d'éviter la congestion.",
-    "Moins qu'un stationnement d'une heure en ville 🅿️ — pour un projet qui sert ta communauté.",
-  ],
-  5: [
-    "Le prix d'un café et un muffin au comptoir ☕ — pour commencer ta journée sans mauvaises surprises.",
-    "Moins qu'un stationnement d'une heure en ville 🅿️ — pour une app qui t'évite d'en chercher un.",
-    "Le prix d'une liqueur et des chips au dépanneur 🥤 — pour une app sans frais cachés.",
-    "Moins qu'un pourboire au resto 💸 — pour quelqu'un qui travaille fort pour toi.",
-    "Le prix d'un café latté en ville ☕ — pour un dev qui boit du café ordinaire pour réduire ses coûts.",
-    "Moins qu'un billet de 50/50 au centre communautaire 🎰 — avec un meilleur retour garanti.",
-    "Le prix d'une collation au guichet de l'aréna 🏒 — pour supporter ton équipe locale de devs.",
-    "Moins qu'un trajet d'autobus aller-retour 🚌 — pour une app qui te fait sauver des trajets.",
-    "Le prix d'un paquet de gommes à la caisse 🫧 — pour une app sans mauvais goût.",
-    "Moins qu'un café latté en ville ☕ — pour un dev qui boit du café ordinaire pour réduire les coûts.",
-  ],
-  10: [
-    "Moins qu'un accès à la piscine municipale pour la famille 🏊 — pour une app qui sert tout le monde.",
-    "Le prix d'un pack de bière artisanale locale 🍺 — santé à l'app qui te sauve du temps.",
-  ],
+  fr: {
+    2: ["Moins qu'un café latté en ville ☕"],
+    5: ["Moins qu'un verre de vin en terrasse 🍷"],
+    10: ["Moins cher qu'un repas au casse-croûte 🍟"],
+  },
+  en: {
+    2: ["Less than a latte in the city ☕"],
+    5: ["Less than a glass of wine at the bar 🍷"],
+    10: ["Less than a meal at the local diner 🍟"],
+  },
 };
 
 function showDonCompar(amount) {
   const el = document.getElementById('donComparText');
   if (!el) return;
   const list = DON_COMPARS[amount] || DON_COMPARS[5];
-  const text = list[Math.floor(Math.random() * list.length)];
-  el.textContent = text;
+  el.textContent = list[Math.floor(Math.random() * list.length)];
 }
 
-// Show default on drawer open
 function initDonCompar() {
-  showDonCompar(5);
+  const lang = (typeof currentLang !== 'undefined' ? currentLang : null) || localStorage.getItem('appLang') || 'fr';
+  const texts = DON_COMPARS[lang] || DON_COMPARS.fr;
+  [2, 5, 10].forEach(amount => {
+    const el = document.getElementById('donCompar' + amount);
+    if (el) el.textContent = texts[amount][0];
+  });
 }
 
 function isLandscapeMode() {
