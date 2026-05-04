@@ -25,13 +25,20 @@ self.addEventListener('push', function(event) {
     icon: data.icon || '/notification-icon.png',
     badge: data.badge || '/notification-icon.png',
     tag: tag,
-    renotify: true,
-    requireInteraction: !isAvailable,
+    renotify: !isAvailable,
+    requireInteraction: false,
     silent: isAvailable,
     vibrate: isAvailable ? [200] : vibrate,
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(
+    self.registration.getNotifications({ tag: tag })
+      .then(existing => Promise.all(existing.map(n => n.close())))
+      .then(() => {
+        if (isAvailable) return; // Don't show a new notification for disponible — just close
+        return self.registration.showNotification(title, options);
+      })
+  );
 });
 
 function detectStatus(data) {
