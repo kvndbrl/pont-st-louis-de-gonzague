@@ -35,7 +35,20 @@ self.addEventListener('push', function(event) {
     self.registration.getNotifications({ tag: tag })
       .then(existing => Promise.all(existing.map(n => n.close())))
       .then(() => {
-        if (isAvailable) return; // Don't show a new notification for disponible — just close
+        if (isAvailable) {
+          // Show a brief "bridge available" notification then close it after 4s
+          return self.registration.showNotification(title, {
+            ...options,
+            silent: true,
+            requireInteraction: false,
+            vibrate: [100],
+          }).then(() => {
+            setTimeout(() => {
+              self.registration.getNotifications({ tag: tag })
+                .then(notifs => notifs.forEach(n => n.close()));
+            }, 4000);
+          });
+        }
         return self.registration.showNotification(title, options);
       })
   );
