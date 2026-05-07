@@ -665,14 +665,38 @@
 </header>
 
 <div style="padding:0 16px 8px;margin-top:-4px;">
-  <button onclick="openDonateModal()" style="display:flex;align-items:center;gap:6px;background:var(--accent);border:none;border-radius:12px;padding:8px 14px;font-family:var(--sans);font-size:13px;font-weight:600;color:#fff;cursor:pointer;width:100%;justify-content:center;opacity:.85;" id="mainDonateBtn">
-    ❤️ <span id="mainDonateBtnText">Vous aimez l'app ?</span>
-  </button>
+  <div style="background:var(--surface);border-radius:14px;padding:14px;box-shadow:var(--shadow);border:1px solid var(--border);">
+
+    <!-- Monthly — featured -->
+    <div style="position:relative;margin-bottom:10px;">
+      <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="mostAppreciatedBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'monthly_cta'});" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+        <span style="font-size:22px;flex-shrink:0;">☕</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="mainDonateBtnText">Soutien mensuel — 1 $/mois</div>
+          <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="mainDonateBtnDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+        </div>
+        <span style="font-size:15px;color:#000;">›</span>
+      </a>
+    </div>
+
+    <!-- One-time — secondary -->
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="orOnceLabel">ou un don unique</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'main_cta'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">2 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'main_cta'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">5 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'main_cta'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">10 $</a>
+    </div>
+  </div>
 </div>
 
 <main id="cardsMain">
 
-  <section class="bridge-card" id="cardGonzague" aria-label="Pont St-Louis">
+  <div class="bridge-card" id="cardGonzague" aria-label="Pont St-Louis">
     <div class="bridge-name" aria-hidden="true">
       <span style="display:inline-flex;align-items:center;width:24px;height:24px;flex-shrink:0;color:var(--text3);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"> <path d="M256.001,354.295h-67.322c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h67.322 c5.771,0,10.449-4.678,10.449-10.449S261.772,354.295,256.001,354.295z"/> <path d="M65.241,354.295H38.14c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h27.102 c5.77,0,10.449-4.678,10.449-10.449C75.69,358.973,71.012,354.295,65.241,354.295z"/> <path d="M488.038,354.295H449.83c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h38.209 c5.771,0,10.449-4.678,10.449-10.449S493.809,354.295,488.038,354.295z"/> <path d="M318.455,354.295h-36.106c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h36.106 c5.771,0,10.449-4.678,10.449-10.449S324.225,354.295,318.455,354.295z"/> <path d="M251.566,391.837h-36.107c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h36.107 c5.771,0,10.449-4.678,10.449-10.449S257.337,391.837,251.566,391.837z"/> <path d="M161.522,391.837h-0.137c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h0.137 c5.771,0,10.449-4.678,10.449-10.449S167.293,391.837,161.522,391.837z"/> <path d="M127.581,391.837H55.367c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h72.214 c5.771,0,10.449-4.678,10.449-10.449S133.352,391.837,127.581,391.837z"/> <path d="M456.36,391.837h-0.137c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h0.137 c5.771,0,10.449-4.678,10.449-10.449S462.131,391.837,456.36,391.837z"/> <path d="M422.42,391.837h-72.214c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h72.214 c5.771,0,10.449-4.678,10.449-10.449S428.191,391.837,422.42,391.837z"/> <path d="M501.552,238.785c-0.028,0-0.055,0.004-0.083,0.004c-0.028,0-0.054-0.004-0.083-0.004 c-54.891,0-99.552-44.71-99.596-99.682v-29.388c0-5.771-4.678-10.449-10.449-10.449h-25.129c-5.771,0-10.449,4.678-10.449,10.449 v29.287c0,0.006-0.001,0.014-0.001,0.02c0,55.01-44.753,99.763-99.763,99.763c-55.01,0-99.763-44.754-99.763-99.763v-29.307 c0-5.771-4.678-10.449-10.449-10.449h-25.129c-5.771,0-10.449,4.678-10.449,10.449v29.307c0,55.01-44.753,99.763-99.763,99.763 C4.678,238.785,0,243.463,0,249.234v40.203v35.526c0,5.771,4.678,10.449,10.449,10.449h99.884v19.851 c0,5.771,4.678,10.449,10.449,10.449c5.771,0,10.449-4.678,10.449-10.449v-19.851h3.99v19.851c0,5.771,4.678,10.449,10.449,10.449 s10.449-4.678,10.449-10.449v-19.851h199.764v19.851c0,5.771,4.678,10.449,10.449,10.449s10.449-4.678,10.449-10.449v-19.851h3.99 v19.851c0,5.771,4.678,10.449,10.449,10.449s10.449-4.678,10.449-10.449v-19.851h99.716c5.771,0,10.449-4.678,10.449-10.449 v-33.725c0.102-0.586,0.166-1.186,0.166-1.801v-40.203h0.001C512.001,243.463,507.323,238.785,501.552,238.785z M438.692,242.027 c5.049,3.093,10.339,5.826,15.84,8.16v28.802h-15.84V242.027z M401.79,206.86c4.679,6.867,10.048,13.225,16.004,18.979v53.15 H401.79V206.86z M376.663,120.164h4.231v158.824h-4.231V120.164z M339.925,225.626c5.89-5.709,11.203-12.01,15.84-18.81v72.172 h-15.84V225.626z M303.188,250.07c5.501-2.347,10.792-5.092,15.84-8.196v37.115h-15.84V250.07z M266.45,259.226 c5.388-0.464,10.676-1.283,15.84-2.435v22.197h-15.84V259.226z M229.712,256.79c5.164,1.153,10.451,1.971,15.84,2.435v19.763 h-15.84V256.79z M192.976,241.874c5.048,3.104,10.338,5.85,15.84,8.196v28.919h-15.84V241.874z M156.239,206.817 c4.635,6.799,9.948,13.1,15.839,18.809v53.362h-15.839V206.817z M131.111,120.164h4.231v158.824h-4.231V120.164z M94.373,225.626 c5.89-5.709,11.203-12.01,15.84-18.809v72.171h-15.84V225.626z M57.637,250.07c5.501-2.347,10.792-5.092,15.84-8.196v37.115 h-15.84V250.07z M20.899,259.226c5.388-0.464,10.676-1.283,15.84-2.435v22.197h-15.84V259.226z M490.938,314.515h-0.001H20.899 v-14.629h99.763h25.011h0.118h220.423h25.011h0.118h99.596V314.515z M491.103,278.988H475.43v-22.133 c5.112,1.128,10.343,1.931,15.673,2.384V278.988z"/> </svg></span>
       <span>Pont St-Louis</span>
@@ -724,9 +748,9 @@
         <button class="heatmap-btn" onclick="showHeatmap('gonzague')" id="heatmapBtnGonzague" style="display:none;">📊 Historique</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="bridge-card" id="cardLarocque" aria-label="Pont Larocque">
+  <div class="bridge-card" id="cardLarocque" aria-label="Pont Larocque">
     <div class="bridge-name" aria-hidden="true">
       <span style="display:inline-flex;align-items:center;width:24px;height:24px;flex-shrink:0;color:var(--text3);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"> <path d="M256.001,354.295h-67.322c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h67.322 c5.771,0,10.449-4.678,10.449-10.449S261.772,354.295,256.001,354.295z"/> <path d="M65.241,354.295H38.14c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h27.102 c5.77,0,10.449-4.678,10.449-10.449C75.69,358.973,71.012,354.295,65.241,354.295z"/> <path d="M488.038,354.295H449.83c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h38.209 c5.771,0,10.449-4.678,10.449-10.449S493.809,354.295,488.038,354.295z"/> <path d="M318.455,354.295h-36.106c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h36.106 c5.771,0,10.449-4.678,10.449-10.449S324.225,354.295,318.455,354.295z"/> <path d="M251.566,391.837h-36.107c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h36.107 c5.771,0,10.449-4.678,10.449-10.449S257.337,391.837,251.566,391.837z"/> <path d="M161.522,391.837h-0.137c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h0.137 c5.771,0,10.449-4.678,10.449-10.449S167.293,391.837,161.522,391.837z"/> <path d="M127.581,391.837H55.367c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h72.214 c5.771,0,10.449-4.678,10.449-10.449S133.352,391.837,127.581,391.837z"/> <path d="M456.36,391.837h-0.137c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h0.137 c5.771,0,10.449-4.678,10.449-10.449S462.131,391.837,456.36,391.837z"/> <path d="M422.42,391.837h-72.214c-5.771,0-10.449,4.678-10.449,10.449s4.678,10.449,10.449,10.449h72.214 c5.771,0,10.449-4.678,10.449-10.449S428.191,391.837,422.42,391.837z"/> <path d="M501.552,238.785c-0.028,0-0.055,0.004-0.083,0.004c-0.028,0-0.054-0.004-0.083-0.004 c-54.891,0-99.552-44.71-99.596-99.682v-29.388c0-5.771-4.678-10.449-10.449-10.449h-25.129c-5.771,0-10.449,4.678-10.449,10.449 v29.287c0,0.006-0.001,0.014-0.001,0.02c0,55.01-44.753,99.763-99.763,99.763c-55.01,0-99.763-44.754-99.763-99.763v-29.307 c0-5.771-4.678-10.449-10.449-10.449h-25.129c-5.771,0-10.449,4.678-10.449,10.449v29.307c0,55.01-44.753,99.763-99.763,99.763 C4.678,238.785,0,243.463,0,249.234v40.203v35.526c0,5.771,4.678,10.449,10.449,10.449h99.884v19.851 c0,5.771,4.678,10.449,10.449,10.449c5.771,0,10.449-4.678,10.449-10.449v-19.851h3.99v19.851c0,5.771,4.678,10.449,10.449,10.449 s10.449-4.678,10.449-10.449v-19.851h199.764v19.851c0,5.771,4.678,10.449,10.449,10.449s10.449-4.678,10.449-10.449v-19.851h3.99 v19.851c0,5.771,4.678,10.449,10.449,10.449s10.449-4.678,10.449-10.449v-19.851h99.716c5.771,0,10.449-4.678,10.449-10.449 v-33.725c0.102-0.586,0.166-1.186,0.166-1.801v-40.203h0.001C512.001,243.463,507.323,238.785,501.552,238.785z M438.692,242.027 c5.049,3.093,10.339,5.826,15.84,8.16v28.802h-15.84V242.027z M401.79,206.86c4.679,6.867,10.048,13.225,16.004,18.979v53.15 H401.79V206.86z M376.663,120.164h4.231v158.824h-4.231V120.164z M339.925,225.626c5.89-5.709,11.203-12.01,15.84-18.81v72.172 h-15.84V225.626z M303.188,250.07c5.501-2.347,10.792-5.092,15.84-8.196v37.115h-15.84V250.07z M266.45,259.226 c5.388-0.464,10.676-1.283,15.84-2.435v22.197h-15.84V259.226z M229.712,256.79c5.164,1.153,10.451,1.971,15.84,2.435v19.763 h-15.84V256.79z M192.976,241.874c5.048,3.104,10.338,5.85,15.84,8.196v28.919h-15.84V241.874z M156.239,206.817 c4.635,6.799,9.948,13.1,15.839,18.809v53.362h-15.839V206.817z M131.111,120.164h4.231v158.824h-4.231V120.164z M94.373,225.626 c5.89-5.709,11.203-12.01,15.84-18.809v72.171h-15.84V225.626z M57.637,250.07c5.501-2.347,10.792-5.092,15.84-8.196v37.115 h-15.84V250.07z M20.899,259.226c5.388-0.464,10.676-1.283,15.84-2.435v22.197h-15.84V259.226z M490.938,314.515h-0.001H20.899 v-14.629h99.763h25.011h0.118h220.423h25.011h0.118h99.596V314.515z M491.103,278.988H475.43v-22.133 c5.112,1.128,10.343,1.931,15.673,2.384V278.988z"/> </svg></span>
       <span>Pont Larocque — Valleyfield</span>
@@ -778,7 +802,7 @@
         <button class="heatmap-btn" onclick="showHeatmap('larocque')" id="heatmapBtnLarocque" style="display:none;">📊 Historique</button>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- Full-width section below cards -->
   <div id="belowCardsSection" style="width:100%;grid-column:1/-1;">
@@ -814,26 +838,33 @@
 
 <!-- Donate modal -->
 <div id="donateModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeDonateModal()">
-  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:28px 24px 48px;position:relative;">
-    <button onclick="closeDonateModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;">✕</button>
-    <div style="text-align:center;margin-bottom:20px;">
-      <div style="font-size:32px;margin-bottom:10px;">❤️</div>
-      <div style="font-size:18px;font-weight:700;color:var(--text);font-family:var(--sans);margin-bottom:6px;" id="donateModalTitle">Vous aimez l'app ?</div>
-      <div style="font-size:13px;color:var(--text3);font-family:var(--sans);line-height:1.5;" id="donateModalDesc">Un projet gratuit et indépendant, maintenu par un seul développeur. Votre soutien le garde vivant et sans pub.</div>
+  <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:24px 20px 44px;position:relative;">
+    <button onclick="closeDonateModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;min-width:44px;min-height:44px;">✕</button>
+    <div style="font-size:16px;font-weight:700;color:var(--text);font-family:var(--sans);margin-bottom:16px;" id="donateModalTitle">Vous aimez l'app ?</div>
+
+    <!-- Monthly — featured -->
+    <div style="position:relative;margin-bottom:12px;">
+      <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="modalMostAppreciatedBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'modal_monthly'});closeDonateModal();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+        <span style="font-size:22px;flex-shrink:0;">☕</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="modalMonthlyTitle">Soutien mensuel — 1 $/mois</div>
+          <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="modalMonthlyDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+        </div>
+        <span style="font-size:15px;color:#000;">›</span>
+      </a>
+    </div>
+
+    <!-- One-time -->
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="modalOrOnceLabel">ou un don unique</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-        <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'main_cta'});closeDonateModal();" style="display:block;text-align:center;padding:12px 4px;border-radius:12px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;text-decoration:none;">2 $</a>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donateCompar2">Moins qu'un café latté en ville ☕</div>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-        <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'main_cta'});closeDonateModal();" style="display:block;text-align:center;padding:12px 4px;border-radius:12px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;text-decoration:none;">5 $</a>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donateCompar5">Moins qu'un verre de vin en terrasse 🍷</div>
-      </div>
-      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-        <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'main_cta'});closeDonateModal();" style="display:block;text-align:center;padding:12px 4px;border-radius:12px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;text-decoration:none;">10 $</a>
-        <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donateCompar10">Moins cher qu'un repas au casse-croûte 🍟</div>
-      </div>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'modal'});closeDonateModal();" style="flex:1;display:block;text-align:center;padding:10px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">2 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'modal'});closeDonateModal();" style="flex:1;display:block;text-align:center;padding:10px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">5 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'modal'});closeDonateModal();" style="flex:1;display:block;text-align:center;padding:10px 4px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">10 $</a>
     </div>
     <button onclick="closeDonateModal()" style="width:100%;padding:12px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="donateModalLater">Peut-être plus tard</button>
   </div>
@@ -844,12 +875,10 @@ function openDonateModal() {
   const lang = (typeof currentLang !== 'undefined' && currentLang) || localStorage.getItem('appLang') || 'fr';
   const isFr = lang === 'fr';
   document.getElementById('donateModalTitle').textContent = isFr ? 'Vous aimez l\'app ?' : 'Enjoying the app?';
-  document.getElementById('donateModalDesc').textContent = isFr
-    ? 'Un projet gratuit et indépendant, maintenu par un seul développeur. Votre soutien le garde vivant et sans pub.'
-    : 'A free, independent project maintained by one developer. Your support keeps it alive and ad-free.';
-  document.getElementById('donateCompar2').textContent = isFr ? 'Moins qu\'un café latté en ville ☕' : 'Less than a latte in the city ☕';
-  document.getElementById('donateCompar5').textContent = isFr ? 'Moins qu\'un verre de vin en terrasse 🍷' : 'Less than a glass of wine at the bar 🍷';
-  document.getElementById('donateCompar10').textContent = isFr ? 'Moins cher qu\'un repas au casse-croûte 🍟' : 'Less than a meal at the local diner 🍟';
+  document.getElementById('modalMostAppreciatedBadge').textContent = isFr ? '⭐ CONTRIBUTION EXEMPLAIRE' : '⭐ MOST APPRECIATED';
+  document.getElementById('modalMonthlyTitle').textContent = isFr ? 'Soutien mensuel — 1 $/mois' : 'Monthly supporter — 1 $/month';
+  document.getElementById('modalMonthlyDesc').textContent = isFr ? 'Garde l\'app vivante pour toute la communauté 🙏' : 'Keeps the app alive for everyone 🙏';
+  document.getElementById('modalOrOnceLabel').textContent = isFr ? 'ou un don unique' : 'or a one-time coffee';
   document.getElementById('donateModalLater').textContent = isFr ? 'Peut-être plus tard' : 'Maybe later';
   document.getElementById('donateModalOverlay').style.display = 'flex';
 }
@@ -1060,26 +1089,29 @@ function closeDonateModal() {
   <!-- Donation section in drawer -->
 
   <div id="drawerDonationSection" style="padding:12px 16px 4px;">
-    <div style="background:rgba(var(--accent-rgb),.07);border:1.5px solid rgba(var(--accent-rgb),.2);border-radius:16px;padding:14px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <span style="font-size:16px;">❤️</span>
-        <span style="font-size:14px;font-weight:700;color:var(--text);font-family:var(--sans);" id="drawerDonTitle">Vous aimez l'app ?</span>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;">
+      <!-- Monthly — featured -->
+      <div style="position:relative;margin-bottom:10px;">
+        <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="drawerBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_monthly'});" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:10px 12px;text-decoration:none;margin-top:6px;">
+          <span style="font-size:20px;flex-shrink:0;">☕</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:12px;font-weight:800;color:#000;font-family:var(--sans);" id="drawerDonTitle">Soutien mensuel — 1 $/mois</div>
+            <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="drawerDonDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+          </div>
+          <span style="font-size:14px;color:#000;">›</span>
+        </a>
       </div>
-      <div style="font-size:12px;color:var(--text3);font-family:var(--sans);margin-bottom:8px;line-height:1.5;" id="drawerDonDesc">Votre soutien garde ce projet vivant et gratuit.</div>
-      <div style="font-size:11px;color:var(--text3);font-family:var(--sans);margin-bottom:10px;line-height:1.5;font-style:italic;" id="donComparText"></div>
-      <div style="display:flex;gap:6px;width:100%;">
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-          <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">2 $</a>
-          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar2"></div>
-        </div>
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-          <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">5 $</a>
-          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar5"></div>
-        </div>
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
-          <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'drawer'});closeDonationModal(true);" style="text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;display:block;">10 $</a>
-          <div style="font-size:9px;color:var(--text3);font-family:var(--sans);text-align:center;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;" id="donCompar10"></div>
-        </div>
+      <!-- One-time -->
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="drawerOrOnce">ou un don unique</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'drawer'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">2 $</a>
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'drawer'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">5 $</a>
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'drawer'});" style="flex:1;display:block;text-align:center;padding:8px 4px;border-radius:8px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;">10 $</a>
       </div>
     </div>
   </div>
@@ -2684,7 +2716,14 @@ function applyTrans(){
   const advDesc = document.getElementById('viewAdvancedDesc');
   if(advDesc) advDesc.textContent = isFr ? "Inclut la carte, l'historique et la dernière levée." : 'Includes map, history and last lift.';
 }
-function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();initDonCompar();const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=currentLang==='fr'?'Vous aimez l\'app ?':'Enjoying the app?';}
+function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();initDonCompar();
+  const isFr=currentLang==='fr';
+  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'Soutien mensuel — 1 $/mois':'Monthly supporter — 1 $/month';
+  const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
+  const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'ou un don unique':'or a one-time coffee';
+}
 
 // ── Cache-first status loading ────────────────────────────────────────
 const STATUS_CACHE_KEY = 'pb:cachedStatus';
@@ -2917,7 +2956,7 @@ function renderMilestoneBanner(milestone) {
           style="flex:1;padding:11px 8px;border-radius:14px;border:1.5px solid var(--accent);background:rgba(var(--accent-rgb),.1);color:var(--accent);text-decoration:none;font-family:var(--sans);font-size:12px;font-weight:700;text-align:center;">
           ${cta1}
         </a>
-        <a href="https://paypal.me/kvndbrl" target="_blank" rel="noopener noreferrer"
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer"
           onclick="track('donation_clicked',{amount:'milestone_${milestone}'})"
           style="flex:1;padding:11px 8px;border-radius:14px;border:1.5px solid #0070BA;background:rgba(0,112,186,.07);color:#0070BA;text-decoration:none;font-family:var(--sans);font-size:12px;font-weight:700;text-align:center;">
           ${cta2}
@@ -3197,7 +3236,7 @@ document.addEventListener('touchend', async e=>{
 function openCustomDonation(){
   const val=parseInt(document.getElementById('customAmount').value,10);
   if(!val||val<1) return false;
-  window.open('https://paypal.me/kvndbrl/'+val,'_blank','noopener,noreferrer');
+  window.open('https://buymeacoffee.com/kvndbrl','_blank','noopener,noreferrer');
   return false;
 }
 const _customAmountEl = document.getElementById('customAmount');
@@ -3405,7 +3444,15 @@ function hexToRgba(hex, alpha) {
 }
 loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWeatherToggle();updateCardVisibility();initFontSize();initViewMode();
 // Update donate button text based on saved language
-(function(){const btn=document.getElementById('mainDonateBtnText');if(btn){const lang=localStorage.getItem('appLang')||'fr';btn.textContent=lang==='fr'?'Vous aimez l\'app ?':'Enjoying the app?';}})();
+(function(){
+  const lang=localStorage.getItem('appLang')||'fr';
+  const isFr=lang==='fr';
+  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'Soutien mensuel — 1 $/mois':'Monthly supporter — 1 $/month';
+  const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
+  const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'ou un don unique':'or a one-time coffee';
+})();
 
 const DON_COMPARS = {
   fr: {
@@ -3667,9 +3714,9 @@ document.addEventListener('visibilitychange',()=>{
         </div>
         <div style="font-size:12px;color:var(--text3);font-family:var(--sans);margin-bottom:10px;line-height:1.5;" id="changelogDonText">Votre soutien garde ce projet vivant et gratuit.</div>
         <div style="display:flex;gap:6px;">
-          <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">2 $</a>
-          <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">5 $</a>
-          <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">10 $</a>
+          <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">2 $</a>
+          <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">5 $</a>
+          <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'changelog'});dismissChangelog();" style="flex:1;text-align:center;padding:9px 4px;border-radius:10px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;">10 $</a>
         </div>
       </div>
     </div>
@@ -3684,9 +3731,9 @@ document.addEventListener('visibilitychange',()=>{
     <div style="font-size:19px;font-weight:700;color:var(--text);margin-bottom:8px;font-family:var(--sans);text-align:center;" id="donModalTitle">Vous aimez l'app ?</div>
     <div style="font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.6;font-family:var(--sans);text-align:center;" id="donModalDesc">Ce projet est gratuit et indépendant. Un petit don aide à le garder vivant pour toute la communauté.</div>
     <div style="display:flex;gap:10px;margin-bottom:12px;">
-      <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
-      <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
-      <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'modal'});closeDonationModal(true);" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
     </div>
     <button onclick="closeDonationModal(false)" style="width:100%;padding:14px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="donModalSkip">Plus tard</button>
   </div>
@@ -3735,9 +3782,9 @@ document.addEventListener('visibilitychange',()=>{
   <div style="text-align:center;font-size:13px;color:var(--text3);font-family:var(--sans);padding:8px 32px 20px;line-height:1.6;" id="swipeDonDesc"></div>
   <!-- Buttons -->
   <div style="display:flex;gap:10px;padding:0 20px 12px;">
-    <a href="https://paypal.me/kvndbrl/2" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
-    <a href="https://paypal.me/kvndbrl/5" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
-    <a href="https://paypal.me/kvndbrl/10" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
   </div>
   <button onclick="closeSwipeDon()" style="width:calc(100% - 40px);margin:0 20px;padding:13px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="swipeDonSkip">Plus tard</button>
 </div>
