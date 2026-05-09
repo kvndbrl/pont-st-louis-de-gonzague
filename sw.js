@@ -10,6 +10,14 @@ const VIBRATION_PATTERNS = {
   achalandage:  [100,100,100,100,100,100,100], // 4 short rapid — alert
 };
 
+self.addEventListener('install', function(event) {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', function(event) {
+  event.waitUntil(clients.claim());
+});
+
 self.addEventListener('push', function(event) {
   const data = event.data ? event.data.json() : {};
   const title = data.title || 'Ponts Beauharnois';
