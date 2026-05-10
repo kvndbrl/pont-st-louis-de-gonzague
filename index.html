@@ -3663,7 +3663,19 @@ if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 loadCachedStatus();
 fetchStatus();
 fetchLiftHistory();
-
+  
+// Auto-show notif CTA in TWA if not yet subscribed
+if (isPWA) {
+  navigator.serviceWorker.ready.then(reg => {
+    reg.pushManager.getSubscription().then(sub => {
+      if (!sub) {
+        localStorage.removeItem('notificationsEnabled');
+        const mainBanner = document.getElementById('mainInstallBanner');
+        if (mainBanner) mainBanner.style.display = 'block';
+      }
+    });
+  });
+}
 // Pause polling when tab is hidden, resume and refresh immediately when visible
 let _fetchInterval=setInterval(fetchStatus,60000);
 let _greetInterval=setInterval(updateGreeting,60000);
