@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.beauharnois.ponts",
+      "sha256_cert_fingerprints": [
+        "7A:98:7B:90:FB:C1:E2:FB:7A:5D:BA:6E:61:57:E4:B1:8E:97:B4:E6:53:16:54:35:0A:FE:DF:74:54:4A:67:08"
+      ]
+    }
+  }
+]
