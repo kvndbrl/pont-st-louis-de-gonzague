@@ -1128,7 +1128,19 @@ async function checkBusyPeriodAlerts() {
 
 // Check every 5 minutes
 setInterval(checkBusyPeriodAlerts, 5 * 60 * 1000);
-
+app.post('/send-test', async (req, res) => {
+  const bridge = req.body.bridge || 'gonzague';
+  const status = req.body.status || 'leve';
+  try {
+    await sendNotifications(bridge, status, {
+      avgLiftDuration: 12,
+      avgLoweringDuration: 5
+    });
+    res.json({ ok: true, sent: true });
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
