@@ -3676,12 +3676,17 @@ if (isPWA) {
     });
   });
 }
-// Debug TWA
-setTimeout(() => {
+setTimeout(async () => {
   const msg = document.getElementById('errorMsg');
   if (msg) {
     msg.style.color = 'var(--accent)';
-    msg.textContent = 'isPWA:' + isPWA + ' notif:' + localStorage.getItem('notificationsEnabled');
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      msg.textContent = 'SW:OK sub:' + (sub ? 'oui' : 'non') + ' perm:' + Notification.permission;
+    } catch(e) {
+      msg.textContent = 'Erreur: ' + e.message;
+    }
   }
 }, 2000);
 // Pause polling when tab is hidden, resume and refresh immediately when visible
