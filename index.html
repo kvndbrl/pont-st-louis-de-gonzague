@@ -3676,6 +3676,14 @@ if (isPWA) {
     });
   });
 }
+// Debug TWA
+setTimeout(() => {
+  const msg = document.getElementById('errorMsg');
+  if (msg) {
+    msg.style.color = 'var(--accent)';
+    msg.textContent = 'isPWA:' + isPWA + ' notif:' + localStorage.getItem('notificationsEnabled');
+  }
+}, 2000);
 // Pause polling when tab is hidden, resume and refresh immediately when visible
 let _fetchInterval=setInterval(fetchStatus,60000);
 let _greetInterval=setInterval(updateGreeting,60000);
