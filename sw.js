@@ -15,7 +15,16 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('activate', function(event) {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    clients.claim().then(() => {
+      // Close any "site updated" notification Chrome auto-generates
+      return self.registration.getNotifications().then(notifs => {
+        notifs.forEach(n => {
+          if (!n.tag || n.tag.startsWith('pont-') === false) n.close();
+        });
+      });
+    })
+  );
 });
 
 self.addEventListener('push', function(event) {
