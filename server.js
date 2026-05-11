@@ -8,21 +8,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── AIS vessel tracking ───────────────────────────────────────────────
 const AIS_API_KEY = process.env.AIS_API_KEY || 'f34af67c17c71094f8c307646b6e5db74f860168';
-
-// Bounding box around canal de Beauharnois
 const AIS_BBOX = [[45.18, -74.02], [45.22, -73.95]];
-
-// Last known vessel in zone per bridge
 let vesselNearBridge = { gonzague: null, larocque: null };
-
-// Exact bridge coordinates
 const BRIDGES = {
   gonzague: { lat: 45.2053, lon: -73.9855 },
   larocque: { lat: 45.1942, lon: -74.0020 }
 };
-
 const VALID_HEADINGS = [[60, 120], [240, 300]];
 const vesselHistory = new Map();
 const MAX_HISTORY = 20;
@@ -75,7 +67,7 @@ function startAISTracking() {
   function connect() {
     ws = new WebSocket('wss://stream.aisstream.io/v0/stream');
     ws.on('open', () => {
-      log('AIS WebSocket connecte');
+      log('AIS WebSocket connecté');
       reconnectDelay = 30000;
       ws.send(JSON.stringify({ APIKey: AIS_API_KEY, BoundingBoxes: [AIS_BBOX], FilterMessageTypes: ['PositionReport', 'ShipStaticData'] }));
     });
@@ -99,7 +91,7 @@ function startAISTracking() {
           if (best) {
             vesselNearBridge[bridge] = { ...best, updatedAt: Date.now() };
             if (!vesselNearBridge[bridge]._logged) {
-              log('Navire detecte [' + bridge + ']: ' + best.name + ' a ' + best.distKm + 'km');
+              log('Navire détecté [' + bridge + ']: ' + best.name + ' à ' + best.distKm + 'km');
               vesselNearBridge[bridge]._logged = true;
             }
           }
@@ -107,7 +99,7 @@ function startAISTracking() {
       } catch(e) {}
     });
     ws.on('close', () => {
-      log('AIS WebSocket deconnecte - reconnexion dans ' + reconnectDelay/1000 + 's');
+      log('AIS WebSocket déconnecté - reconnexion dans ' + reconnectDelay/1000 + 's');
       setTimeout(connect, reconnectDelay);
       reconnectDelay = Math.min(reconnectDelay * 2, MAX_DELAY);
     });
@@ -133,7 +125,6 @@ setInterval(() => {
   }
 }, 60000);
 
-// ── Umami server-side tracking ────────────────────────────────────────
 const UMAMI_URL = 'https://cloud.umami.is/api/send';
 const UMAMI_WEBSITE_ID = '1786c8da-b13f-4fec-b8d2-7d2e7102c29b';
 
@@ -230,7 +221,7 @@ async function loadLiftHistory() {
     const val = await redisCommand('get', 'liftHistory');
     if (val) {
       liftHistory = JSON.parse(val);
-      log(`Historique charge: Gonzague=${liftHistory.gonzague.length} levees, Larocque=${liftHistory.larocque.length} levees`);
+      log(`Historique chargé: Gonzague=${liftHistory.gonzague.length} levées, Larocque=${liftHistory.larocque.length} levées`);
     }
   } catch(e) { console.error('loadLiftHistory error:', e.message); }
 }
@@ -286,7 +277,7 @@ function trackStatusTransition(bridge, prev, curr) {
     liftActive[bridge] = null;
     saveLiftHistory();
     saveLiftActive();
-    log(`Levee [${bridge}] enregistree: ~${Math.round((entry.loweredAt||now) - entry.raisedAt) / 60000} min`);
+    log(`Levée [${bridge}] enregistrée: ~${Math.round((entry.loweredAt||now) - entry.raisedAt) / 60000} min`);
   }
 }
 
@@ -411,7 +402,7 @@ async function fetchBridgeStatus() {
 
   function extractLifts(section) {
     const matches = [...section.matchAll(/class="item-data[^"]*"[^>]*>([^<]+)/g)];
-    const lifts = matches.map(m => m[1].trim()).filter(v => v && v !== 'No anticipated bridge lifts' && v !== 'Aucune levee de pont prevue');
+    const lifts = matches.map(m => m[1].trim()).filter(v => v && v !== 'No anticipated bridge lifts' && v !== 'Aucune levée de pont prévue');
     if (lifts.length === 0) return 'No anticipated bridge lifts';
     return lifts.join('\n');
   }
@@ -437,7 +428,7 @@ async function fetchBridgeStatus() {
   if (gonzagueSection.length < 100) log(`gonzagueSection trop court (${gonzagueSection.length} chars)`);
   if (larocqueSection.length < 100) log(`larocqueSection trop court (${larocqueSection.length} chars)`);
 
-  const refreshMatch = html.match(/Last Refreshed at[:\s]*([\d\-: ]+)/i);
+  const refreshMatch = html.match(/Last Refreshed at[:\s]*(\d[\d\-: ]+)/i);
   const last_refreshed = refreshMatch ? refreshMatch[1].trim() : '';
 
   return {
@@ -458,26 +449,26 @@ function getMessages(bridge, status, lang, data) {
   if (status === 'outage' && data && data.outageEnd) {
     const end = new Date(data.outageEnd);
     const hm = end.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
-    outageStr = lang === 'fr' ? ` · Ferme jusqu'a ${hm}` : ` · Closed until ${hm}`;
+    outageStr = lang === 'fr' ? ` · Fermé jusqu\'${hm}` : ` · Closed until ${hm}`;
   }
   const avgLift = data?.avgLiftDuration || 12;
   const reopenTime = new Date(Date.now() + avgLift * 60000);
   const hm = reopenTime.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
   const fr = {
-    bientot_leve: { title: `Avertissement ${n}`, body: `Bientot leve - Prevoir un delai` },
-    raising:      { title: `Levage ${n}`, body: `En cours de levage - Reouverture ~${hm}` },
-    leve:         { title: `Pont leve ${n}`, body: `Pont leve - Reouverture prevue ~${hm}` },
-    lowering:     { title: `Descente ${n}`, body: `Pont redescend - Bientot disponible` },
-    disponible:   { title: `Disponible ${n}`, body: `Circulation normale` },
-    outage:       { title: `Fermeture ${n}`, body: `Fermeture planifiee${outageStr}` }
+    bientot_leve: { title: `⚠️ ${n}`, body: `Bientôt levé · Prévoir un délai` },
+    raising:      { title: `🔼 ${n}`, body: `En cours de levage · Réouverture ~${hm}` },
+    leve:         { title: `🚢 ${n}`, body: `Pont levé · Réouverture prévue ~${hm}` },
+    lowering:     { title: `🔽 ${n}`, body: `Pont redescend · Bientôt disponible` },
+    disponible:   { title: `✅ ${n}`, body: `Circulation normale` },
+    outage:       { title: `🚧 ${n}`, body: `Fermeture planifiée${outageStr}` }
   };
   const en = {
-    bientot_leve: { title: `Warning ${n}`, body: `Lift soon - Expect delays` },
-    raising:      { title: `Raising ${n}`, body: `Bridge raising - Reopen ~${hm}` },
-    leve:         { title: `Bridge lifted ${n}`, body: `Bridge lifted - Expected reopen ~${hm}` },
-    lowering:     { title: `Lowering ${n}`, body: `Bridge lowering - Opening soon` },
-    disponible:   { title: `Available ${n}`, body: `Traffic normal` },
-    outage:       { title: `Closure ${n}`, body: `Planned closure${outageStr}` }
+    bientot_leve: { title: `⚠️ ${n}`, body: `Lift soon · Expect delays` },
+    raising:      { title: `🔼 ${n}`, body: `Bridge raising · Reopen ~${hm}` },
+    leve:         { title: `🚢 ${n}`, body: `Bridge lifted · Expected reopen ~${hm}` },
+    lowering:     { title: `🔽 ${n}`, body: `Bridge lowering · Opening soon` },
+    disponible:   { title: `✅ ${n}`, body: `Traffic normal` },
+    outage:       { title: `🚧 ${n}`, body: `Planned closure${outageStr}` }
   };
   return (lang === 'en' ? en : fr)[status] || null;
 }
@@ -530,8 +521,8 @@ async function sendScheduledLiftNotification(bridge, time) {
     const lang = sub.lang || 'fr';
     const name = (names[lang] || names.fr)[bridge];
     const msg = lang === 'en'
-      ? { title: `Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
-      : { title: `Levee prevue a ${time}`, body: `Le ${name} sera leve a ${time}.` };
+      ? { title: `📅 Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
+      : { title: `📅 Levée prévue à ${time}`, body: `Le ${name} sera levé à ${time}.` };
     const payload = JSON.stringify({ ...msg, bridge, tag: `pont-${bridge}`, persistent: false, icon: notifIcon(sub), badge: statusBadge('scheduled') });
     try {
       await webpush.sendNotification(sub, payload, { urgency: 'high', TTL: 300 });
@@ -544,7 +535,7 @@ async function sendScheduledLiftNotification(bridge, time) {
       umamiTrack('subscription_lost', { reason: 'push_failed', total: subscriptions.length });
     }
   }
-  log(`Levee planifiee [${bridge}] ${time} - ${sent} envoyees | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} echouees`);
+  log(`Levée planifiée [${bridge}] ${time} - ${sent} envoyées | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} échouées`);
 }
 
 const disponibleSince = { gonzague: null, larocque: null };
@@ -575,13 +566,13 @@ async function sendNotifications(bridge, status, bridgeData = {}) {
       umamiTrack('subscription_lost', { reason: 'push_failed', total: subscriptions.length });
     }
   }
-  log(`Notification [${bridge}] ${status} - ${sent} envoyees | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} echouees`);
+  log(`Notification [${bridge}] ${status} - ${sent} envoyées | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} échouées`);
 }
 
 async function monitor() {
   try {
     const data = await fetchBridgeStatus();
-    log(`Gonzague: ${data.gonzague.status} | Larocque: ${data.larocque.status} | Abonnes: ${subscriptions.length}`);
+    log(`Gonzague: ${data.gonzague.status} | Larocque: ${data.larocque.status} | Abonnés: ${subscriptions.length}`);
     const notifications = [];
     for (const bridge of ['gonzague', 'larocque']) {
       const prev = lastStatus[bridge];
@@ -602,14 +593,14 @@ async function monitor() {
         const alreadyNotified = await isLiftNotified(key);
         const cooldownOk = (Date.now() - lastScheduledNotif[bridge]) > SCHEDULED_NOTIF_COOLDOWN;
         if (!alreadyNotified && cooldownOk) {
-          log(`Nouvelle levee planifiee [${bridge}] a ${time}`);
+          log(`Nouvelle levée planifiée [${bridge}] à ${time}`);
           await markLiftNotified(key);
           lastScheduledNotif[bridge] = Date.now();
           notifications.push(sendScheduledLiftNotification(bridge, time));
         }
       }
     }
-    if (notifications.length === 0) log(`Aucun changement detecte`);
+    if (notifications.length === 0) log(`Aucun changement détecté`);
     await Promise.all(notifications);
     lastStatus.gonzague = data.gonzague.status;
     lastStatus.larocque = data.larocque.status;
@@ -632,7 +623,6 @@ setInterval(async () => {
   } catch(e) { console.log('Auto-ping failed:', e.message); }
 }, 600000);
 
-// ── Routes ────────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.send('Ponts Beauharnois API'));
 app.get('/ping', (req, res) => res.json({ ok: true, subs: subscriptions.length }));
 
@@ -708,9 +698,9 @@ app.get('/assistant', (req, res) => {
     let desc;
     if (lang === 'fr') {
       if (s === 'disponible') desc = 'est disponible';
-      else if (s === 'bientot_leve') desc = 'sera bientot leve';
+      else if (s === 'bientot_leve') desc = 'sera bientôt levé';
       else if (s === 'raising') desc = 'est en cours de levage';
-      else if (s === 'leve') desc = 'est leve';
+      else if (s === 'leve') desc = 'est levé';
       else if (s === 'lowering') desc = 'redescend';
       else desc = 'statut inconnu';
     } else {
@@ -767,9 +757,9 @@ app.post('/milestone-notif', async (req, res) => {
   if (!sub) return res.status(404).json({ error: 'subscriber not found' });
   const isFr = (lang || sub.lang || 'fr') === 'fr';
   const messages = {
-    7:  { fr: { title: 'Une semaine ensemble !', body: 'Ca fait 7 jours que l\'app veille sur vos traversees.' }, en: { title: 'One week together!', body: 'The app has been watching over your crossings for 7 days.' } },
-    30: { fr: { title: 'Un mois deja !', body: 'Merci de nous faire confiance depuis un mois.' }, en: { title: 'One month already!', body: 'Thanks for trusting us for a month.' } },
-    90: { fr: { title: '3 mois de traversees !', body: 'Vous faites partie de nos utilisateurs les plus fideles.' }, en: { title: '3 months of crossings!', body: 'You\'re one of our most loyal users.' } }
+    7:  { fr: { title: 'Une semaine ensemble !', body: 'Ca fait 7 jours que l'app veille sur vos traversées.' }, en: { title: 'One week together!', body: 'The app has been watching over your crossings for 7 days.' } },
+    30: { fr: { title: 'Un mois déjà !', body: 'Merci de nous faire confiance depuis un mois.' }, en: { title: 'One month already!', body: 'Thanks for trusting us for a month.' } },
+    90: { fr: { title: '3 mois de traversées !', body: 'Vous faites partie de nos utilisateurs les plus fidèles.' }, en: { title: '3 months of crossings!', body: 'You're one of our most loyal users.' } }
   };
   const msg = (messages[milestone] || {})[isFr ? 'fr' : 'en'];
   if (!msg) return res.status(400).json({ error: 'invalid milestone' });
@@ -784,7 +774,6 @@ app.get('/subscribers', (req, res) => {
   res.json({ count: subscriptions.length });
 });
 
-// ── Test notification route ───────────────────────────────────────────
 app.post('/send-test', async (req, res) => {
   const bridge = req.body.bridge || 'gonzague';
   const status = req.body.status || 'leve';
@@ -838,15 +827,15 @@ async function checkBusyPeriodAlerts() {
           : sub.theme === 'stanicois' ? '/notification-icon-stanicois.png'
           : '/notification-icon.png';
         const payload = lang === 'fr'
-          ? { title: `Avertissement ${name}`, body: `Periode achalandee dans ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true }
-          : { title: `Warning ${name}`, body: `Busy period in ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true };
+          ? { title: `⚠️ ${name}`, body: `Période achalandée dans ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true }
+          : { title: `⚠️ ${name}`, body: `Busy period in ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true };
         await webpush.sendNotification(sub, JSON.stringify(payload), { urgency: 'high', TTL: 300 });
         sent++;
       } catch (e) {
         if (e.statusCode === 410) subscriptions = subscriptions.filter(s => s !== sub);
       }
     }
-    log(`Alerte achalandage [${bridge}] - ${sent} envoyees | ${skipped} ignorees`);
+    log(`Alerte achalandage [${bridge}] - ${sent} envoyées | ${skipped} ignorées`);
   }
 }
 
@@ -870,10 +859,10 @@ async function loadLiftActive() {
         if (liftActive[bridge]) {
           const age = now - liftActive[bridge].raisedAt;
           if (age > 2 * 60 * 60 * 1000) {
-            log('Boot: liftActive [' + bridge + '] trop ancien (' + Math.round(age/60000) + ' min), annule');
+            log('Boot: liftActive [' + bridge + '] trop ancien (' + Math.round(age/60000) + ' min), annulé');
             liftActive[bridge] = null;
           } else {
-            log('Boot: liftActive [' + bridge + '] restaure depuis Redis (' + Math.round(age/60000) + ' min)');
+            log('Boot: liftActive [' + bridge + '] restauré depuis Redis (' + Math.round(age/60000) + ' min)');
           }
         }
       }
