@@ -14,15 +14,15 @@
   <meta name="keywords" content="pont Beauharnois, pont St-Louis-de-Gonzague, pont Larocque, Valleyfield, canal Beauharnois, levée de pont, statut pont, notifications pont"/>
   <meta name="author" content="Kevin Dubreuil"/>
   <meta name="robots" content="index, follow"/>
-  <link rel="canonical" href="https://ponts-canal-de-beauharnois.vercel.app/"/>
+  <link rel="canonical" href="https://pontscanalbeauharnois.ca/"/>
   <meta name="google-site-verification" content="9H0jHYZHZc8ArAbUkyvF7mZGJ0xS1RJ5ur2ntnHQGEM"/>
 
   <!-- Open Graph -->
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://ponts-canal-de-beauharnois.vercel.app/"/>
+  <meta property="og:url" content="https://pontscanalbeauharnois.ca/"/>
   <meta property="og:title" content="Ponts du canal de Beauharnois — Statut en temps réel"/>
   <meta property="og:description" content="Statut en temps réel des ponts du canal de Beauharnois. Notifications push gratuites pour les levées de ponts St-Louis-de-Gonzague et Larocque."/>
-  <meta property="og:image" content="https://ponts-canal-de-beauharnois.vercel.app/icon-512.png"/>
+  <meta property="og:image" content="https://pontscanalbeauharnois.ca/icon-512.png"/>
   <meta property="og:locale" content="fr_CA"/>
   <meta property="og:site_name" content="Ponts Beauharnois"/>
 
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary"/>
   <meta name="twitter:title" content="Ponts du canal de Beauharnois — Statut en temps réel"/>
   <meta name="twitter:description" content="Statut en temps réel des ponts du canal de Beauharnois. Notifications push gratuites."/>
-  <meta name="twitter:image" content="https://ponts-canal-de-beauharnois.vercel.app/icon-512.png"/>
+  <meta name="twitter:image" content="https://pontscanalbeauharnois.ca/icon-512.png"/>
   <link rel="manifest" href="manifest.json"/>
   <link rel="icon" href="icon-192.png" type="image/png"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -3664,18 +3664,7 @@ loadCachedStatus();
 fetchStatus();
 fetchLiftHistory();
   
-// Auto-show notif CTA in TWA if not yet subscribed
-if (isPWA) {
-  navigator.serviceWorker.ready.then(reg => {
-    reg.pushManager.getSubscription().then(sub => {
-      if (!sub) {
-        localStorage.removeItem('notificationsEnabled');
-        const mainBanner = document.getElementById('mainInstallBanner');
-        if (mainBanner) mainBanner.style.display = 'block';
-      }
-    });
-  });
-}
+
 setTimeout(() => {
   const main = document.getElementById('mainInstallBanner');
   if (main) {
