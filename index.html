@@ -3665,14 +3665,7 @@ fetchStatus();
 fetchLiftHistory();
   
 
-setTimeout(() => {
-  const main = document.getElementById('mainInstallBanner');
-  if (main) {
-    main.style.display = 'block';
-    main.style.visibility = 'visible';
-    main.style.opacity = '1';
-  }
-}, 3000);
+
 // Pause polling when tab is hidden, resume and refresh immediately when visible
 let _fetchInterval=setInterval(fetchStatus,60000);
 let _greetInterval=setInterval(updateGreeting,60000);
