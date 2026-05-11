@@ -67,7 +67,7 @@ function startAISTracking() {
   function connect() {
     ws = new WebSocket('wss://stream.aisstream.io/v0/stream');
     ws.on('open', () => {
-      log('AIS WebSocket connecté');
+      log('AIS WebSocket connect\u00e9');
       reconnectDelay = 30000;
       ws.send(JSON.stringify({ APIKey: AIS_API_KEY, BoundingBoxes: [AIS_BBOX], FilterMessageTypes: ['PositionReport', 'ShipStaticData'] }));
     });
@@ -91,7 +91,7 @@ function startAISTracking() {
           if (best) {
             vesselNearBridge[bridge] = { ...best, updatedAt: Date.now() };
             if (!vesselNearBridge[bridge]._logged) {
-              log('Navire détecté [' + bridge + ']: ' + best.name + ' à ' + best.distKm + 'km');
+              log('Navire d\u00e9tect\u00e9 [' + bridge + ']: ' + best.name + ' \u00e0 ' + best.distKm + 'km');
               vesselNearBridge[bridge]._logged = true;
             }
           }
@@ -99,7 +99,7 @@ function startAISTracking() {
       } catch(e) {}
     });
     ws.on('close', () => {
-      log('AIS WebSocket déconnecté - reconnexion dans ' + reconnectDelay/1000 + 's');
+      log('AIS WebSocket d\u00e9connect\u00e9 - reconnexion dans ' + reconnectDelay/1000 + 's');
       setTimeout(connect, reconnectDelay);
       reconnectDelay = Math.min(reconnectDelay * 2, MAX_DELAY);
     });
@@ -221,7 +221,7 @@ async function loadLiftHistory() {
     const val = await redisCommand('get', 'liftHistory');
     if (val) {
       liftHistory = JSON.parse(val);
-      log(`Historique chargé: Gonzague=${liftHistory.gonzague.length} levées, Larocque=${liftHistory.larocque.length} levées`);
+      log(`Historique charg\u00e9: Gonzague=${liftHistory.gonzague.length} lev\u00e9es, Larocque=${liftHistory.larocque.length} lev\u00e9es`);
     }
   } catch(e) { console.error('loadLiftHistory error:', e.message); }
 }
@@ -277,7 +277,7 @@ function trackStatusTransition(bridge, prev, curr) {
     liftActive[bridge] = null;
     saveLiftHistory();
     saveLiftActive();
-    log(`Levée [${bridge}] enregistrée: ~${Math.round((entry.loweredAt||now) - entry.raisedAt) / 60000} min`);
+    log(`Lev\u00e9e [${bridge}] enregistr\u00e9e: ~${Math.round((entry.loweredAt||now) - entry.raisedAt) / 60000} min`);
   }
 }
 
@@ -402,7 +402,7 @@ async function fetchBridgeStatus() {
 
   function extractLifts(section) {
     const matches = [...section.matchAll(/class="item-data[^"]*"[^>]*>([^<]+)/g)];
-    const lifts = matches.map(m => m[1].trim()).filter(v => v && v !== 'No anticipated bridge lifts' && v !== 'Aucune levée de pont prévue');
+    const lifts = matches.map(m => m[1].trim()).filter(v => v && v !== 'No anticipated bridge lifts' && v !== 'Aucune lev\u00e9e de pont pr\u00e9vue');
     if (lifts.length === 0) return 'No anticipated bridge lifts';
     return lifts.join('\n');
   }
@@ -449,26 +449,26 @@ function getMessages(bridge, status, lang, data) {
   if (status === 'outage' && data && data.outageEnd) {
     const end = new Date(data.outageEnd);
     const hm = end.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
-    outageStr = lang === 'fr' ? ` · Fermé jusqu\'${hm}` : ` · Closed until ${hm}`;
+    outageStr = lang === 'fr' ? ` \u00b7 Ferm\u00e9 jusqu'\u00e0 ${hm}` : ` \u00b7 Closed until ${hm}`;
   }
   const avgLift = data?.avgLiftDuration || 12;
   const reopenTime = new Date(Date.now() + avgLift * 60000);
   const hm = reopenTime.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
   const fr = {
-    bientot_leve: { title: `⚠️ ${n}`, body: `Bientôt levé · Prévoir un délai` },
-    raising:      { title: `🔼 ${n}`, body: `En cours de levage · Réouverture ~${hm}` },
-    leve:         { title: `🚢 ${n}`, body: `Pont levé · Réouverture prévue ~${hm}` },
-    lowering:     { title: `🔽 ${n}`, body: `Pont redescend · Bientôt disponible` },
-    disponible:   { title: `✅ ${n}`, body: `Circulation normale` },
-    outage:       { title: `🚧 ${n}`, body: `Fermeture planifiée${outageStr}` }
+    bientot_leve: { title: `\u26a0\ufe0f ${n}`, body: `Bient\u00f4t lev\u00e9 \u00b7 Pr\u00e9voir un d\u00e9lai` },
+    raising:      { title: `\ud83d\udd3c ${n}`, body: `En cours de levage \u00b7 R\u00e9ouverture ~${hm}` },
+    leve:         { title: `\ud83d\udea2 ${n}`, body: `Pont lev\u00e9 \u00b7 R\u00e9ouverture pr\u00e9vue ~${hm}` },
+    lowering:     { title: `\ud83d\udd3d ${n}`, body: `Pont redescend \u00b7 Bient\u00f4t disponible` },
+    disponible:   { title: `\u2705 ${n}`, body: `Circulation normale` },
+    outage:       { title: `\ud83d\udea7 ${n}`, body: `Fermeture planifi\u00e9e${outageStr}` }
   };
   const en = {
-    bientot_leve: { title: `⚠️ ${n}`, body: `Lift soon · Expect delays` },
-    raising:      { title: `🔼 ${n}`, body: `Bridge raising · Reopen ~${hm}` },
-    leve:         { title: `🚢 ${n}`, body: `Bridge lifted · Expected reopen ~${hm}` },
-    lowering:     { title: `🔽 ${n}`, body: `Bridge lowering · Opening soon` },
-    disponible:   { title: `✅ ${n}`, body: `Traffic normal` },
-    outage:       { title: `🚧 ${n}`, body: `Planned closure${outageStr}` }
+    bientot_leve: { title: `\u26a0\ufe0f ${n}`, body: `Lift soon \u00b7 Expect delays` },
+    raising:      { title: `\ud83d\udd3c ${n}`, body: `Bridge raising \u00b7 Reopen ~${hm}` },
+    leve:         { title: `\ud83d\udea2 ${n}`, body: `Bridge lifted \u00b7 Expected reopen ~${hm}` },
+    lowering:     { title: `\ud83d\udd3d ${n}`, body: `Bridge lowering \u00b7 Opening soon` },
+    disponible:   { title: `\u2705 ${n}`, body: `Traffic normal` },
+    outage:       { title: `\ud83d\udea7 ${n}`, body: `Planned closure${outageStr}` }
   };
   return (lang === 'en' ? en : fr)[status] || null;
 }
@@ -521,8 +521,8 @@ async function sendScheduledLiftNotification(bridge, time) {
     const lang = sub.lang || 'fr';
     const name = (names[lang] || names.fr)[bridge];
     const msg = lang === 'en'
-      ? { title: `📅 Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
-      : { title: `📅 Levée prévue à ${time}`, body: `Le ${name} sera levé à ${time}.` };
+      ? { title: `\ud83d\udcc5 Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
+      : { title: `\ud83d\udcc5 Lev\u00e9e pr\u00e9vue \u00e0 ${time}`, body: `Le ${name} sera lev\u00e9 \u00e0 ${time}.` };
     const payload = JSON.stringify({ ...msg, bridge, tag: `pont-${bridge}`, persistent: false, icon: notifIcon(sub), badge: statusBadge('scheduled') });
     try {
       await webpush.sendNotification(sub, payload, { urgency: 'high', TTL: 300 });
@@ -535,7 +535,7 @@ async function sendScheduledLiftNotification(bridge, time) {
       umamiTrack('subscription_lost', { reason: 'push_failed', total: subscriptions.length });
     }
   }
-  log(`Levée planifiée [${bridge}] ${time} - ${sent} envoyées | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} échouées`);
+  log(`Lev\u00e9e planifi\u00e9e [${bridge}] ${time} - ${sent} envoy\u00e9es | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} \u00e9chou\u00e9es`);
 }
 
 const disponibleSince = { gonzague: null, larocque: null };
@@ -566,13 +566,13 @@ async function sendNotifications(bridge, status, bridgeData = {}) {
       umamiTrack('subscription_lost', { reason: 'push_failed', total: subscriptions.length });
     }
   }
-  log(`Notification [${bridge}] ${status} - ${sent} envoyées | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} échouées`);
+  log(`Notification [${bridge}] ${status} - ${sent} envoy\u00e9es | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} \u00e9chou\u00e9es`);
 }
 
 async function monitor() {
   try {
     const data = await fetchBridgeStatus();
-    log(`Gonzague: ${data.gonzague.status} | Larocque: ${data.larocque.status} | Abonnés: ${subscriptions.length}`);
+    log(`Gonzague: ${data.gonzague.status} | Larocque: ${data.larocque.status} | Abonn\u00e9s: ${subscriptions.length}`);
     const notifications = [];
     for (const bridge of ['gonzague', 'larocque']) {
       const prev = lastStatus[bridge];
@@ -593,14 +593,14 @@ async function monitor() {
         const alreadyNotified = await isLiftNotified(key);
         const cooldownOk = (Date.now() - lastScheduledNotif[bridge]) > SCHEDULED_NOTIF_COOLDOWN;
         if (!alreadyNotified && cooldownOk) {
-          log(`Nouvelle levée planifiée [${bridge}] à ${time}`);
+          log(`Nouvelle lev\u00e9e planifi\u00e9e [${bridge}] \u00e0 ${time}`);
           await markLiftNotified(key);
           lastScheduledNotif[bridge] = Date.now();
           notifications.push(sendScheduledLiftNotification(bridge, time));
         }
       }
     }
-    if (notifications.length === 0) log(`Aucun changement détecté`);
+    if (notifications.length === 0) log(`Aucun changement d\u00e9tect\u00e9`);
     await Promise.all(notifications);
     lastStatus.gonzague = data.gonzague.status;
     lastStatus.larocque = data.larocque.status;
@@ -698,9 +698,9 @@ app.get('/assistant', (req, res) => {
     let desc;
     if (lang === 'fr') {
       if (s === 'disponible') desc = 'est disponible';
-      else if (s === 'bientot_leve') desc = 'sera bientôt levé';
+      else if (s === 'bientot_leve') desc = 'sera bient\u00f4t lev\u00e9';
       else if (s === 'raising') desc = 'est en cours de levage';
-      else if (s === 'leve') desc = 'est levé';
+      else if (s === 'leve') desc = 'est lev\u00e9';
       else if (s === 'lowering') desc = 'redescend';
       else desc = 'statut inconnu';
     } else {
@@ -757,9 +757,9 @@ app.post('/milestone-notif', async (req, res) => {
   if (!sub) return res.status(404).json({ error: 'subscriber not found' });
   const isFr = (lang || sub.lang || 'fr') === 'fr';
   const messages = {
-    7:  { fr: { title: 'Une semaine ensemble !', body: 'Ca fait 7 jours que l'app veille sur vos traversées.' }, en: { title: 'One week together!', body: 'The app has been watching over your crossings for 7 days.' } },
-    30: { fr: { title: 'Un mois déjà !', body: 'Merci de nous faire confiance depuis un mois.' }, en: { title: 'One month already!', body: 'Thanks for trusting us for a month.' } },
-    90: { fr: { title: '3 mois de traversées !', body: 'Vous faites partie de nos utilisateurs les plus fidèles.' }, en: { title: '3 months of crossings!', body: 'You're one of our most loyal users.' } }
+    7:  { fr: { title: 'Une semaine ensemble\u00a0!', body: 'Ca fait 7 jours que l\'app veille sur vos travers\u00e9es.' }, en: { title: 'One week together!', body: 'The app has been watching over your crossings for 7 days.' } },
+    30: { fr: { title: 'Un mois d\u00e9j\u00e0\u00a0!', body: 'Merci de nous faire confiance depuis un mois.' }, en: { title: 'One month already!', body: 'Thanks for trusting us for a month.' } },
+    90: { fr: { title: '3 mois de travers\u00e9es\u00a0!', body: 'Vous faites partie de nos utilisateurs les plus fid\u00e8les.' }, en: { title: '3 months of crossings!', body: 'You\'re one of our most loyal users.' } }
   };
   const msg = (messages[milestone] || {})[isFr ? 'fr' : 'en'];
   if (!msg) return res.status(400).json({ error: 'invalid milestone' });
@@ -827,15 +827,15 @@ async function checkBusyPeriodAlerts() {
           : sub.theme === 'stanicois' ? '/notification-icon-stanicois.png'
           : '/notification-icon.png';
         const payload = lang === 'fr'
-          ? { title: `⚠️ ${name}`, body: `Période achalandée dans ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true }
-          : { title: `⚠️ ${name}`, body: `Busy period in ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true };
+          ? { title: `\u26a0\ufe0f ${name}`, body: `P\u00e9riode achaland\u00e9e dans ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true }
+          : { title: `\u26a0\ufe0f ${name}`, body: `Busy period in ~30 min`, icon, badge: statusBadge('achalandage'), tag: `pont-busy-${bridge}`, renotify: true };
         await webpush.sendNotification(sub, JSON.stringify(payload), { urgency: 'high', TTL: 300 });
         sent++;
       } catch (e) {
         if (e.statusCode === 410) subscriptions = subscriptions.filter(s => s !== sub);
       }
     }
-    log(`Alerte achalandage [${bridge}] - ${sent} envoyées | ${skipped} ignorées`);
+    log(`Alerte achalandage [${bridge}] - ${sent} envoy\u00e9es | ${skipped} ignor\u00e9es`);
   }
 }
 
@@ -859,10 +859,10 @@ async function loadLiftActive() {
         if (liftActive[bridge]) {
           const age = now - liftActive[bridge].raisedAt;
           if (age > 2 * 60 * 60 * 1000) {
-            log('Boot: liftActive [' + bridge + '] trop ancien (' + Math.round(age/60000) + ' min), annulé');
+            log('Boot: liftActive [' + bridge + '] trop ancien (' + Math.round(age/60000) + ' min), annul\u00e9');
             liftActive[bridge] = null;
           } else {
-            log('Boot: liftActive [' + bridge + '] restauré depuis Redis (' + Math.round(age/60000) + ' min)');
+            log('Boot: liftActive [' + bridge + '] restaur\u00e9 depuis Redis (' + Math.round(age/60000) + ' min)');
           }
         }
       }
