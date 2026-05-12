@@ -32,11 +32,26 @@ self.addEventListener('push', function(event) {
   const title = data.title || 'Ponts Beauharnois';
   const tag = data.tag || ('pont-' + (data.bridge || 'gonzague'));
 
+  // Handle persistent widget notification - silent, stays in notification center
+  if (tag === 'pont-widget') {
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'Ponts Beauharnois', {
+        body: data.body || '',
+        icon: data.icon || '/notification-icon.png',
+        badge: data.badge || '/notification-icon.png',
+        tag: 'pont-widget',
+        renotify: false,
+        requireInteraction: false,
+        silent: true,
+        vibrate: [],
+      })
+    );
+    return;
+  }
+
   const status = data.status || detectStatus(data);
   const isAvailable = status === 'disponible';
-
   const vibrate = VIBRATION_PATTERNS[status] || VIBRATION_PATTERNS.scheduled;
-
   const options = {
     body: data.body || '',
     icon: data.icon || '/notification-icon.png',
@@ -53,7 +68,6 @@ self.addEventListener('push', function(event) {
       .then(existing => Promise.all(existing.map(n => n.close())))
       .then(() => {
         if (isAvailable) {
-          // Show a brief "bridge available" notification then close it after 4s
           return self.registration.showNotification(title, {
             ...options,
             silent: true,
@@ -65,6 +79,11 @@ self.addEventListener('push', function(event) {
                 .then(notifs => notifs.forEach(n => n.close()));
             }, 4000);
           });
+        }
+        return self.registration.showNotification(title, options);
+      })
+  );
+});
         }
         return self.registration.showNotification(title, options);
       })

@@ -569,6 +569,68 @@ async function sendNotifications(bridge, status, bridgeData = {}) {
   log(`Notification [${bridge}] ${status} - ${sent} envoy\u00e9es | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} \u00e9chou\u00e9es`);
 }
 
+
+// ── Persistent widget notification ──────────────────────────────────────
+const STATUS_EMOJI = {
+  disponible:   '\u2705',
+  bientot_leve: '\u26a0\ufe0f',
+  raising:      '\U0001f53c',
+  leve:         '\U0001f6a2',
+  lowering:     '\U0001f53d',
+  outage:       '\U0001f6a7',
+};
+
+const STATUS_LABEL = {
+  fr: { disponible: 'Disponible', bientot_leve: 'Bient\u00f4t lev\u00e9', raising: 'Levage', leve: 'Lev\u00e9', lowering: 'Descente', outage: 'Ferm\u00e9' },
+  en: { disponible: 'Available', bientot_leve: 'Lifting soon', raising: 'Raising', leve: 'Lifted', lowering: 'Lowering', outage: 'Closed' },
+};
+
+function getWidgetBody(sub, statusG, statusL) {
+  const lang = sub.lang || 'fr';
+  const bridges = sub.bridges || ['gonzague', 'larocque'];
+  const isFr = lang === 'fr';
+  const lines = [];
+  if (bridges.includes('gonzague') && statusG) {
+    const e = STATUS_EMOJI[statusG] || '\u2705';
+    const l = (STATUS_LABEL[lang] || STATUS_LABEL.fr)[statusG] || statusG;
+    lines.push(`${e} ${isFr ? 'Pont St-Louis' : 'St-Louis Bridge'}: ${l}`);
+  }
+  if (bridges.includes('larocque') && statusL) {
+    const e = STATUS_EMOJI[statusL] || '\u2705';
+    const l = (STATUS_LABEL[lang] || STATUS_LABEL.fr)[statusL] || statusL;
+    lines.push(`${e} ${isFr ? 'Pont Larocque' : 'Larocque Bridge'}: ${l}`);
+  }
+  return lines.join('  |  ');
+}
+
+async function sendWidgetNotifications(statusG, statusL) {
+  let sent = 0, failed = 0;
+  for (const sub of [...subscriptions]) {
+    if (!sub.widget) continue;
+    const lang = sub.lang || 'fr';
+    const isFr = lang === 'fr';
+    const body = getWidgetBody(sub, statusG, statusL);
+    if (!body) continue;
+    const title = isFr ? 'Ponts Beauharnois' : 'Beauharnois Bridges';
+    const payload = JSON.stringify({
+      title, body, tag: 'pont-widget',
+      icon: notifIcon(sub),
+      badge: statusBadge('disponible'),
+    });
+    try {
+      await webpush.sendNotification(sub, payload, { urgency: 'low', TTL: 900 });
+      sent++;
+    } catch(e) {
+      failed++;
+      if (e.statusCode === 410) {
+        subscriptions = subscriptions.filter(s => s.endpoint !== sub.endpoint);
+        await removeSubscription(sub);
+      }
+    }
+  }
+  if (sent > 0) log(`Widget - ${sent} envoy\u00e9es | ${failed} \u00e9chou\u00e9es`);
+}
+
 async function monitor() {
   try {
     const data = await fetchBridgeStatus();
@@ -605,6 +667,7 @@ async function monitor() {
     lastStatus.gonzague = data.gonzague.status;
     lastStatus.larocque = data.larocque.status;
     await saveLastStatus();
+    await sendWidgetNotifications(lastStatus.gonzague, lastStatus.larocque);
     const anyActive = ['gonzague','larocque'].some(b => ['bientot_leve','raising','leve','lowering'].includes(data[b].status));
     clearTimeout(monitorTimeout);
     monitorTimeout = setTimeout(monitor, anyActive ? 5000 : 15000);
@@ -783,6 +846,18 @@ app.post('/send-test', async (req, res) => {
   } catch(e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+
+app.post('/widget-toggle', async (req, res) => {
+  const { endpoint, enabled } = req.body;
+  if (!endpoint) return res.status(400).json({ error: 'missing endpoint' });
+  const sub = subscriptions.find(s => s.endpoint === endpoint);
+  if (!sub) return res.status(404).json({ error: 'subscriber not found' });
+  sub.widget = !!enabled;
+  await saveSubscription(sub);
+  log(`Widget [${enabled ? 'ON' : 'OFF'}]`);
+  res.json({ ok: true, widget: sub.widget });
 });
 
 const busyAlertSentToday = { gonzague: null, larocque: null };
