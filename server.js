@@ -681,11 +681,6 @@ async function monitor() {
     lastStatus.gonzague = data.gonzague.status;
     lastStatus.larocque = data.larocque.status;
     await saveLastStatus();
-    // Send widget update with full current status
-    await sendWidgetUpdate({
-      gonzague: { status: lastStatus.gonzague, avgLiftDuration: data.gonzague.avgLiftDuration, outageEnd: data.gonzague.outageEnd },
-      larocque: { status: lastStatus.larocque, avgLiftDuration: data.larocque.avgLiftDuration, outageEnd: data.larocque.outageEnd },
-    });
     const anyActive = ['gonzague','larocque'].some(b => ['bientot_leve','raising','leve','lowering'].includes(data[b].status));
     clearTimeout(monitorTimeout);
     monitorTimeout = setTimeout(monitor, anyActive ? 5000 : 15000);
