@@ -11,7 +11,7 @@ const VIBRATION_PATTERNS = {
 };
 
 self.addEventListener('install', function(event) {
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil(Promise.resolve());
 });
 
 self.addEventListener('activate', function(event) {
