@@ -39,7 +39,7 @@ self.addEventListener('push', function(event) {
       tag: 'pont-widget',
       renotify: false,
       requireInteraction: false,
-      silent: true,
+      silent: false,
       vibrate: [],
     })
   );
