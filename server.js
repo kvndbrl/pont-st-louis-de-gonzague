@@ -523,7 +523,7 @@ async function sendScheduledLiftNotification(bridge, time) {
     const msg = lang === 'en'
       ? { title: `\ud83d\udcc5 Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
       : { title: `\ud83d\udcc5 Lev\u00e9e pr\u00e9vue \u00e0 ${time}`, body: `Le ${name} sera lev\u00e9 \u00e0 ${time}.` };
-    const payload = JSON.stringify({ ...msg, bridge, tag: 'pont-widget', icon: notifIcon(sub), badge: statusBadge('scheduled') });
+    const payload = JSON.stringify({ ...msg, bridge, tag: `pont-${bridge}`, persistent: false, icon: notifIcon(sub), badge: statusBadge('scheduled') });
     try {
       await webpush.sendNotification(sub, payload, { urgency: 'high', TTL: 300 });
       sent++;
@@ -953,6 +953,14 @@ async function start() {
   await loadLiftActive();
   log(`Ready with ${subscriptions.length} subscriptions`);
   umamiTrack('subscription_count', { count: subscriptions.length });
+  // Send widget update on boot if status was already active (e.g. after reboot)
+  if (lastStatus.gonzague || lastStatus.larocque) {
+    log(`Boot: envoi widget avec statut restaure (Gonzague=${lastStatus.gonzague}, Larocque=${lastStatus.larocque})`);
+    await sendWidgetUpdate({
+      gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null },
+      larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null },
+    });
+  }
   await monitor();
 }
 
