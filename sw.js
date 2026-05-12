@@ -16,12 +16,9 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('activate', function(event) {
   event.waitUntil(
-    clients.claim().then(() => {
-      // Close any "site updated" notification Chrome auto-generates
-      return self.registration.getNotifications().then(notifs => {
-        notifs.forEach(n => {
-          if (!n.tag || n.tag !== 'pont-widget') n.close();
-        });
+    self.registration.getNotifications().then(notifs => {
+      notifs.forEach(n => {
+        if (!n.tag || n.tag !== 'pont-widget') n.close();
       });
     })
   );
