@@ -543,10 +543,10 @@ async function sendScheduledLiftNotification(bridge, time) {
 const STATUS_EMOJI = {
   disponible:   '\u2705',
   bientot_leve: '\u26a0\ufe0f',
-  raising:      '\U0001f53c',
-  leve:         '\U0001f6a2',
-  lowering:     '\U0001f53d',
-  outage:       '\U0001f6a7',
+  raising:      '🔼',
+  leve:         '🚢',
+  lowering:     '🔽',
+  outage:       '🚧',
 };
 
 const STATUS_LABEL_FR = {
