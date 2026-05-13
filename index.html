@@ -380,15 +380,7 @@
     .speed-unit{font-size:8px;color:var(--text3);font-family:var(--mono);letter-spacing:.8px;margin-top:2px;}
     .car-exit-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:11px;font-family:var(--mono);padding:7px 12px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
     .car-bridges{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:12px 14px;}
-    .car-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;transition:background .6s ease,border-color .6s ease;}
-    .car-card.status-disponible{background:var(--surface);border-color:var(--border);}
-    .car-card.status-leve{background:rgba(240,96,96,.07);border-color:rgba(240,96,96,.25);}
-    .car-card.status-bientot_leve{background:rgba(240,176,32,.07);border-color:rgba(240,176,32,.25);}
-    .car-card.status-raising{background:rgba(255,170,85,.07);border-color:rgba(255,170,85,.25);}
-    .car-card.status-lowering{background:rgba(240,176,32,.07);border-color:rgba(240,176,32,.2);}
-    .car-card.status-outage{background:rgba(240,96,96,.1);border-color:rgba(240,96,96,.3);}
-    .car-route-btn{display:none;margin:0 18px 14px;padding:10px 16px;border-radius:12px;background:rgba(var(--accent-rgb),.12);border:1px solid rgba(var(--accent-rgb),.25);color:var(--accent);font-size:13px;font-weight:700;font-family:var(--sans);text-decoration:none;text-align:center;}
-    .car-route-btn.visible{display:block;}
+    .car-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
     .car-card-name{padding:16px 18px 0;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--mono);}
     .car-card-status{padding:10px 18px 14px;}
     .car-pill{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:50px;font-size:26px;font-weight:700;font-family:var(--sans);transition:all .4s ease;}
@@ -3990,7 +3982,7 @@ document.addEventListener('visibilitychange',()=>{
       <div class="speed-value" id="carModeSpeed">—</div>
       <div class="speed-unit">KM/H</div>
     </div>
-    <button class="car-exit-btn" onclick="toggleCarMode()">✕ Quitter</button>
+    <button class="car-exit-btn" id="carExitBtn" onclick="toggleCarMode()">✕ Quitter</button>
   </div>
   <div class="car-bridges">
     <div class="car-card" id="carCardGonzague">
@@ -4004,7 +3996,6 @@ document.addEventListener('visibilitychange',()=>{
       <div class="car-timer" id="carTimerGonzague">
         <span class="car-timer-text" id="carTimerTextGonzague"></span>
       </div>
-      <a class="car-route-btn" id="carRouteBtnGonzague" href="#" target="_blank" rel="noopener noreferrer">🗺 Itinéraire alternatif</a>
     </div>
     <div class="car-card" id="carCardLarocque">
       <div class="car-card-name" id="carNameLarocque">Pont Larocque — Valleyfield</div>
@@ -4017,7 +4008,6 @@ document.addEventListener('visibilitychange',()=>{
       <div class="car-timer" id="carTimerLarocque">
         <span class="car-timer-text" id="carTimerTextLarocque"></span>
       </div>
-      <a class="car-route-btn" id="carRouteBtnLarocque" href="#" target="_blank" rel="noopener noreferrer">🗺 Itinéraire alternatif</a>
     </div>
   </div>
   <div class="car-footer">
@@ -4142,12 +4132,6 @@ function updateCarTime() {
     now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
-// Alternate route URLs (bypass each bridge)
-const CAR_DETOUR = {
-  gonzague: 'https://www.google.com/maps/dir/?api=1&destination=45.2314064,-74.0004653&travelmode=driving&waypoints=45.218,-74.020',
-  larocque: 'https://www.google.com/maps/dir/?api=1&destination=45.2240497,-74.1177633&travelmode=driving&waypoints=45.210,-74.130',
-};
-
 function updateCarMode() {
   if (!carModeActive || !lastData) return;
   const isFr = currentLang === 'fr';
@@ -4156,72 +4140,41 @@ function updateCarMode() {
     ? { disponible:'Disponible', bientot_leve:'Bientôt levé', raising:'En levage', leve:'Levé', lowering:'Descente', outage:'Fermé' }
     : { disponible:'Available',  bientot_leve:'Lifting soon',  raising:'Raising',   leve:'Lifted', lowering:'Lowering', outage:'Closed' };
 
-  const ACTIVE = ['leve','raising','lowering','bientot_leve','outage'];
-
   for (const bridge of ['gonzague','larocque']) {
     const d = lastData[bridge];
     if (!d) continue;
     const status = d.status || 'disponible';
-    const cap = bridge.charAt(0).toUpperCase() + bridge.slice(1);
+    const pill = document.getElementById('carPill' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const label = document.getElementById('carLabel' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const timerEl = document.getElementById('carTimer' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const timerText = document.getElementById('carTimerText' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
 
-    // Pill
-    const pill = document.getElementById('carPill' + cap);
-    const label = document.getElementById('carLabel' + cap);
     if (pill) pill.className = 'car-pill ' + status;
     if (label) label.textContent = STATUS_LABEL_CAR[status] || status;
 
-    // Card background color
-    const card = document.getElementById('carCard' + cap);
-    if (card) card.className = 'car-card status-' + status;
-
-    // Countdown timer (approx minutes)
-    const timerEl = document.getElementById('carTimer' + cap);
-    const timerText = document.getElementById('carTimerText' + cap);
+    // Reopen time
+    const reopenLine = document.getElementById('timelineReopen' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const reopenText = reopenLine ? reopenLine.textContent.trim() : '';
     if (timerEl && timerText) {
-      if (ACTIVE.includes(status) && d.liftingSince) {
-        const avgMin = d.avgLiftDuration || 16;
-        const elapsedMin = Math.floor((Date.now() - d.liftingSince) / 60000);
-        const remainMin = Math.max(1, avgMin - elapsedMin);
-        const approxLabel = isFr
-          ? `Réouverture dans environ ${remainMin} min`
-          : `Reopens in about ${remainMin} min`;
-        timerText.textContent = '⏱ ' + approxLabel;
+      if (reopenText && ['leve','raising','lowering','bientot_leve'].includes(status)) {
+        timerText.textContent = '⏱ ' + reopenText;
         timerEl.classList.add('visible');
-      } else if (ACTIVE.includes(status)) {
-        // No liftingSince — show static reopen time from timeline
-        const reopenLine = document.getElementById('timelineReopen' + cap);
-        const reopenText = reopenLine ? reopenLine.textContent.trim() : '';
-        if (reopenText) {
-          timerText.textContent = '⏱ ' + reopenText;
-          timerEl.classList.add('visible');
-        } else {
-          timerEl.classList.remove('visible');
-        }
       } else {
         timerEl.classList.remove('visible');
       }
     }
-
-    // Alternate route button — show when bridge is active
-    const routeBtn = document.getElementById('carRouteBtn' + cap);
-    if (routeBtn) {
-      if (['leve','raising','outage'].includes(status)) {
-        routeBtn.href = CAR_DETOUR[bridge] || '#';
-        routeBtn.textContent = isFr ? '🗺 Itinéraire alternatif' : '🗺 Alternate route';
-        routeBtn.classList.add('visible');
-      } else {
-        routeBtn.classList.remove('visible');
-      }
-    }
   }
 
-  // Names + labels
+  // Update car names with translated bridge names
   const nameG = document.getElementById('carNameGonzague');
   const nameL = document.getElementById('carNameLarocque');
   if (nameG) nameG.textContent = isFr ? 'Pont St-Louis' : 'St-Louis Bridge';
   if (nameL) nameL.textContent = isFr ? 'Pont Larocque — Valleyfield' : 'Larocque Bridge — Valleyfield';
+
   const liveLabel = document.getElementById('carModeLiveLabel');
   if (liveLabel) liveLabel.textContent = isFr ? 'En direct' : 'Live';
+  const exitBtn = document.getElementById('carExitBtn');
+  if (exitBtn) exitBtn.textContent = isFr ? '✕ Quitter' : '✕ Exit';
 }
 
 // Re-acquire wake lock on visibility change
