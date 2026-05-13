@@ -506,11 +506,13 @@ function statusBadge(status) {
 
 function log(msg) { console.log(`[${new Date().toISOString()}] ${msg}`); }
 
-async function sendScheduledLiftNotification(bridge, time) {
+async function sendScheduledLiftNotification(bridge, times) {
+  // times can be a single time string or array of times
+  const timesArr = Array.isArray(times) ? times : [times];
   // Build widget statuses with scheduled info appended
   const statuses = {
-    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, scheduledTime: bridge === 'gonzague' ? time : null },
-    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, scheduledTime: bridge === 'larocque' ? time : null },
+    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null, scheduledTimes: bridge === 'gonzague' ? timesArr : null },
+    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null, scheduledTimes: bridge === 'larocque' ? timesArr : null },
   };
   let sent = 0, skipped = 0, failed = 0;
   for (const sub of [...subscriptions]) {
@@ -545,7 +547,7 @@ const STATUS_EMOJI = {
   disponible:   '\u2705',
   bientot_leve: '\u26a0\ufe0f',
   raising:      '🔼',
-  leve:         '🚢',
+  leve:         '⛔',
   lowering:     '🔽',
   outage:       '🚧',
 };
@@ -605,7 +607,10 @@ function buildWidgetBody(sub, bridgeStatuses) {
       line += isFr ? ` \u00b7 jusqu'\u00e0 ${hm}` : ` \u00b7 until ${hm}`;
     }
     // Add scheduled time if available
-    if (d.scheduledTime && d.status === 'disponible') {
+    if (d.scheduledTimes && d.scheduledTimes.length > 0 && d.status === 'disponible') {
+      const times = d.scheduledTimes.join(', ');
+      line += isFr ? ` \u00b7 Lev\u00e9es pr\u00e9vues ${times}` : ` \u00b7 Lifts at ${times}`;
+    } else if (d.scheduledTime && d.status === 'disponible') {
       line += isFr ? ` \u00b7 Lev\u00e9e pr\u00e9vue ${d.scheduledTime}` : ` \u00b7 Lift at ${d.scheduledTime}`;
     }
     lines.push(line);
@@ -684,16 +689,20 @@ async function monitor() {
     for (const bridge of ['gonzague', 'larocque']) {
       if (data[bridge].status === 'outage') continue;
       const lifts = parseScheduledLifts(data[bridge].next_lifts);
+      const newTimes = [];
       for (const time of lifts) {
         const key = `${bridge}:${time}`;
         const alreadyNotified = await isLiftNotified(key);
         const cooldownOk = (Date.now() - lastScheduledNotif[bridge]) > SCHEDULED_NOTIF_COOLDOWN;
         if (!alreadyNotified && cooldownOk) {
-          log(`Nouvelle lev\u00e9e planifi\u00e9e [${bridge}] \u00e0 ${time}`);
+          log(`Nouvelle levée planifiée [${bridge}] à ${time}`);
           await markLiftNotified(key);
-          lastScheduledNotif[bridge] = Date.now();
-          notifications.push(sendScheduledLiftNotification(bridge, time));
+          newTimes.push(time);
         }
+      }
+      if (newTimes.length > 0) {
+        lastScheduledNotif[bridge] = Date.now();
+        notifications.push(sendScheduledLiftNotification(bridge, newTimes));
       }
     }
     if (notifications.length === 0) log(`Aucun changement d\u00e9tect\u00e9`);
