@@ -602,17 +602,23 @@ function buildWidgetBody(sub, bridgeStatuses) {
 
 async function sendWidgetUpdate(bridgeStatuses) {
   let sent = 0, failed = 0;
+  // Priority order for badge: outage > leve > raising > lowering > bientot_leve > disponible
+  const STATUS_PRIORITY = ['outage', 'leve', 'raising', 'lowering', 'bientot_leve', 'disponible'];
   for (const sub of [...subscriptions]) {
     const lang = sub.lang || 'fr';
     const isFr = lang === 'fr';
     const body = buildWidgetBody(sub, bridgeStatuses);
     if (!body) continue;
     const title = isFr ? 'Ponts Beauharnois' : 'Beauharnois Bridges';
+    // Pick most critical status for badge
+    const bridges = sub.bridges || ['gonzague', 'larocque'];
+    const activeStatuses = bridges.map(b => bridgeStatuses[b]?.status).filter(Boolean);
+    const criticalStatus = STATUS_PRIORITY.find(s => activeStatuses.includes(s)) || 'disponible';
     const payload = JSON.stringify({
       title, body,
       tag: 'pont-widget',
       icon: notifIcon(sub),
-      badge: statusBadge('disponible'),
+      badge: statusBadge(criticalStatus),
     });
     try {
       await webpush.sendNotification(sub, payload, { urgency: 'low', TTL: 900 });
