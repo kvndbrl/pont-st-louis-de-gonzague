@@ -506,24 +506,24 @@ function statusBadge(status) {
 function log(msg) { console.log(`[${new Date().toISOString()}] ${msg}`); }
 
 async function sendScheduledLiftNotification(bridge, time) {
-  const names = {
-    fr: { gonzague: 'Pont St-Louis', larocque: 'Pont Larocque (Valleyfield)' },
-    en: { gonzague: 'St-Louis Bridge', larocque: 'Larocque Bridge (Valleyfield)' }
+  // Build widget statuses with scheduled info appended
+  const statuses = {
+    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, scheduledTime: bridge === 'gonzague' ? time : null },
+    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, scheduledTime: bridge === 'larocque' ? time : null },
   };
-  let sent = 0, skippedRange = 0, skippedBridge = 0, failed = 0;
+  let sent = 0, skipped = 0, failed = 0;
   for (const sub of [...subscriptions]) {
     const bridges = sub.bridges || ['gonzague', 'larocque'];
-    if (!bridges.includes(bridge)) { skippedBridge++; continue; }
-    if (!isInTimeRange(sub)) { skippedRange++; continue; }
+    if (!bridges.includes(bridge)) { skipped++; continue; }
+    if (!isInTimeRange(sub)) { skipped++; continue; }
     const bridgeKey = bridge === 'gonzague' ? 'notifTypesGonzague' : 'notifTypesLarocque';
     const allowedTypes = sub[bridgeKey] || sub.notifTypes || ['bientot_leve','raising','leve','lowering','disponible','scheduled'];
-    if (!allowedTypes.includes('scheduled')) { skippedBridge++; continue; }
+    if (!allowedTypes.includes('scheduled')) { skipped++; continue; }
     const lang = sub.lang || 'fr';
-    const name = (names[lang] || names.fr)[bridge];
-    const msg = lang === 'en'
-      ? { title: `\ud83d\udcc5 Lift scheduled at ${time}`, body: `${name} will be raised at ${time}.` }
-      : { title: `\ud83d\udcc5 Lev\u00e9e pr\u00e9vue \u00e0 ${time}`, body: `Le ${name} sera lev\u00e9 \u00e0 ${time}.` };
-    const payload = JSON.stringify({ ...msg, bridge, tag: `pont-${bridge}`, persistent: false, icon: notifIcon(sub), badge: statusBadge('scheduled') });
+    const isFr = lang === 'fr';
+    const body = buildWidgetBody(sub, statuses);
+    const title = isFr ? 'Ponts Beauharnois' : 'Beauharnois Bridges';
+    const payload = JSON.stringify({ title, body, tag: 'pont-widget', icon: notifIcon(sub), badge: statusBadge('scheduled') });
     try {
       await webpush.sendNotification(sub, payload, { urgency: 'high', TTL: 300 });
       sent++;
@@ -535,7 +535,7 @@ async function sendScheduledLiftNotification(bridge, time) {
       umamiTrack('subscription_lost', { reason: 'push_failed', total: subscriptions.length });
     }
   }
-  log(`Lev\u00e9e planifi\u00e9e [${bridge}] ${time} - ${sent} envoy\u00e9es | ${skippedRange} hors plage | ${skippedBridge} pont non suivi | ${failed} \u00e9chou\u00e9es`);
+  log(`Lev\u00e9e planifi\u00e9e [${bridge}] ${time} - ${sent} envoy\u00e9es | ${skipped} ignor\u00e9es | ${failed} \u00e9chou\u00e9es`);
 }
 
 
@@ -588,12 +588,16 @@ function buildWidgetBody(sub, bridgeStatuses) {
     if ((d.status === 'leve' || d.status === 'lowering' || d.status === 'raising') && d.avgLiftDuration) {
       const reopenTime = new Date(Date.now() + d.avgLiftDuration * 60000);
       const hm = reopenTime.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
-      line += isFr ? ` \u00b7 ~${hm}` : ` \u00b7 ~${hm}`;
+      line += ` \u00b7 ~${hm}`;
     }
     if (d.status === 'outage' && d.outageEnd) {
       const end = new Date(d.outageEnd);
       const hm = end.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
-      line += isFr ? ` \u00b7 jusqu\'\u00e0 ${hm}` : ` \u00b7 until ${hm}`;
+      line += isFr ? ` \u00b7 jusqu'\u00e0 ${hm}` : ` \u00b7 until ${hm}`;
+    }
+    // Add scheduled time if available
+    if (d.scheduledTime && d.status === 'disponible') {
+      line += isFr ? ` \u00b7 Lev\u00e9e pr\u00e9vue ${d.scheduledTime}` : ` \u00b7 Lift at ${d.scheduledTime}`;
     }
     lines.push(line);
   }
