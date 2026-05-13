@@ -665,22 +665,41 @@
 </header>
 
 <div style="padding:0 16px 6px;margin-top:-4px;">
-  <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer"
+  <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer"
     onclick="track('donation_clicked',{source:'main_banner'});"
-    style="display:flex;align-items:center;gap:10px;background:#FFDD00;border-radius:12px;padding:10px 14px;text-decoration:none;">
-    <span style="font-size:20px;flex-shrink:0;">☕</span>
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:12px;font-weight:800;color:#000;font-family:var(--sans);" id="mainDonateBtnText">Soutien mensuel — 1 $/mois</div>
-      <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="mainDonateBtnDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+    style="display:block;background:var(--surface);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);border:1px solid var(--border);text-decoration:none;">
+
+    <!-- Title -->
+    <div style="font-size:13px;font-weight:700;color:var(--text);font-family:var(--sans);text-align:center;margin-bottom:2px;" id="socialProofTitle">Plus de 12 000 citoyens ont consulté cette app.</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-bottom:10px;line-height:1.4;" id="socialProofText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
+
+    <!-- Yellow BMAC block -->
+    <div style="background:#FFDD00;border-radius:10px;padding:10px 12px;">
+
+      <!-- BMAC logo -->
+      <div style="text-align:center;margin-bottom:8px;">
+        <img src="/bmc-full-logo-no-background.png" alt="Buy Me a Coffee" style="height:24px;width:auto;">
+      </div>
+
+      <div style="font-size:11px;color:#444;font-family:var(--sans);text-align:center;margin-bottom:8px;" id="mainDonateBtnDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+
+      <!-- Two options -->
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#000;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:800;color:#FFDD00;font-family:var(--sans);" id="mainDonateBtnText">1 $/mois</div>
+          <div style="font-size:9px;color:rgba(255,221,0,.7);font-family:var(--sans);margin-top:1px;" id="orOnceLabel">Soutien mensuel</div>
+        </div>
+        <div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:700;color:#000;font-family:var(--sans);">Don unique</div>
+          <div style="font-size:9px;color:#333;font-family:var(--sans);margin-top:1px;">Au montant de ton choix</div>
+        </div>
+      </div>
     </div>
-    <span style="font-size:14px;color:#000;">›</span>
+
   </a>
 </div>
 <span id="mostAppreciatedBadge" style="display:none;">⭐ CONTRIBUTION EXEMPLAIRE</span>
-<span id="orOnceLabel" style="display:none;">ou un don unique</span>
-<span id="socialProofTitle" style="display:none;">12 000 personnes ont consulté cette app.</span>
-<span id="socialProofText" style="display:none;"></span>
-<a id="donateNowBtn" href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" style="display:none;"></a>
+<a id="donateNowBtn" href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" style="display:none;"></a>
 
 <main id="cardsMain">
 
@@ -833,7 +852,7 @@
     <!-- Monthly — featured -->
     <div style="position:relative;margin-bottom:12px;">
       <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="modalMostAppreciatedBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-      <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'modal_monthly'});closeDonateModal();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'modal_monthly'});closeDonateModal();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
         <span style="font-size:22px;flex-shrink:0;">☕</span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="modalMonthlyTitle">Soutien mensuel — 1 $/mois</div>
@@ -853,7 +872,7 @@
       <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="modalSocialTitle">12 000 personnes ont consulté cette app.</div>
       <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="modalSocialText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
     </div>
-    <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'modal_once'});closeDonateModal();" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;" id="modalDonateNowBtn">Faire un don ☕</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'modal_once'});closeDonateModal();" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;" id="modalDonateNowBtn">Faire un don ☕</a>
     <button onclick="closeDonateModal()" style="width:100%;padding:12px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="donateModalLater">Peut-être plus tard</button>
   </div>
 </div>
@@ -1084,7 +1103,7 @@ function closeDonateModal() {
       <!-- Monthly — featured -->
       <div style="position:relative;margin-bottom:10px;">
         <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="drawerBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-        <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_monthly'});" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_monthly'});" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
           <span style="font-size:22px;flex-shrink:0;">☕</span>
           <div style="flex:1;min-width:0;">
             <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="drawerDonTitle">Soutien mensuel — 1 $/mois</div>
@@ -1103,7 +1122,7 @@ function closeDonateModal() {
         <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="drawerSocialTitle">12 000 personnes ont consulté cette app.</div>
         <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="drawerSocialText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
       </div>
-      <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_once'});" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="drawerDonateNowBtn">Faire un don ☕</a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_once'});" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="drawerDonateNowBtn">Faire un don ☕</a>
     </div>
   </div>
 
@@ -2725,11 +2744,13 @@ function applyTrans(){
 }
 function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_changed',{lang:currentLang});localStorage.setItem('appLang',currentLang);applyTrans();syncPrefs();if(typeof updateMapBtnLabels==='function')updateMapBtnLabels();initDonCompar();
   const isFr=currentLang==='fr';
-  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'Soutien mensuel — 1 $/mois':'Monthly supporter — 1 $/month';
+  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'1 $/mois':'$1/month';
+  const spt=document.getElementById('socialProofTitle');if(spt)spt.textContent=isFr?'Plus de 12 000 citoyens ont consulté cette app.':'Over 12,000 people have used this app.';
+  const sptxt=document.getElementById('socialProofText');if(sptxt)sptxt.textContent=isFr?'Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.':'If everyone donated $1, server costs would be covered for 10 years.';
   const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
   const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
   const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
-  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'ou un don unique':'or a one-time coffee';
+  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'Soutien mensuel':'Monthly support';
 }
 
 // ── Cache-first status loading ────────────────────────────────────────
@@ -2963,7 +2984,7 @@ function renderMilestoneBanner(milestone) {
           style="flex:1;padding:11px 8px;border-radius:14px;border:1.5px solid var(--accent);background:rgba(var(--accent-rgb),.1);color:var(--accent);text-decoration:none;font-family:var(--sans);font-size:12px;font-weight:700;text-align:center;">
           ${cta1}
         </a>
-        <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer"
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer"
           onclick="track('donation_clicked',{amount:'milestone_${milestone}'})"
           style="flex:1;padding:11px 8px;border-radius:14px;border:1.5px solid #0070BA;background:rgba(0,112,186,.07);color:#0070BA;text-decoration:none;font-family:var(--sans);font-size:12px;font-weight:700;text-align:center;">
           ${cta2}
@@ -3243,7 +3264,7 @@ document.addEventListener('touchend', async e=>{
 function openCustomDonation(){
   const val=parseInt(document.getElementById('customAmount').value,10);
   if(!val||val<1) return false;
-  window.open('https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois','_blank','noopener,noreferrer');
+  window.open('https://buymeacoffee.com/kvndbrl','_blank','noopener,noreferrer');
   return false;
 }
 const _customAmountEl = document.getElementById('customAmount');
@@ -3454,11 +3475,11 @@ loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWe
 (function(){
   const lang=localStorage.getItem('appLang')||'fr';
   const isFr=lang==='fr';
-  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'Soutien mensuel — 1 $/mois':'Monthly supporter — 1 $/month';
+  const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'1 $/mois':'$1/month';
   const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
   const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
   const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
-  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'ou un don unique':'or a one-time coffee';
+  const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'Soutien mensuel':'Monthly support';
 })();
 
 const DON_COMPARS = {
@@ -3720,7 +3741,7 @@ document.addEventListener('visibilitychange',()=>{
         <!-- Monthly — featured -->
         <div style="position:relative;margin-bottom:10px;">
           <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="changelogBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-          <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_monthly'});dismissChangelog();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+          <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_monthly'});dismissChangelog();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
             <span style="font-size:22px;flex-shrink:0;">☕</span>
             <div style="flex:1;min-width:0;">
               <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="changelogDonTitle">Soutien mensuel — 1 $/mois</div>
@@ -3739,7 +3760,7 @@ document.addEventListener('visibilitychange',()=>{
           <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="changelogSocialTitle">12 000 personnes ont consulté cette app.</div>
           <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="changelogDonText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
         </div>
-        <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_once'});dismissChangelog();" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="changelogDonateBtn">Faire un don ☕</a>
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_once'});dismissChangelog();" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="changelogDonateBtn">Faire un don ☕</a>
       </div>
     </div>
   </div>
@@ -3752,7 +3773,7 @@ document.addEventListener('visibilitychange',()=>{
     <!-- Monthly — featured -->
     <div style="position:relative;margin-bottom:10px;">
       <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="promptBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-      <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_monthly'});closeDonationModal(true);" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_monthly'});closeDonationModal(true);" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
         <span style="font-size:22px;flex-shrink:0;">☕</span>
         <div style="flex:1;min-width:0;">
           <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="donModalTitle">Soutien mensuel — 1 $/mois</div>
@@ -3771,7 +3792,7 @@ document.addEventListener('visibilitychange',()=>{
       <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="promptSocialTitle">12 000 personnes ont consulté cette app.</div>
       <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="promptSocialText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
     </div>
-    <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_once'});closeDonationModal(true);" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;" id="promptDonateBtn">Faire un don ☕</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_once'});closeDonationModal(true);" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;" id="promptDonateBtn">Faire un don ☕</a>
     <button onclick="closeDonationModal(false)" style="width:100%;padding:14px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="donModalSkip">Plus tard</button>
   </div>
 </div>
@@ -3819,9 +3840,9 @@ document.addEventListener('visibilitychange',()=>{
   <div style="text-align:center;font-size:13px;color:var(--text3);font-family:var(--sans);padding:8px 32px 20px;line-height:1.6;" id="swipeDonDesc"></div>
   <!-- Buttons -->
   <div style="display:flex;gap:10px;padding:0 20px 12px;">
-    <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
-    <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
-    <a href="https://buymeacoffee.com/kvndbrl?message=Ponts+Beauharnois" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
   </div>
   <button onclick="closeSwipeDon()" style="width:calc(100% - 40px);margin:0 20px;padding:13px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="swipeDonSkip">Plus tard</button>
 </div>
