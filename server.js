@@ -596,8 +596,8 @@ function buildWidgetBody(sub, bridgeStatuses) {
       } else {
         reopenTime = new Date(Date.now() + d.avgLiftDuration * 60000);
       }
-      const hm = reopenTime.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
-      line += ` \u00b7 ~${hm}`;
+      const hm = reopenTime.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
+      line += isFr ? ` \u00b7 R\u00e9ouverture ~${hm}` : ` \u00b7 Reopen ~${hm}`;
     }
     if (d.status === 'outage' && d.outageEnd) {
       const end = new Date(d.outageEnd);
