@@ -1100,29 +1100,24 @@ function closeDonateModal() {
 
   <div id="drawerDonationSection" style="padding:12px 16px 4px;">
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;">
-      <!-- Monthly — featured -->
-      <div style="position:relative;margin-bottom:10px;">
-        <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="drawerBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_monthly'});" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
-          <span style="font-size:22px;flex-shrink:0;">☕</span>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="drawerDonTitle">Soutien mensuel — 1 $/mois</div>
-            <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="drawerDonDesc">Garde l'app vivante pour toute la communauté 🙏</div>
-          </div>
-          <span style="font-size:15px;color:#000;">›</span>
-        </a>
+      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_monthly'});"
+      style="display:block;background:#FFDD00;border-radius:12px;padding:10px 14px;text-decoration:none;">
+      <img src="/bmc-full-logo-no-background.png" alt="Buy Me a Coffee" style="height:20px;width:auto;margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;">
+      <div style="font-size:11px;color:#444;font-family:var(--sans);text-align:center;margin-bottom:8px;" id="drawerDonDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#000;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:800;color:#FFDD00;font-family:var(--sans);" id="drawerDonTitle">1 $/mois</div>
+          <div style="font-size:9px;color:rgba(255,221,0,.7);font-family:var(--sans);margin-top:1px;" id="drawerBadge">Soutien mensuel</div>
+        </div>
+        <div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:8px;text-align:center;" id="drawerOrOnce">
+          <div style="font-size:12px;font-weight:700;color:#000;font-family:var(--sans);">Don unique</div>
+          <div style="font-size:9px;color:#333;font-family:var(--sans);margin-top:1px;">Au montant de ton choix</div>
+        </div>
       </div>
-      <!-- One-time — secondary -->
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-        <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="drawerOrOnce">ou un don unique</span>
-        <div style="flex:1;height:1px;background:var(--border);"></div>
-      </div>
-      <div style="background:rgba(var(--accent-rgb),.07);border-radius:10px;padding:10px 12px;margin:8px 0 10px;">
-        <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="drawerSocialTitle">12 000 personnes ont consulté cette app.</div>
-        <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="drawerSocialText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
-      </div>
-      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_once'});" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="drawerDonateNowBtn">Faire un don ☕</a>
+      <div style="font-size:11px;color:#555;font-family:var(--sans);text-align:center;margin-top:6px;" id="drawerSocialTitle">Plus de 12 000 citoyens ont consulté cette app.</div>
+    </a>
+    <a id="drawerDonateNowBtn" href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'drawer_once'});" style="display:none;"></a>
+    <span id="drawerSocialText" style="display:none;">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</span>
     </div>
   </div>
 
@@ -3738,29 +3733,24 @@ document.addEventListener('visibilitychange',()=>{
     <button onclick="dismissChangelog()" style="width:100%;padding:15px;border-radius:50px;border:none;background:var(--accent);color:white;font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;" id="changelogCta">C'est compris !</button>
     <div style="margin-top:14px;">
       <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:14px;">
-        <!-- Monthly — featured -->
-        <div style="position:relative;margin-bottom:10px;">
-          <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="changelogBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-          <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_monthly'});dismissChangelog();" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
-            <span style="font-size:22px;flex-shrink:0;">☕</span>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="changelogDonTitle">Soutien mensuel — 1 $/mois</div>
-              <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="changelogDonDesc">Garde l'app vivante pour toute la communauté 🙏</div>
-            </div>
-            <span style="font-size:15px;color:#000;">›</span>
-          </a>
+        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_monthly'});dismissChangelog();"
+      style="display:block;background:#FFDD00;border-radius:12px;padding:10px 14px;text-decoration:none;">
+      <img src="/bmc-full-logo-no-background.png" alt="Buy Me a Coffee" style="height:20px;width:auto;margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;">
+      <div style="font-size:11px;color:#444;font-family:var(--sans);text-align:center;margin-bottom:8px;" id="changelogDonDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#000;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:800;color:#FFDD00;font-family:var(--sans);" id="changelogDonTitle">1 $/mois</div>
+          <div style="font-size:9px;color:rgba(255,221,0,.7);font-family:var(--sans);margin-top:1px;" id="changelogBadge">Soutien mensuel</div>
         </div>
-        <!-- One-time — secondary -->
-        <div style="display:flex;align-items:center;gap:6px;">
-          <div style="flex:1;height:1px;background:var(--border);"></div>
-          <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="changelogOrOnce">ou un don unique</span>
-          <div style="flex:1;height:1px;background:var(--border);"></div>
+        <div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:8px;text-align:center;" id="changelogOrOnce">
+          <div style="font-size:12px;font-weight:700;color:#000;font-family:var(--sans);">Don unique</div>
+          <div style="font-size:9px;color:#333;font-family:var(--sans);margin-top:1px;">Au montant de ton choix</div>
         </div>
-        <div style="background:rgba(var(--accent-rgb),.07);border-radius:10px;padding:10px 12px;margin:8px 0 10px;">
-          <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="changelogSocialTitle">12 000 personnes ont consulté cette app.</div>
-          <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="changelogDonText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
-        </div>
-        <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_once'});dismissChangelog();" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;" id="changelogDonateBtn">Faire un don ☕</a>
+      </div>
+      <div style="font-size:11px;color:#555;font-family:var(--sans);text-align:center;margin-top:6px;" id="changelogSocialTitle">Plus de 12 000 citoyens ont consulté cette app.</div>
+    </a>
+    <a id="changelogDonateBtn" href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'changelog_once'});dismissChangelog();" style="display:none;"></a>
+    <span id="changelogDonText" style="display:none;">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</span>
       </div>
     </div>
   </div>
@@ -3770,29 +3760,24 @@ document.addEventListener('visibilitychange',()=>{
 <!-- Donation prompt modal -->
 <div id="donationModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9200;backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeDonationModal(false)">
   <div style="background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;padding:24px 20px 44px;animation:slideUp .35s cubic-bezier(.4,0,.2,1) both;">
-    <!-- Monthly — featured -->
-    <div style="position:relative;margin-bottom:10px;">
-      <div style="position:absolute;top:-8px;left:12px;background:var(--accent);color:#fff;font-size:9px;font-weight:800;font-family:var(--sans);padding:2px 8px;border-radius:20px;letter-spacing:.5px;" id="promptBadge">⭐ CONTRIBUTION EXEMPLAIRE</div>
-      <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_monthly'});closeDonationModal(true);" style="display:flex;align-items:center;gap:12px;background:#FFDD00;border-radius:10px;padding:12px 14px;text-decoration:none;margin-top:6px;">
-        <span style="font-size:22px;flex-shrink:0;">☕</span>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:800;color:#000;font-family:var(--sans);" id="donModalTitle">Soutien mensuel — 1 $/mois</div>
-          <div style="font-size:10px;color:#444;font-family:var(--sans);margin-top:1px;" id="donModalDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_monthly'});closeDonationModal(true);"
+      style="display:block;background:#FFDD00;border-radius:12px;padding:10px 14px;text-decoration:none;">
+      <img src="/bmc-full-logo-no-background.png" alt="Buy Me a Coffee" style="height:20px;width:auto;margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;">
+      <div style="font-size:11px;color:#444;font-family:var(--sans);text-align:center;margin-bottom:8px;" id="donModalDesc">Garde l'app vivante pour toute la communauté 🙏</div>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#000;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:800;color:#FFDD00;font-family:var(--sans);" id="donModalTitle">1 $/mois</div>
+          <div style="font-size:9px;color:rgba(255,221,0,.7);font-family:var(--sans);margin-top:1px;" id="promptBadge">Soutien mensuel</div>
         </div>
-        <span style="font-size:15px;color:#000;">›</span>
-      </a>
-    </div>
-    <!-- One-time — secondary -->
-    <div style="display:flex;align-items:center;gap:6px;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-size:9px;color:var(--text3);font-family:var(--sans);" id="promptOrOnce">ou un don unique</span>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-    </div>
-    <div style="background:rgba(var(--accent-rgb),.07);border-radius:10px;padding:10px 12px;margin:8px 0 10px;">
-      <div style="font-size:12px;color:var(--text);font-family:var(--sans);text-align:center;font-weight:600;" id="promptSocialTitle">12 000 personnes ont consulté cette app.</div>
-      <div style="font-size:11px;color:var(--text3);font-family:var(--sans);text-align:center;margin-top:2px;line-height:1.4;" id="promptSocialText">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</div>
-    </div>
-    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_once'});closeDonationModal(true);" style="display:block;text-align:center;padding:11px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;" id="promptDonateBtn">Faire un don ☕</a>
+        <div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:8px;text-align:center;" id="promptOrOnce">
+          <div style="font-size:12px;font-weight:700;color:#000;font-family:var(--sans);">Don unique</div>
+          <div style="font-size:9px;color:#333;font-family:var(--sans);margin-top:1px;">Au montant de ton choix</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#555;font-family:var(--sans);text-align:center;margin-top:6px;" id="promptSocialTitle">Plus de 12 000 citoyens ont consulté cette app.</div>
+    </a>
+    <a id="promptDonateBtn" href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{source:'prompt_once'});closeDonationModal(true);" style="display:none;"></a>
+    <span id="promptSocialText" style="display:none;">Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.</span>
     <button onclick="closeDonationModal(false)" style="width:100%;padding:14px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="donModalSkip">Plus tard</button>
   </div>
 </div>
@@ -3839,10 +3824,22 @@ document.addEventListener('visibilitychange',()=>{
   <!-- Desc -->
   <div style="text-align:center;font-size:13px;color:var(--text3);font-family:var(--sans);padding:8px 32px 20px;line-height:1.6;" id="swipeDonDesc"></div>
   <!-- Buttons -->
-  <div style="display:flex;gap:10px;padding:0 20px 12px;">
-    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:2,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">2 $</a>
-    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:5,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">5 $</a>
-    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" onclick="track('donation_clicked',{amount:10,source:'swipe'});closeDonationModal(true);closeSwipeDon();" style="flex:1;text-align:center;padding:14px 4px;border-radius:14px;background:#0070BA;color:#fff;font-family:var(--sans);font-size:16px;font-weight:700;text-decoration:none;">10 $</a>
+  <div style="padding:0 20px 12px;">
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer"
+      onclick="track('donation_clicked',{source:'swipe'});closeDonationModal(true);closeSwipeDon();"
+      style="display:block;background:#FFDD00;border-radius:12px;padding:10px 14px;text-decoration:none;">
+      <img src="/bmc-full-logo-no-background.png" alt="Buy Me a Coffee" style="height:20px;width:auto;margin-bottom:6px;display:block;margin-left:auto;margin-right:auto;">
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#000;border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:800;color:#FFDD00;font-family:var(--sans);">1 $/mois</div>
+          <div style="font-size:9px;color:rgba(255,221,0,.7);font-family:var(--sans);margin-top:1px;">Soutien mensuel</div>
+        </div>
+        <div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:8px;text-align:center;">
+          <div style="font-size:12px;font-weight:700;color:#000;font-family:var(--sans);">Don unique</div>
+          <div style="font-size:9px;color:#333;font-family:var(--sans);margin-top:1px;">Au montant de ton choix</div>
+        </div>
+      </div>
+    </a>
   </div>
   <button onclick="closeSwipeDon()" style="width:calc(100% - 40px);margin:0 20px;padding:13px;border-radius:50px;border:none;background:var(--surface2);color:var(--text3);font-family:var(--sans);font-size:14px;cursor:pointer;" id="swipeDonSkip">Plus tard</button>
 </div>
