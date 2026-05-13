@@ -2744,7 +2744,7 @@ function toggleLang(){currentLang=currentLang==='fr'?'en':'fr';track('language_c
   const sptxt=document.getElementById('socialProofText');if(sptxt)sptxt.textContent=isFr?'Si chacun donnait 1 $, le coût des serveurs serait couvert pour 10 ans.':'If everyone donated $1, server costs would be covered for 10 years.';
   const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
   const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
-  const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  // drawerBadge is static — no override
   const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'Soutien mensuel':'Monthly support';
 }
 
@@ -3473,7 +3473,7 @@ loadPrefs();loadNotifTypes();loadDays();loadTR();loadTheme();applyTrans();initWe
   const btn=document.getElementById('mainDonateBtnText');if(btn)btn.textContent=isFr?'1 $/mois':'$1/month';
   const desc=document.getElementById('mainDonateBtnDesc');if(desc)desc.textContent=isFr?'Garde l\'app vivante pour toute la communauté 🙏':'Keeps the app alive for everyone 🙏';
   const badge=document.getElementById('mostAppreciatedBadge');if(badge)badge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
-  const drawerBadge=document.getElementById('drawerBadge');if(drawerBadge)drawerBadge.textContent=isFr?'⭐ CONTRIBUTION EXEMPLAIRE':'⭐ MOST APPRECIATED';
+  // drawerBadge is static — no override
   const once=document.getElementById('orOnceLabel');if(once)once.textContent=isFr?'Soutien mensuel':'Monthly support';
 })();
 
@@ -3610,11 +3610,7 @@ initSwipeDon();
 
 
 function updateDonationTexts() {
-  const v = getDonVariant();
-  const drawerTitle = document.getElementById('drawerDonTitle');
-  const drawerDesc = document.getElementById('drawerDonDesc');
-  if (drawerTitle) drawerTitle.textContent = v.title;
-  if (drawerDesc) drawerDesc.textContent = v.desc;
+  // Static donation texts — no dynamic overwrite
 }
 
 function checkDonationPrompt() {
@@ -3639,11 +3635,7 @@ function checkDonationPrompt() {
   if (!snoozedUntil && opens < 3) return;
 
   setTimeout(() => {
-    const v = getDonVariant();
-    const titleEl = document.getElementById('donModalTitle');
-    const descEl = document.getElementById('donModalDesc');
-    if (titleEl) titleEl.textContent = v.title;
-    if (descEl) descEl.textContent = v.desc;
+    // Static texts — no dynamic override
     const overlay = document.getElementById('donationModalOverlay');
     if (overlay) overlay.style.display = 'flex';
   }, 3000);
