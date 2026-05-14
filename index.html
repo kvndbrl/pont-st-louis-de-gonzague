@@ -4201,12 +4201,21 @@ document.addEventListener('visibilitychange', async () => {
   }
 })();
 
+window.addEventListener('appinstalled', function() {
+  localStorage.removeItem('nameAsked');
+  localStorage.removeItem('nameAskedAt');
+});
+
 function doInstall() {
   var dp = window.deferredInstallPrompt || window.deferredPrompt;
   if (dp) {
     dp.prompt();
     dp.userChoice.then(function(c) {
-      if (c.outcome === 'accepted') document.getElementById('installTopBanner').style.display = 'none';
+      if (c.outcome === 'accepted') {
+        document.getElementById('installTopBanner').style.display = 'none';
+        localStorage.removeItem('nameAsked');
+        localStorage.removeItem('nameAskedAt');
+      }
       window.deferredInstallPrompt = null; window.deferredPrompt = null;
     });
   } else {
