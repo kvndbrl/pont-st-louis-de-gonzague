@@ -4130,6 +4130,8 @@ let carModeActive = false;
 let carWakeLock = null;
 let carGeoWatch = null;
 let carPollInterval = null;
+let carTimeInterval = null;
+let carMediaInterval = null;
 
 async function toggleCarMode() {
   carModeActive = !carModeActive;
@@ -4206,7 +4208,6 @@ async function toggleCarMode() {
   }
 }
 
-let carTimeInterval = null;
 function updateCarTime() {
   const now = new Date();
   const isFr = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('appLang') || 'fr') === 'fr';
