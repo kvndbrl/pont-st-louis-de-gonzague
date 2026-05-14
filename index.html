@@ -2862,6 +2862,7 @@ function loadCachedStatus() {
     lastData = data;
     updateDisplay();
     refreshTimers();
+    if (carModeActive) updateCarMode();
     return true;
   } catch(e) { return false; }
 }
