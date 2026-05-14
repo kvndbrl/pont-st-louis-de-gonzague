@@ -1160,10 +1160,10 @@ function closeDonateModal() {
     <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
   </div>
   <div style="padding:4px 16px 12px;text-align:center;">
-    <a id="contactLink" href="https://tally.so/r/A7b2kz" target="_blank" rel="noopener noreferrer"
+    <a id="contactLink" href="https://www.facebook.com/share/1Cdq3Z911n/" target="_blank" rel="noopener noreferrer"
       onclick="track('feedback_clicked',{source:'drawer'})"
-      style="font-size:12px;color:var(--text3);font-family:var(--mono);text-decoration:underline;text-underline-offset:3px;cursor:pointer;">
-      <span style="display:inline-flex;align-items:center;width:22px;height:22px;flex-shrink:0;color:inherit;margin-right:4px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"> <path d="M8 12 H56 V42 H20 L8 54 V42 H8 V12 Z"/> <line x1="20" y1="24" x2="44" y2="24"/> <line x1="20" y1="32" x2="36" y2="32"/> </svg></span> <span id="contactLinkLabel">Commentaires ou suggestions</span>
+      style="display:inline-flex;align-items:center;font-size:12px;color:var(--text3);font-family:var(--mono);text-decoration:none;cursor:pointer;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" style="width:18px;height:18px;flex-shrink:0;margin-right:6px;"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.532-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.885v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg><span id="contactLinkLabel">Commentaires ou suggestions</span>
     </a>
   </div>
   <div class="drawer-disclaimer">
@@ -1768,6 +1768,13 @@ async function syncPrefs(){
 let lastData=null;
 function openDrawer(){
   document.getElementById('settingsDrawer').classList.add('open');
+  // Re-render per-bridge checkboxes with correct language
+  setTimeout(() => {
+    ['gonzague','larocque'].forEach(b => {
+      const el = document.getElementById('perBridge'+capitalize(b)+'Content');
+      if (el && el.style.display !== 'none') renderPerBridgeCheckboxes(b);
+    });
+  }, 50);
   document.getElementById('settingsDrawer').removeAttribute('aria-hidden');
   document.getElementById('drawerOverlay').classList.add('open');
   syncNotifState();
@@ -2715,7 +2722,7 @@ function applyTrans(){
   const bnL=document.getElementById('bridgeNameLarocque');if(bnL)bnL.textContent=isFrBn?'Pont Larocque — Valleyfield':'Larocque Bridge — Valleyfield';
   const ll=document.getElementById('langLabel');if(ll)ll.textContent=currentLang==='fr'?'Langue':'Language';
   const cl=document.getElementById('contactLink');
-  if(cl) cl.href=currentLang==='fr'?'https://tally.so/r/A7b2kz':'https://tally.so/r/gDNdyl';
+  if(cl) cl.href='https://www.facebook.com/share/1Cdq3Z911n/';
   const cll=document.getElementById('contactLinkLabel');
   if(cll) cll.textContent=currentLang==='fr'?'Commentaires ou suggestions':'Feedback or suggestions';
   const ibl=document.getElementById('installBannerLabel');if(ibl)ibl.textContent=t.installBannerLabel||(currentLang==='fr'?'Installer l\'app':'Install the app');
