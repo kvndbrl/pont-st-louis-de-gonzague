@@ -2709,7 +2709,8 @@ function applyTrans(){
   const lb=document.getElementById('langBtn');lb.textContent=currentLang==='fr'?'EN':'FR';lb.setAttribute('aria-label',t.ll2);
   applyDonationTrans(currentLang==='fr');
   const isFrBn = currentLang==='fr';
-  const _el=document.getElementById('carExitLabel');if(_el)_el.textContent=isFrBn?'Quitter':'Exit';
+  const _carExit=document.getElementById('carExitBtn');
+  if(_carExit)_carExit.textContent=(isFrBn?'✕ Quitter':'✕ Exit');
   const bnG=document.getElementById('bridgeNameGonzague');if(bnG)bnG.textContent=isFrBn?'Pont St-Louis':'St-Louis Bridge';
   const bnL=document.getElementById('bridgeNameLarocque');if(bnL)bnL.textContent=isFrBn?'Pont Larocque — Valleyfield':'Larocque Bridge — Valleyfield';
   const ll=document.getElementById('langLabel');if(ll)ll.textContent=currentLang==='fr'?'Langue':'Language';
@@ -3986,7 +3987,7 @@ document.addEventListener('visibilitychange',()=>{
       <div class="speed-value" id="carModeSpeed">—</div>
       <div class="speed-unit">KM/H</div>
     </div>
-    <button class="car-exit-btn" id="carExitBtn" onclick="toggleCarMode()">✕ <span id="carExitLabel">Quitter</span></button>
+    <button class="car-exit-btn" id="carExitBtn" onclick="toggleCarMode()">✕ Quitter</button>
   </div>
   <div class="car-bridges">
     <div class="car-card" id="carCardGonzague">
