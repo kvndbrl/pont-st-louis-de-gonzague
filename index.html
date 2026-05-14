@@ -4233,11 +4233,12 @@ function updateCarMode() {
   for (const bridge of ['gonzague','larocque']) {
     const d = lastData[bridge];
     if (!d) continue;
+    const cap = bridge.charAt(0).toUpperCase() + bridge.slice(1);
     const status = d.status || 'disponible';
-    const pill = document.getElementById('carPill' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
-    const label = document.getElementById('carLabel' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
-    const timerEl = document.getElementById('carTimer' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
-    const timerText = document.getElementById('carTimerText' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const pill = document.getElementById('carPill' + cap);
+    const label = document.getElementById('carLabel' + cap);
+    const timerEl = document.getElementById('carTimer' + cap);
+    const timerText = document.getElementById('carTimerText' + cap);
 
     if (pill) pill.className = 'car-pill ' + status;
 
