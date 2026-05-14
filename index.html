@@ -398,20 +398,9 @@
     .car-vessel{display:none;margin:0 14px 10px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
     .car-vessel.visible{display:block;}
     .car-vessel iframe{width:100%;height:180px;border:none;display:block;}
-    .car-action-btns{display:flex;gap:8px;padding:0 14px 10px;}
-    .car-action-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--sans);text-decoration:none;cursor:pointer;}
     .car-footer-updated{font-size:10px;color:var(--text3);font-family:var(--mono);}
     .car-footer-live{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);font-family:var(--mono);}
     .car-footer-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
-    .car-player{display:none;margin:0 14px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:10px 14px;align-items:center;gap:12px;}
-    .car-player.visible{display:flex;}
-    .car-player-art{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--border);}
-    .car-player-info{flex:1;min-width:0;}
-    .car-player-title{font-size:13px;font-weight:700;color:var(--text);font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .car-player-artist{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .car-player-controls{display:flex;align-items:center;gap:4px;flex-shrink:0;}
-    .car-player-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px;line-height:1;border-radius:8px;}
-    .car-player-btn:active{background:var(--border);}
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script async src="https://cloud.umami.is/script.js" data-website-id="1786c8da-b13f-4fec-b8d2-7d2e7102c29b"></script>
@@ -2808,11 +2797,6 @@ function applyTrans(){
   const advDesc = document.getElementById('viewAdvancedDesc');
   if(advDesc) advDesc.textContent = isFr ? "Inclut la carte, l'historique et la dernière levée." : 'Includes map, history and last lift.';
 
-  const navBtn = document.getElementById('carNavBtn');
-  if (navBtn) {
-    const isApple = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    navBtn.href = isApple ? 'maps://?q=canal+de+Beauharnois' : 'https://www.google.com/maps/search/canal+de+Beauharnois';
-  }
 }
 function applyDonationTrans(isFr) {
   const ids = {
@@ -4059,24 +4043,6 @@ document.addEventListener('visibilitychange',()=>{
       </div>
     </div>
   </div>
-  <!-- Media player -->
-  <div class="car-player" id="carPlayer">
-    <img class="car-player-art" id="carPlayerArt" src="" alt="">
-    <div class="car-player-info">
-      <div class="car-player-title" id="carPlayerTitle">Nothing playing</div>
-      <div class="car-player-artist" id="carPlayerArtist"></div>
-    </div>
-    <div class="car-player-controls">
-      <button class="car-player-btn" onclick="carMediaAction('previoustrack')" title="Previous">⏮</button>
-      <button class="car-player-btn" id="carPlayPauseBtn" onclick="carPlayPause()" title="Play/Pause">⏸</button>
-      <button class="car-player-btn" onclick="carMediaAction('nexttrack')" title="Next">⏭</button>
-    </div>
-  </div>
-
-  <div class="car-action-btns">
-    <a id="carNavBtn" href="#" target="_blank" rel="noopener noreferrer" class="car-action-btn">🗺 Navigation</a>
-    <a href="spotify://" target="_blank" rel="noopener noreferrer" class="car-action-btn" onclick="if(!navigator.userAgent.match(/Spotify/i))this.href='https://open.spotify.com'">🎵 Spotify</a>
-  </div>
   <div class="car-footer">
     <div class="car-footer-updated" id="carModeUpdated"></div>
     <div class="car-footer-live"><div class="car-footer-dot"></div><span id="carModeLiveLabel">En direct</span></div>
@@ -4150,10 +4116,6 @@ async function toggleCarMode() {
     // Wake lock
     try { if ('wakeLock' in navigator) carWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
 
-    // Start media session polling
-    carMediaInterval = setInterval(updateCarPlayer, 2000);
-    updateCarPlayer();
-
     // Weather from existing cache
     const wt = document.getElementById('weatherText');
     const carWeather = document.getElementById('carModeWeather');
@@ -4177,7 +4139,7 @@ async function toggleCarMode() {
     }
 
     // Update car cards from lastData
-    updateCarMode();
+    setTimeout(() => { updateCarMode(); }, 500);
     carPollInterval = setInterval(updateCarMode, 10000);
 
     // Update time
@@ -4188,7 +4150,6 @@ async function toggleCarMode() {
     if (carGeoWatch != null) { navigator.geolocation.clearWatch(carGeoWatch); carGeoWatch = null; }
     if (carPollInterval) { clearInterval(carPollInterval); carPollInterval = null; }
     if (carTimeInterval) { clearInterval(carTimeInterval); carTimeInterval = null; }
-    if (carMediaInterval) { clearInterval(carMediaInterval); carMediaInterval = null; }
     document.getElementById('carModeSpeed').textContent = '—';
   }
 }
