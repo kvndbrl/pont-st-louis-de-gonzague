@@ -366,50 +366,6 @@
     .lang-btn{background:var(--surface2);border:1.5px solid var(--border);font-family:var(--sans);font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;letter-spacing:.5px;padding:8px 18px;border-radius:50px;transition:all .18s;}
     .lang-btn:active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-    /* ── Mode voiture ── */
-    #carModeBtn{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;transition:all .2s;box-shadow:var(--shadow);flex-shrink:0;}
-    #carModeBtn.active{background:rgba(var(--accent-rgb),.15);border-color:rgba(var(--accent-rgb),.35);}
-    #carModeScreen{display:none;flex-direction:column;background:var(--bg);position:fixed;inset:0;z-index:9800;overflow:hidden;}
-    #carModeScreen.active{display:flex;}
-    .car-header{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
-    .car-header-left{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
-    .car-time{font-size:20px;font-weight:700;font-family:var(--sans);color:var(--text);font-variant-numeric:tabular-nums;}
-    .car-weather-line{font-size:12px;color:var(--text2);font-family:var(--sans);line-height:1.4;}
-    .speed-panel{width:66px;height:66px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
-    .speed-value{font-size:20px;font-weight:800;font-family:var(--sans);color:var(--text);line-height:1;}
-    .speed-unit{font-size:8px;color:var(--text3);font-family:var(--mono);letter-spacing:.8px;margin-top:2px;}
-    .car-exit-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:11px;font-family:var(--mono);padding:7px 12px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
-    .car-bridges{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:12px 14px;}
-    .car-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
-    .car-card-name{padding:16px 18px 0;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--mono);}
-    .car-card-status{padding:10px 18px 14px;}
-    .car-pill{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:50px;font-size:26px;font-weight:700;font-family:var(--sans);transition:all .4s ease;}
-    .car-pill-dot{width:10px;height:10px;border-radius:50%;background:currentColor;flex-shrink:0;}
-    .car-pill.disponible{background:var(--green-bg);color:var(--green);}
-    .car-pill.bientot_leve{background:var(--yellow-bg);color:var(--yellow);animation:blink 2s infinite;}
-    .car-pill.raising{background:var(--orange-bg);color:var(--orange);animation:blink 1.5s infinite;}
-    .car-pill.leve{background:var(--red-bg);color:var(--red);animation:blink 1.2s infinite;}
-    .car-pill.lowering{background:var(--yellow-bg);color:var(--yellow);animation:blink 2s infinite;}
-    .car-pill.outage{background:rgba(180,30,30,0.25);color:#ff6b6b;animation:blink 2s infinite;}
-    .car-timer{display:none;padding:0 18px 14px;align-items:center;gap:8px;}
-    .car-timer.visible{display:flex;}
-    .car-timer-text{font-size:18px;font-weight:600;color:var(--text2);font-family:var(--mono);}
-    .car-footer{padding:8px 16px 20px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;}
-    .car-vessel{display:none;margin:0 14px 10px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
-    .car-vessel.visible{display:block;}
-    .car-vessel iframe{width:100%;height:180px;border:none;display:block;}
-    .car-footer-updated{font-size:10px;color:var(--text3);font-family:var(--mono);}
-    .car-footer-live{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);font-family:var(--mono);}
-    .car-footer-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
-    .car-player{display:none;margin:0 14px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:10px 14px;align-items:center;gap:12px;}
-    .car-player.visible{display:flex;}
-    .car-player-art{width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--border);}
-    .car-player-info{flex:1;min-width:0;}
-    .car-player-title{font-size:13px;font-weight:700;color:var(--text);font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .car-player-artist{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .car-player-controls{display:flex;align-items:center;gap:4px;flex-shrink:0;}
-    .car-player-btn{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px;line-height:1;border-radius:8px;}
-    .car-player-btn:active{background:var(--border);}
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script async src="https://cloud.umami.is/script.js" data-website-id="1786c8da-b13f-4fec-b8d2-7d2e7102c29b"></script>
@@ -711,7 +667,6 @@
     <span class="greeting-text" id="greetingText">Bonjour !</span>
     <span class="weather-text" id="weatherText"></span>
   </div>
-  <button id="carModeBtn" onclick="toggleCarMode()" aria-label="Mode voiture">🚗</button>
   <button class="gear-btn" onclick="openDrawer()" aria-label="Réglages">
     <span class="burger-line"></span>
     <span class="burger-line"></span>
@@ -1267,13 +1222,11 @@ function updateTimeline(bridge, status, data) {
 const CHANGELOG_VERSION = '2.0';
 const CHANGELOG = {
   fr: [
-    { icon: 'traffic',  text: 'Mode voiture — affichage épuré plein écran avec vitesse GPS et météo locale, écran toujours actif' },
     { icon: 'notif',    text: 'Notification permanente — statut des ponts toujours visible dans votre barre de notifications' },
     { icon: 'clock',    text: 'Heure de réouverture — la notification indique maintenant l\'heure estimée de réouverture du pont' },
     { icon: 'bridge',   text: 'Levées multiples — toutes les levées planifiées sont regroupées dans une seule notification' },
   ],
   en: [
-    { icon: 'traffic',  text: 'Car mode — clean full-screen display with GPS speed and local weather, screen always on' },
     { icon: 'notif',    text: 'Persistent notification — bridge status always visible in your notification bar' },
     { icon: 'clock',    text: 'Reopen time — the notification now shows the estimated bridge reopen time' },
     { icon: 'bridge',   text: 'Multiple lifts — all scheduled lifts grouped into a single notification' },
@@ -2736,8 +2689,6 @@ function applyTrans(){
   const _itTitle=document.getElementById('installTopTitle');if(_itTitle)_itTitle.textContent=isFrBn?"Installer l'app":"Install the app";
   const _itSub=document.getElementById('installTopSub');if(_itSub)_itSub.textContent=isFrBn?'Recevez des notifications push sur votre téléphone':'Get push notifications on your phone';
   const _itBtn=document.getElementById('installTopBtn');if(_itBtn)_itBtn.textContent=isFrBn?'Installer':'Install';
-  const _carExit=document.getElementById('carExitBtn');
-  if(_carExit)_carExit.textContent=(isFrBn?'✕ Quitter':'✕ Exit');
   const bnG=document.getElementById('bridgeNameGonzague');if(bnG)bnG.textContent=isFrBn?'Pont St-Louis':'St-Louis Bridge';
   const bnL=document.getElementById('bridgeNameLarocque');if(bnL)bnL.textContent=isFrBn?'Pont Larocque — Valleyfield':'Larocque Bridge — Valleyfield';
   const ll=document.getElementById('langLabel');if(ll)ll.textContent=currentLang==='fr'?'Langue':'Language';
@@ -4008,279 +3959,6 @@ document.addEventListener('visibilitychange',()=>{
   </div>
 </div>
 
-<!-- Mode voiture -->
-<div id="carModeScreen">
-  <div class="car-header">
-    <div class="car-header-left">
-      <div class="car-time" id="carModeTime"></div>
-      <div class="car-weather-line" id="carModeWeather"></div>
-    </div>
-    <div class="speed-panel">
-      <div class="speed-value" id="carModeSpeed">—</div>
-      <div class="speed-unit">KM/H</div>
-    </div>
-    <button class="car-exit-btn" id="carExitBtn" onclick="toggleCarMode()">✕ Quitter</button>
-  </div>
-  <div class="car-bridges">
-    <div class="car-card" id="carCardGonzague">
-      <div class="car-card-name" id="carNameGonzague">Pont St-Louis</div>
-      <div class="car-card-status">
-        <div class="car-pill disponible" id="carPillGonzague">
-          <span class="car-pill-dot"></span>
-          <span id="carLabelGonzague">Disponible</span>
-        </div>
-      </div>
-      <div class="car-timer" id="carTimerGonzague">
-        <span class="car-timer-text" id="carTimerTextGonzague"></span>
-      </div>
-      <div class="car-vessel" id="carVesselGonzague">
-        <iframe src="https://www.vesselfinder.com/aismap?lat=45.21732&lon=-73.98437&zoom=13&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
-      </div>
-    </div>
-    <div class="car-card" id="carCardLarocque">
-      <div class="car-card-name" id="carNameLarocque">Pont Larocque — Valleyfield</div>
-      <div class="car-card-status">
-        <div class="car-pill disponible" id="carPillLarocque">
-          <span class="car-pill-dot"></span>
-          <span id="carLabelLarocque">Disponible</span>
-        </div>
-      </div>
-      <div class="car-timer" id="carTimerLarocque">
-        <span class="car-timer-text" id="carTimerTextLarocque"></span>
-      </div>
-      <div class="car-vessel" id="carVesselLarocque">
-        <iframe src="https://www.vesselfinder.com/aismap?lat=45.22068&lon=-74.13641&zoom=13&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
-      </div>
-    </div>
-  </div>
-  <!-- Media player -->
-  <div class="car-player" id="carPlayer">
-    <img class="car-player-art" id="carPlayerArt" src="" alt="">
-    <div class="car-player-info">
-      <div class="car-player-title" id="carPlayerTitle">Nothing playing</div>
-      <div class="car-player-artist" id="carPlayerArtist"></div>
-    </div>
-    <div class="car-player-controls">
-      <button class="car-player-btn" onclick="carMediaAction('previoustrack')" title="Previous">⏮</button>
-      <button class="car-player-btn" id="carPlayPauseBtn" onclick="carPlayPause()" title="Play/Pause">⏸</button>
-      <button class="car-player-btn" onclick="carMediaAction('nexttrack')" title="Next">⏭</button>
-    </div>
-  </div>
-
-  <div class="car-footer">
-    <div class="car-footer-updated" id="carModeUpdated"></div>
-    <div class="car-footer-live"><div class="car-footer-dot"></div><span id="carModeLiveLabel">En direct</span></div>
-  </div>
-</div>
-
-<script>
-const BRIDGE_MAP_COORDS = {
-  gonzague: { nameFr: 'Pont St-Louis', nameEn: 'St-Louis Bridge', lat: '45.2314064', lon: '-74.0004653', zoom: 14 },
-  larocque: { nameFr: 'Pont Larocque', nameEn: 'Larocque Bridge', lat: '45.2240497', lon: '-74.1177633', zoom: 14 },
-};
-
-// Update map button labels based on language
-function updateMapBtnLabels() {
-  const isFr = currentLang === 'fr';
-  document.querySelectorAll('.map-btn-label').forEach(el => {
-    el.textContent = isFr ? 'Vue en temps réel' : 'Real-time View';
-  });
-}
-
-function showMapModal(bridge) {
-  const b = BRIDGE_MAP_COORDS[bridge];
-  if (!b) return;
-  const C = bridge.charAt(0).toUpperCase() + bridge.slice(1);
-  const sourceCard = document.getElementById('card' + C);
-
-  // Clone bridge name
-  const bridgeNameEl = sourceCard ? sourceCard.querySelector('.bridge-name') : null;
-  const bridgeNameContainer = document.getElementById('mapModalBridgeName');
-  if (bridgeNameContainer && bridgeNameEl) {
-    bridgeNameContainer.innerHTML = bridgeNameEl.outerHTML;
-  }
-
-  // Clone status pill
-  const sourcePill = sourceCard ? sourceCard.querySelector('.status-pill') : null;
-  const pillContainer = document.getElementById('mapModalPill');
-  if (pillContainer) {
-    if (sourcePill) {
-      pillContainer.innerHTML = sourcePill.outerHTML;
-      pillContainer.style.display = 'block';
-    } else {
-      pillContainer.style.display = 'none';
-    }
-  }
-
-  const url = `https://www.vesselfinder.com/aismap?zoom=${b.zoom}&lat=${b.lat}&lon=${b.lon}&width=100%25&height=380&names=1&track=1`;
-  document.getElementById('mapModalFrame').src = url;
-  document.getElementById('mapModalOverlay').style.display = 'flex';
-}
-
-function closeMapModal() {
-  document.getElementById('mapModalOverlay').style.display = 'none';
-  document.getElementById('mapModalFrame').src = '';
-}
-
-// Call once on load to set initial labels
-document.addEventListener('DOMContentLoaded', updateMapBtnLabels);
-
-// ── Mode voiture ──────────────────────────────────────────────────
-let carModeActive = false;
-let carWakeLock = null;
-let carGeoWatch = null;
-let carPollInterval = null;
-let carTimeInterval = null;
-let carMediaInterval = null;
-
-async function toggleCarMode() {
-  carModeActive = !carModeActive;
-  document.getElementById('carModeBtn').classList.toggle('active', carModeActive);
-  document.getElementById('carModeScreen').classList.toggle('active', carModeActive);
-
-  if (carModeActive) {
-    // Wake lock
-    try { if ('wakeLock' in navigator) carWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
-
-    // Start media session polling
-    carMediaInterval = setInterval(updateCarPlayer, 2000);
-    updateCarPlayer();
-
-    // Weather from existing cache
-    const wt = document.getElementById('weatherText');
-    const carWeather = document.getElementById('carModeWeather');
-    const _setWeather = () => {
-      if (wt && wt.innerText && wt.innerText.trim()) {
-        carWeather.textContent = wt.innerText.replace(/\s+/g,' ').trim();
-      } else {
-        const cached = localStorage.getItem('weatherCache');
-        if (cached) {
-          const tmp = document.createElement('div');
-          tmp.innerHTML = cached;
-          carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
-        }
-      }
-    };
-    _setWeather();
-    setTimeout(_setWeather, 1000);
-
-    // GPS speed
-    if (navigator.geolocation) {
-      carGeoWatch = navigator.geolocation.watchPosition(pos => {
-        const s = pos.coords.speed;
-        document.getElementById('carModeSpeed').textContent = (s != null && s >= 0) ? Math.round(s * 3.6) : '—';
-      }, () => {}, { enableHighAccuracy: true, maximumAge: 1000 });
-    }
-
-    // Update car cards — poll until data is available
-    carPollInterval = setInterval(updateCarMode, 5000);
-    // Try immediately and retry until data is loaded
-    let _tries = 0;
-    const _tryUpdate = setInterval(() => {
-      _tries++;
-      updateCarMode();
-      if (_tries >= 20) clearInterval(_tryUpdate);
-    }, 500);
-
-    // Update time
-    updateCarTime();
-    carTimeInterval = setInterval(updateCarTime, 1000);
-  } else {
-    if (carWakeLock) { try { carWakeLock.release(); } catch(e) {} carWakeLock = null; }
-    if (carGeoWatch != null) { navigator.geolocation.clearWatch(carGeoWatch); carGeoWatch = null; }
-    if (carPollInterval) { clearInterval(carPollInterval); carPollInterval = null; }
-    if (carTimeInterval) { clearInterval(carTimeInterval); carTimeInterval = null; }
-    if (carMediaInterval) { clearInterval(carMediaInterval); carMediaInterval = null; }
-    document.getElementById('carModeSpeed').textContent = '—';
-  }
-}
-
-function updateCarTime() {
-  const now = new Date();
-  const isFr = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('appLang') || 'fr') === 'fr';
-  document.getElementById('carModeTime').textContent =
-    now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
-  document.getElementById('carModeUpdated').textContent =
-    (isFr ? 'Mis à jour à ' : 'Updated at ') +
-    now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-}
-
-function updateCarMode() {
-  if (!carModeActive) return;
-
-  // Fallback: read status directly from main pill if lastData not ready
-  if (!lastData) {
-    for (const [bridge, cap] of [['gonzague','Gonzague'],['larocque','Larocque']]) {
-      const mainPill = document.getElementById('pill' + cap);
-      const carPill = document.getElementById('carPill' + cap);
-      const carLabel = document.getElementById('carLabel' + cap);
-      if (mainPill && carPill && carLabel) {
-        const cls = [...mainPill.classList].find(c => ['disponible','bientot_leve','raising','leve','lowering','outage'].includes(c));
-        if (cls) {
-          carPill.className = 'car-pill ' + cls;
-          const labels = {disponible:'Disponible',bientot_leve:'Bientôt levé',raising:'En levage',leve:'Levé',lowering:'Descente',outage:'Fermé'};
-          carLabel.textContent = labels[cls] || cls;
-        }
-      }
-    }
-    return;
-  }
-  const isFr = currentLang === 'fr';
-
-  const STATUS_LABEL_CAR = isFr
-    ? { disponible:'Disponible', bientot_leve:'Bientôt levé', raising:'En levage', leve:'Levé', lowering:'Descente', outage:'Fermé' }
-    : { disponible:'Available',  bientot_leve:'Lifting soon',  raising:'Raising',   leve:'Lifted', lowering:'Lowering', outage:'Closed' };
-
-  for (const bridge of ['gonzague','larocque']) {
-    const d = lastData[bridge];
-    if (!d) continue;
-    const cap = bridge.charAt(0).toUpperCase() + bridge.slice(1);
-    const status = d.status || 'disponible';
-    const pill = document.getElementById('carPill' + cap);
-    const label = document.getElementById('carLabel' + cap);
-    const timerEl = document.getElementById('carTimer' + cap);
-    const timerText = document.getElementById('carTimerText' + cap);
-
-    if (pill) pill.className = 'car-pill ' + status;
-
-    // Vessel map
-    const vesselEl = document.getElementById('carVessel' + cap);
-    if (vesselEl) {
-      vesselEl.classList.toggle('visible', ['leve','raising'].includes(status));
-    }
-    if (label) label.textContent = STATUS_LABEL_CAR[status] || status;
-
-    // Reopen time
-    const reopenLine = document.getElementById('timelineReopen' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
-    const reopenText = reopenLine ? reopenLine.textContent.trim() : '';
-    if (timerEl && timerText) {
-      if (reopenText && ['leve','raising','lowering','bientot_leve'].includes(status)) {
-        timerText.textContent = '⏱ ' + reopenText;
-        timerEl.classList.add('visible');
-      } else {
-        timerEl.classList.remove('visible');
-      }
-    }
-  }
-
-  // Update car names with translated bridge names
-  const nameG = document.getElementById('carNameGonzague');
-  const nameL = document.getElementById('carNameLarocque');
-  if (nameG) nameG.textContent = isFr ? 'Pont St-Louis' : 'St-Louis Bridge';
-  if (nameL) nameL.textContent = isFr ? 'Pont Larocque — Valleyfield' : 'Larocque Bridge — Valleyfield';
-
-  const liveLabel = document.getElementById('carModeLiveLabel');
-  if (liveLabel) liveLabel.textContent = isFr ? 'En direct' : 'Live';
-}
-
-// Re-acquire wake lock on visibility change
-document.addEventListener('visibilitychange', async () => {
-  if (carModeActive && document.visibilityState === 'visible') {
-    try { if ('wakeLock' in navigator) carWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
-  }
-});
-
-</script>
 
 <script>
 (function() {
