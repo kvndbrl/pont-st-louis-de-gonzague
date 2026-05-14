@@ -540,12 +540,21 @@
 
     <!-- Step indicator -->
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:20px;justify-content:center;">
-      <div id="ob-dot-1" style="width:8px;height:8px;border-radius:50%;background:var(--accent);transition:all .3s;"></div>
+      <div id="ob-dot-0" style="width:8px;height:8px;border-radius:50%;background:var(--accent);transition:all .3s;"></div>
+      <div id="ob-dot-1" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-2" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-3" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-4" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-5" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
       <div id="ob-dot-6" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;"></div>
+    </div>
+
+    <!-- Step 0: Intro -->
+    <div id="ob-step-0" style="text-align:center;padding:8px 0;">
+      <div style="font-size:48px;margin-bottom:12px;">🌉</div>
+      <div class="name-modal-title" id="obIntroTitle">Fini l’attente au pont.</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.6;margin:12px 0 20px;font-family:var(--sans);" id="obIntroDesc">Statut en temps réel des ponts St-Louis et Larocque. Reçois une notification push avant chaque levée — pour ne jamais être pris par surprise.</div>
+      <button class="name-modal-btn" id="obIntroBtn" onclick="obSetStep(1)">C’est parti !</button>
     </div>
 
     <!-- Step 1: Prénom -->
@@ -1486,7 +1495,7 @@ let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstallPrompt = e; });
 
 function obSetStep(n) {
-  [1,2,3,4,5,6].forEach(i => {
+  [0,1,2,3,4,5,6].forEach(i => {
     const step = document.getElementById(`ob-step-${i}`);
     if(step) step.style.display = i===n ? 'block' : 'none';
     const dot = document.getElementById(`ob-dot-${i}`);
@@ -1617,6 +1626,8 @@ function showNameModalIfNeeded(){
   if(isFBWebView||isExternalBrowser){ setTimeout(showBrowserGate, 800); return; }
   if(window.innerWidth >= 1024 && !sessionStorage.getItem('desktopDismissed')) return;
   if(localStorage.getItem('nameAsked')) return;
+  const _pwa = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if(!_pwa) return;
   const t=TR[currentLang];
   // Step 1 labels
   document.getElementById('modalTitle').textContent=t.modalTitle||'Comment vous appelez-vous\u00A0?';
@@ -1655,7 +1666,7 @@ function showNameModalIfNeeded(){
   if(document.getElementById('obInstallDesc')) document.getElementById('obInstallDesc').textContent=currentLang==='fr'?'Ajoutez l\'app sur votre écran d\'accueil pour un accès rapide.':'Add the app to your home screen for quick access.';
   if(document.getElementById('obInstallBtn')) document.getElementById('obInstallBtn').textContent=currentLang==='fr'?'Installer':'Install';
   if(document.getElementById('obCloseBtn')) document.getElementById('obCloseBtn').textContent=currentLang==='fr'?'Commencer':'Get started';
-  obSetStep(1);
+  obSetStep(0);
   setTimeout(()=>{
     document.getElementById('nameModalOverlay').style.display='flex';
     document.getElementById('nameModalInput').focus();
