@@ -3929,6 +3929,10 @@ document.addEventListener('visibilitychange',()=>{
 
 <script>
 (function(){
+  var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  var _currentLang = localStorage.getItem('appLang') || ((navigator.language||'').startsWith('en') ? 'en' : 'fr');
+  var isIOS = _isIOS;
+  var currentLang = _currentLang;
   const overlay = document.getElementById('browserGateOverlay');
   if (!overlay) return;
   const title = document.getElementById('browserGateTitle');
