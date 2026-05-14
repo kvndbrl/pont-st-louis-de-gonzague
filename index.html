@@ -2862,7 +2862,6 @@ function loadCachedStatus() {
     lastData = data;
     updateDisplay();
     refreshTimers();
-    if (typeof carModeActive !== 'undefined' && carModeActive) updateCarMode();
     return true;
   } catch(e) { return false; }
 }
@@ -2885,7 +2884,6 @@ async function fetchStatus(){
     trackLiftStatus('larocque',d.larocque.status,d.larocque.raisedSince);
     updateDisplay();
     refreshTimers();
-    if (typeof carModeActive !== 'undefined' && carModeActive) updateCarMode();
     // Track subscriber count once per session
     if(!sessionStorage.getItem('subTracked')){
       try{
@@ -4014,7 +4012,7 @@ document.addEventListener('visibilitychange',()=>{
 <div id="carModeScreen">
   <div class="car-header">
     <div class="car-header-left">
-      <div class="car-time" id="carModeTime"></div>
+      <div class="car-time" id="carModeTime">13:24</div>
       <div class="car-weather-line" id="carModeWeather"></div>
     </div>
     <div class="speed-panel">
@@ -4036,7 +4034,7 @@ document.addEventListener('visibilitychange',()=>{
         <span class="car-timer-text" id="carTimerTextGonzague"></span>
       </div>
       <div class="car-vessel" id="carVesselGonzague">
-        <iframe src="https://www.vesselfinder.com/aismap?lat=45.2314064&lon=-74.0004653&zoom=14&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
+        <iframe src="https://www.vesselfinder.com/aismap?lat=45.21732&lon=-73.98437&zoom=13&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
       </div>
     </div>
     <div class="car-card" id="carCardLarocque">
@@ -4051,7 +4049,7 @@ document.addEventListener('visibilitychange',()=>{
         <span class="car-timer-text" id="carTimerTextLarocque"></span>
       </div>
       <div class="car-vessel" id="carVesselLarocque">
-        <iframe src="https://www.vesselfinder.com/aismap?lat=45.2240497&lon=-74.1177633&zoom=14&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
+        <iframe src="https://www.vesselfinder.com/aismap?lat=45.22068&lon=-74.13641&zoom=13&width=100%25&height=180&names=true&clickable=true" loading="lazy" title="Vessels"></iframe>
       </div>
     </div>
   </div>
@@ -4127,15 +4125,11 @@ function closeMapModal() {
 // Call once on load to set initial labels
 document.addEventListener('DOMContentLoaded', updateMapBtnLabels);
 
-// ── Mode voiture ──────────────────────────────────────────────────────
+// ── Mode voiture ──────────────────────────────────────────────────
 let carModeActive = false;
 let carWakeLock = null;
 let carGeoWatch = null;
 let carPollInterval = null;
-let carTimeInterval = null;
-
-const STATUS_LABEL_CAR_FR = { disponible:'Disponible', bientot_leve:'Bientôt levé', raising:'En levage', leve:'Levé', lowering:'Descente', outage:'Fermé' };
-const STATUS_LABEL_CAR_EN = { disponible:'Available', bientot_leve:'Lifting soon', raising:'Raising', leve:'Lifted', lowering:'Lowering', outage:'Closed' };
 
 async function toggleCarMode() {
   carModeActive = !carModeActive;
@@ -4143,129 +4137,139 @@ async function toggleCarMode() {
   document.getElementById('carModeScreen').classList.toggle('active', carModeActive);
 
   if (carModeActive) {
-    // Exit button language
-    const exitBtn = document.getElementById('carExitBtn');
-    if (exitBtn) exitBtn.textContent = (localStorage.getItem('appLang')||'fr') === 'fr' ? '✕ Quitter' : '✕ Exit';
-
     // Wake lock
     try { if ('wakeLock' in navigator) carWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+
+    // Start media session polling
+    carMediaInterval = setInterval(updateCarPlayer, 2000);
+    updateCarPlayer();
+
+    // Weather from existing cache
+    const wt = document.getElementById('weatherText');
+    const carWeather = document.getElementById('carModeWeather');
+    const _setWeather = () => {
+      if (wt && wt.innerText && wt.innerText.trim()) {
+        carWeather.textContent = wt.innerText.replace(/\s+/g,' ').trim();
+      } else {
+        const cached = localStorage.getItem('weatherCache');
+        if (cached) {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = cached;
+          carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
+        }
+      }
+    };
+    _setWeather();
+    setTimeout(_setWeather, 1000);
 
     // GPS speed
     if (navigator.geolocation) {
       carGeoWatch = navigator.geolocation.watchPosition(pos => {
         const s = pos.coords.speed;
-        const el = document.getElementById('carModeSpeed');
-        if (el) el.textContent = (s != null && s >= 0) ? Math.round(s * 3.6) : '—';
+        document.getElementById('carModeSpeed').textContent = (s != null && s >= 0) ? Math.round(s * 3.6) : '—';
       }, () => {}, { enableHighAccuracy: true, maximumAge: 1000 });
     }
 
-    // Start updates
+    // Update car cards — poll until data is available
+    carPollInterval = setInterval(updateCarMode, 5000);
+    // Try immediately and retry until data is loaded
+    let _tries = 0;
+    const _tryUpdate = setInterval(() => {
+      _tries++;
+      updateCarMode();
+      if (_tries >= 20) clearInterval(_tryUpdate);
+    }, 500);
+
+    // Update time
     updateCarTime();
     carTimeInterval = setInterval(updateCarTime, 1000);
-    updateCarMode();
-    carPollInterval = setInterval(updateCarMode, 5000);
-
   } else {
     if (carWakeLock) { try { carWakeLock.release(); } catch(e) {} carWakeLock = null; }
     if (carGeoWatch != null) { navigator.geolocation.clearWatch(carGeoWatch); carGeoWatch = null; }
     if (carPollInterval) { clearInterval(carPollInterval); carPollInterval = null; }
     if (carTimeInterval) { clearInterval(carTimeInterval); carTimeInterval = null; }
-    const speedEl = document.getElementById('carModeSpeed');
-    if (speedEl) speedEl.textContent = '—';
+    if (carMediaInterval) { clearInterval(carMediaInterval); carMediaInterval = null; }
+    document.getElementById('carModeSpeed').textContent = '—';
   }
 }
 
+let carTimeInterval = null;
 function updateCarTime() {
-  const isFr = (localStorage.getItem('appLang') || 'fr') === 'fr';
   const now = new Date();
-  const timeEl = document.getElementById('carModeTime');
-  if (timeEl) timeEl.textContent = now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
-  const updEl = document.getElementById('carModeUpdated');
-  if (updEl) updEl.textContent = (isFr ? 'Mis à jour à ' : 'Updated at ') + now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  const isFr = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('appLang') || 'fr') === 'fr';
+  document.getElementById('carModeTime').textContent =
+    now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('carModeUpdated').textContent =
+    (isFr ? 'Mis à jour à ' : 'Updated at ') +
+    now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
 function updateCarMode() {
   if (!carModeActive) return;
 
-  // Weather
-  const wtEl = document.getElementById('weatherText');
-  const cwEl = document.getElementById('carModeWeather');
-  if (wtEl && cwEl) {
-    const txt = (wtEl.innerText || wtEl.textContent || '').replace(/\s+/g, ' ').trim();
-    if (txt) cwEl.textContent = txt;
-  }
-
-  // Status
-  const isFr = (localStorage.getItem('appLang') || 'fr') === 'fr';
-  const labels = isFr ? STATUS_LABEL_CAR_FR : STATUS_LABEL_CAR_EN;
-
-  for (const [bridge, cap] of [['gonzague', 'Gonzague'], ['larocque', 'Larocque']]) {
-    let status = 'disponible';
-
-    // Get status from lastData if available, else from main pill
-    if (lastData && lastData[bridge] && lastData[bridge].status) {
-      status = lastData[bridge].status;
-    } else {
+  // Fallback: read status directly from main pill if lastData not ready
+  if (!lastData) {
+    for (const [bridge, cap] of [['gonzague','Gonzague'],['larocque','Larocque']]) {
       const mainPill = document.getElementById('pill' + cap);
-      if (mainPill) {
-        const cls = [...mainPill.classList].find(c => STATUS_LABEL_CAR_FR[c]);
-        if (cls) status = cls;
+      const carPill = document.getElementById('carPill' + cap);
+      const carLabel = document.getElementById('carLabel' + cap);
+      if (mainPill && carPill && carLabel) {
+        const cls = [...mainPill.classList].find(c => ['disponible','bientot_leve','raising','leve','lowering','outage'].includes(c));
+        if (cls) {
+          carPill.className = 'car-pill ' + cls;
+          const labels = {disponible:'Disponible',bientot_leve:'Bientôt levé',raising:'En levage',leve:'Levé',lowering:'Descente',outage:'Fermé'};
+          carLabel.textContent = labels[cls] || cls;
+        }
       }
     }
+    return;
+  }
+  const isFr = currentLang === 'fr';
 
-    const pill = document.getElementById('carPill' + cap);
-    const label = document.getElementById('carLabel' + cap);
-    const card = document.getElementById('carCard' + cap);
+  const STATUS_LABEL_CAR = isFr
+    ? { disponible:'Disponible', bientot_leve:'Bientôt levé', raising:'En levage', leve:'Levé', lowering:'Descente', outage:'Fermé' }
+    : { disponible:'Available',  bientot_leve:'Lifting soon',  raising:'Raising',   leve:'Lifted', lowering:'Lowering', outage:'Closed' };
+
+  for (const bridge of ['gonzague','larocque']) {
+    const d = lastData[bridge];
+    if (!d) continue;
+    const status = d.status || 'disponible';
+    const pill = document.getElementById('carPill' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const label = document.getElementById('carLabel' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const timerEl = document.getElementById('carTimer' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const timerText = document.getElementById('carTimerText' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
 
     if (pill) pill.className = 'car-pill ' + status;
-    if (label) label.textContent = labels[status] || status;
-    if (card) card.className = 'car-card status-' + status;
 
-    // Timer
-    const timerEl = document.getElementById('carTimer' + cap);
-    const timerText = document.getElementById('carTimerText' + cap);
+    // Vessel map
+    const vesselEl = document.getElementById('carVessel' + cap);
+    if (vesselEl) {
+      vesselEl.classList.toggle('visible', ['leve','raising'].includes(status));
+    }
+    if (label) label.textContent = STATUS_LABEL_CAR[status] || status;
+
+    // Reopen time
+    const reopenLine = document.getElementById('timelineReopen' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
+    const reopenText = reopenLine ? reopenLine.textContent.trim() : '';
     if (timerEl && timerText) {
-      const active = ['leve','raising','lowering','bientot_leve'].includes(status);
-      if (active && lastData && lastData[bridge]) {
-        const d = lastData[bridge];
-        const avgMin = (d.avgLiftDuration || 16) + (d.avgLoweringDuration || 3);
-        const liftingSince = d.liftingSince;
-        if (liftingSince) {
-          const elapsed = Math.floor((Date.now() - liftingSince) / 60000);
-          const remain = Math.max(1, avgMin - elapsed);
-          timerText.textContent = isFr ? `⏱ Réouverture dans environ ${remain} min` : `⏱ Reopens in about ${remain} min`;
-        } else {
-          timerText.textContent = isFr ? '⏱ Bientôt disponible' : '⏱ Opening soon';
-        }
+      if (reopenText && ['leve','raising','lowering','bientot_leve'].includes(status)) {
+        timerText.textContent = '⏱ ' + reopenText;
         timerEl.classList.add('visible');
       } else {
         timerEl.classList.remove('visible');
       }
     }
-
-    // Vessel map
-    const vesselEl = document.getElementById('carVessel' + cap);
-    if (vesselEl) vesselEl.classList.toggle('visible', ['leve','raising'].includes(status));
   }
 
-  // Bridge names
-  const isFrNow = (localStorage.getItem('appLang') || 'fr') === 'fr';
-  const ng = document.getElementById('carNameGonzague');
-  const nl = document.getElementById('carNameLarocque');
-  if (ng) ng.textContent = isFrNow ? 'Pont St-Louis' : 'St-Louis Bridge';
-  if (nl) nl.textContent = isFrNow ? 'Pont Larocque — Valleyfield' : 'Larocque Bridge — Valleyfield';
-  const liveEl = document.getElementById('carModeLiveLabel');
-  if (liveEl) liveEl.textContent = isFrNow ? 'En direct' : 'Live';
-  const exitEl = document.getElementById('carExitBtn');
-  if (exitEl) exitEl.textContent = isFrNow ? '✕ Quitter' : '✕ Exit';
+  // Update car names with translated bridge names
+  const nameG = document.getElementById('carNameGonzague');
+  const nameL = document.getElementById('carNameLarocque');
+  if (nameG) nameG.textContent = isFr ? 'Pont St-Louis' : 'St-Louis Bridge';
+  if (nameL) nameL.textContent = isFr ? 'Pont Larocque — Valleyfield' : 'Larocque Bridge — Valleyfield';
+
+  const liveLabel = document.getElementById('carModeLiveLabel');
+  if (liveLabel) liveLabel.textContent = isFr ? 'En direct' : 'Live';
 }
-
-// Re-acquire wake lock on visibility change
-document.addEventListener('visibilitychange', async () => {
-  if (carModeActive && document.visibilityState === 'visible') {
-    try { if ('wakeLock' in navigator) carWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
-  }
-});
 
 // Re-acquire wake lock on visibility change
 document.addEventListener('visibilitychange', async () => {
