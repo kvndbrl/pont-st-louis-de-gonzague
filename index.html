@@ -1914,7 +1914,6 @@ const TR={
 
 const bLang=navigator.language||navigator.userLanguage;
 let currentLang=localStorage.getItem('appLang')||(bLang.startsWith('en')?'en':'fr');
-const _exitLbl=document.getElementById('carExitLabel');if(_exitLbl)_exitLbl.textContent=currentLang==='fr'?'Quitter':'Exit';
 
 function applyDark(d){document.body.classList.toggle('dark',d);const i=document.getElementById('darkToggleInput');i.checked=d;i.setAttribute('aria-checked',d?'true':'false');}
 function toggleDark(){const d=document.getElementById('darkToggleInput').checked;localStorage.setItem('darkMode',d?'1':'0');applyDark(d);}
