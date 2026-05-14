@@ -4144,19 +4144,32 @@ async function toggleCarMode() {
     carMediaInterval = setInterval(updateCarPlayer, 2000);
     updateCarPlayer();
 
-    // Weather from existing cache
+    // Weather — show regardless of weather toggle setting
     const wt = document.getElementById('weatherText');
     const carWeather = document.getElementById('carModeWeather');
     const _setWeather = () => {
       if (wt && wt.innerText && wt.innerText.trim()) {
         carWeather.textContent = wt.innerText.replace(/\s+/g,' ').trim();
-      } else {
-        const cached = localStorage.getItem('weatherCache');
-        if (cached) {
-          const tmp = document.createElement('div');
-          tmp.innerHTML = cached;
-          carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
-        }
+        return;
+      }
+      const cached = localStorage.getItem('weatherCache');
+      if (cached) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = cached;
+        const txt = tmp.textContent.replace(/\s+/g,' ').trim();
+        if (txt) { carWeather.textContent = txt; return; }
+      }
+      // No cached weather — fetch directly for car mode
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const lat = pos.coords.latitude, lon = pos.coords.longitude;
+          fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m&timezone=auto')
+            .then(r => r.json()).then(w => {
+              const c = Math.round(w.current.temperature_2m);
+              const f = Math.round(c * 9/5 + 32);
+              carWeather.textContent = c+'°C · '+f+'°F';
+            }).catch(()=>{});
+        }, ()=>{}, {timeout:5000, maximumAge:300000});
       }
     };
     _setWeather();
@@ -4249,12 +4262,25 @@ function updateCarMode() {
     }
     if (label) label.textContent = STATUS_LABEL_CAR[status] || status;
 
-    // Reopen time
-    const reopenLine = document.getElementById('timelineReopen' + bridge.charAt(0).toUpperCase() + bridge.slice(1));
-    const reopenText = reopenLine ? reopenLine.textContent.trim() : '';
+    // Reopen time — compute directly from lastData, don't rely on DOM
     if (timerEl && timerText) {
-      if (reopenText && ['leve','raising','lowering','bientot_leve'].includes(status)) {
-        timerText.textContent = '⏱ ' + reopenText;
+      if (['leve','raising','lowering','bientot_leve'].includes(status)) {
+        const avgMin = d.avgLiftDuration || d.avgLoweringDuration || 12;
+        let reopenStr = '';
+        if (d.liftingSince) {
+          const now = new Date();
+          const parts = d.liftingSince.split(':').map(Number);
+          const since = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parts[0], parts[1], 0, 0);
+          if (since > now) since.setDate(since.getDate() - 1);
+          const elapsed = (Date.now() - since.getTime()) / 60000;
+          const remaining = Math.max(1, avgMin - elapsed);
+          const reopenTime = new Date(Date.now() + remaining * 60000);
+          const hm = reopenTime.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
+          reopenStr = isFr ? `⏱ Réouverture prévue ~${hm}` : `⏱ Expected reopen ~${hm}`;
+        } else {
+          reopenStr = isFr ? `⏱ Durée moyenne ~${avgMin} min` : `⏱ Avg duration ~${avgMin} min`;
+        }
+        timerText.textContent = reopenStr;
         timerEl.classList.add('visible');
       } else {
         timerEl.classList.remove('visible');
