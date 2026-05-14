@@ -398,8 +398,6 @@
     .car-vessel{display:none;margin:0 14px 10px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}
     .car-vessel.visible{display:block;}
     .car-vessel iframe{width:100%;height:180px;border:none;display:block;}
-    .car-action-btns{display:flex;gap:8px;padding:0 14px 10px;}
-    .car-action-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--sans);text-decoration:none;cursor:pointer;}
     .car-footer-updated{font-size:10px;color:var(--text3);font-family:var(--mono);}
     .car-footer-live{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text2);font-family:var(--mono);}
     .car-footer-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
@@ -2808,11 +2806,7 @@ function applyTrans(){
   const advDesc = document.getElementById('viewAdvancedDesc');
   if(advDesc) advDesc.textContent = isFr ? "Inclut la carte, l'historique et la dernière levée." : 'Includes map, history and last lift.';
 
-  const navBtn = document.getElementById('carNavBtn');
-  if (navBtn) {
-    const isApple = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    navBtn.href = isApple ? 'maps://?q=canal+de+Beauharnois' : 'https://www.google.com/maps/search/canal+de+Beauharnois';
-  }
+
 }
 function applyDonationTrans(isFr) {
   const ids = {
@@ -4073,10 +4067,6 @@ document.addEventListener('visibilitychange',()=>{
     </div>
   </div>
 
-  <div class="car-action-btns">
-    <a id="carNavBtn" href="#" target="_blank" rel="noopener noreferrer" class="car-action-btn">🗺 Navigation</a>
-    <a href="spotify://" target="_blank" rel="noopener noreferrer" class="car-action-btn" onclick="if(!navigator.userAgent.match(/Spotify/i))this.href='https://open.spotify.com'">🎵 Spotify</a>
-  </div>
   <div class="car-footer">
     <div class="car-footer-updated" id="carModeUpdated"></div>
     <div class="car-footer-live"><div class="car-footer-dot"></div><span id="carModeLiveLabel">En direct</span></div>
@@ -4176,15 +4166,15 @@ async function toggleCarMode() {
       }, () => {}, { enableHighAccuracy: true, maximumAge: 1000 });
     }
 
-    // Update car cards from lastData — wait until data is ready
-    const _waitForData = setInterval(() => {
-      if (lastData && lastData.gonzague && lastData.larocque) {
-        clearInterval(_waitForData);
-        updateCarMode();
-      }
-    }, 300);
-    setTimeout(() => { clearInterval(_waitForData); updateCarMode(); }, 8000);
-    carPollInterval = setInterval(updateCarMode, 10000);
+    // Update car cards — poll until data is available
+    carPollInterval = setInterval(updateCarMode, 5000);
+    // Try immediately and retry until data is loaded
+    let _tries = 0;
+    const _tryUpdate = setInterval(() => {
+      _tries++;
+      updateCarMode();
+      if (_tries >= 20) clearInterval(_tryUpdate);
+    }, 500);
 
     // Update time
     updateCarTime();
@@ -4211,7 +4201,19 @@ function updateCarTime() {
 }
 
 function updateCarMode() {
-  if (!carModeActive || !lastData) return;
+  if (!carModeActive) return;
+  // Use status from main cards if lastData not ready
+  if (!lastData) {
+    ['Gonzague','Larocque'].forEach(cap => {
+      const mainPill = document.getElementById('statusPill' + cap);
+      if (mainPill) {
+        const carPill = document.getElementById('carPill' + cap);
+        const carLabel = document.getElementById('carLabel' + cap);
+        if (carPill && carLabel && !carLabel.textContent.includes('...')) return;
+      }
+    });
+    return;
+  }
   const isFr = currentLang === 'fr';
 
   const STATUS_LABEL_CAR = isFr
