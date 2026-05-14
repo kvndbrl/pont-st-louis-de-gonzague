@@ -1768,13 +1768,6 @@ async function syncPrefs(){
 let lastData=null;
 function openDrawer(){
   document.getElementById('settingsDrawer').classList.add('open');
-  // Re-render per-bridge checkboxes with correct language
-  setTimeout(() => {
-    ['gonzague','larocque'].forEach(b => {
-      const el = document.getElementById('perBridge'+capitalize(b)+'Content');
-      if (el && el.style.display !== 'none') renderPerBridgeCheckboxes(b);
-    });
-  }, 50);
   document.getElementById('settingsDrawer').removeAttribute('aria-hidden');
   document.getElementById('drawerOverlay').classList.add('open');
   syncNotifState();
