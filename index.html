@@ -4042,7 +4042,7 @@ document.addEventListener('visibilitychange',()=>{
       <div class="car-card-status">
         <div class="car-pill disponible" id="carPillLarocque">
           <span class="car-pill-dot"></span>
-          <span id="carLabelLarocque">Chargement...</span>
+          <span id="carLabelLarocque">Disponible</span>
         </div>
       </div>
       <div class="car-timer" id="carTimerLarocque">
@@ -4147,16 +4147,20 @@ async function toggleCarMode() {
     // Weather from existing cache
     const wt = document.getElementById('weatherText');
     const carWeather = document.getElementById('carModeWeather');
-    if (wt && wt.textContent.trim()) {
-      carWeather.textContent = wt.textContent.replace(/\s+/g,' ').trim();
-    } else {
-      const cached = localStorage.getItem('weatherCache');
-      if (cached) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = cached;
-        carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
+    const _setWeather = () => {
+      if (wt && wt.innerText && wt.innerText.trim()) {
+        carWeather.textContent = wt.innerText.replace(/\s+/g,' ').trim();
+      } else {
+        const cached = localStorage.getItem('weatherCache');
+        if (cached) {
+          const tmp = document.createElement('div');
+          tmp.innerHTML = cached;
+          carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
+        }
       }
-    }
+    };
+    _setWeather();
+    setTimeout(_setWeather, 1000);
 
     // GPS speed
     if (navigator.geolocation) {
@@ -4192,7 +4196,7 @@ async function toggleCarMode() {
 let carTimeInterval = null;
 function updateCarTime() {
   const now = new Date();
-  const isFr = currentLang === 'fr';
+  const isFr = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('appLang') || 'fr') === 'fr';
   document.getElementById('carModeTime').textContent =
     now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
   document.getElementById('carModeUpdated').textContent =
