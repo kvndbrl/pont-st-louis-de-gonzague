@@ -4202,16 +4202,22 @@ function updateCarTime() {
 
 function updateCarMode() {
   if (!carModeActive) return;
-  // Use status from main cards if lastData not ready
+
+  // Fallback: read status directly from main pill if lastData not ready
   if (!lastData) {
-    ['Gonzague','Larocque'].forEach(cap => {
-      const mainPill = document.getElementById('statusPill' + cap);
-      if (mainPill) {
-        const carPill = document.getElementById('carPill' + cap);
-        const carLabel = document.getElementById('carLabel' + cap);
-        if (carPill && carLabel && !carLabel.textContent.includes('...')) return;
+    for (const [bridge, cap] of [['gonzague','Gonzague'],['larocque','Larocque']]) {
+      const mainPill = document.getElementById('pill' + cap);
+      const carPill = document.getElementById('carPill' + cap);
+      const carLabel = document.getElementById('carLabel' + cap);
+      if (mainPill && carPill && carLabel) {
+        const cls = [...mainPill.classList].find(c => ['disponible','bientot_leve','raising','leve','lowering','outage'].includes(c));
+        if (cls) {
+          carPill.className = 'car-pill ' + cls;
+          const labels = {disponible:'Disponible',bientot_leve:'Bientôt levé',raising:'En levage',leve:'Levé',lowering:'Descente',outage:'Fermé'};
+          carLabel.textContent = labels[cls] || cls;
+        }
       }
-    });
+    }
     return;
   }
   const isFr = currentLang === 'fr';
