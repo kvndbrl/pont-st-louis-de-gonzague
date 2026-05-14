@@ -2862,7 +2862,7 @@ function loadCachedStatus() {
     lastData = data;
     updateDisplay();
     refreshTimers();
-    if (carModeActive) updateCarMode();
+    if (typeof carModeActive !== 'undefined' && carModeActive) updateCarMode();
     return true;
   } catch(e) { return false; }
 }
@@ -2885,6 +2885,7 @@ async function fetchStatus(){
     trackLiftStatus('larocque',d.larocque.status,d.larocque.raisedSince);
     updateDisplay();
     refreshTimers();
+    if (typeof carModeActive !== 'undefined' && carModeActive) updateCarMode();
     // Track subscriber count once per session
     if(!sessionStorage.getItem('subTracked')){
       try{
@@ -4013,7 +4014,7 @@ document.addEventListener('visibilitychange',()=>{
 <div id="carModeScreen">
   <div class="car-header">
     <div class="car-header-left">
-      <div class="car-time" id="carModeTime">13:24</div>
+      <div class="car-time" id="carModeTime"></div>
       <div class="car-weather-line" id="carModeWeather"></div>
     </div>
     <div class="speed-panel">
@@ -4145,23 +4146,17 @@ async function toggleCarMode() {
     carMediaInterval = setInterval(updateCarPlayer, 2000);
     updateCarPlayer();
 
-    // Weather from existing cache
-    const wt = document.getElementById('weatherText');
-    const carWeather = document.getElementById('carModeWeather');
-    const _setWeather = () => {
-      if (wt && wt.innerText && wt.innerText.trim()) {
-        carWeather.textContent = wt.innerText.replace(/\s+/g,' ').trim();
-      } else {
-        const cached = localStorage.getItem('weatherCache');
-        if (cached) {
-          const tmp = document.createElement('div');
-          tmp.innerHTML = cached;
-          carWeather.textContent = tmp.textContent.replace(/\s+/g,' ').trim();
-        }
-      }
+    // Weather with retries
+    const _setW = () => {
+      const _wt = document.getElementById('weatherText');
+      const _cw = document.getElementById('carModeWeather');
+      if (!_cw) return;
+      const _txt = _wt ? (_wt.innerText||_wt.textContent||'').replace(/\s+/g,' ').trim() : '';
+      if (_txt) { _cw.textContent = _txt; return; }
+      const _c = localStorage.getItem('weatherCache');
+      if (_c) { try { const _t=document.createElement('div');_t.innerHTML=_c;_cw.textContent=_t.textContent.replace(/\s+/g,' ').trim(); }catch(e){} }
     };
-    _setWeather();
-    setTimeout(_setWeather, 1000);
+    _setW(); setTimeout(_setW, 1000); setTimeout(_setW, 3000);
 
     // GPS speed
     if (navigator.geolocation) {
@@ -4171,15 +4166,9 @@ async function toggleCarMode() {
       }, () => {}, { enableHighAccuracy: true, maximumAge: 1000 });
     }
 
-    // Update car cards — poll until data is available
+    // Poll every 5 seconds
     carPollInterval = setInterval(updateCarMode, 5000);
-    // Try immediately and retry until data is loaded
-    let _tries = 0;
-    const _tryUpdate = setInterval(() => {
-      _tries++;
-      updateCarMode();
-      if (_tries >= 20) clearInterval(_tryUpdate);
-    }, 500);
+    // updateCarMode is also called from fetchStatus/loadCachedStatus automatically
 
     // Update time
     updateCarTime();
@@ -4197,16 +4186,24 @@ async function toggleCarMode() {
 let carTimeInterval = null;
 function updateCarTime() {
   const now = new Date();
-  const isFr = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('appLang') || 'fr') === 'fr';
-  document.getElementById('carModeTime').textContent =
-    now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
-  document.getElementById('carModeUpdated').textContent =
-    (isFr ? 'Mis à jour à ' : 'Updated at ') +
+  const lang = localStorage.getItem('appLang') || 'fr';
+  const isFr = lang === 'fr';
+  const timeEl = document.getElementById('carModeTime');
+  if (timeEl) timeEl.textContent = now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit'});
+  const updEl = document.getElementById('carModeUpdated');
+  if (updEl) updEl.textContent = (isFr ? 'Mis à jour à ' : 'Updated at ') +
     now.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
 function updateCarMode() {
   if (!carModeActive) return;
+  // Refresh weather
+  const _wt3 = document.getElementById('weatherText');
+  const _cw3 = document.getElementById('carModeWeather');
+  if (_wt3 && _cw3) {
+    const _t3 = (_wt3.innerText||_wt3.textContent||'').replace(/\s+/g,' ').trim();
+    if (_t3) _cw3.textContent = _t3;
+  }
 
   // Fallback: read status directly from main pill if lastData not ready
   if (!lastData) {
