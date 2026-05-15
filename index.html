@@ -2714,6 +2714,11 @@ function applyTrans(){
   if(weatherDesc) weatherDesc.textContent=currentLang==='fr'?'Afficher la m\u00e9t\u00e9o locale dans la salutation.':'Show local weather in the greeting.';
   renderFunFact();
   updatePerBridgeLabels();
+  // Re-render per-bridge checkboxes if drawer is open (language change)
+  ['gonzague','larocque'].forEach(b => {
+    const content = document.getElementById('perBridge'+capitalize(b)+'Content');
+    if (content && content.style.display !== 'none') renderPerBridgeCheckboxes(b);
+  });
   const voiceAssistantLabelEl = document.getElementById('voiceAssistantLabel');
   if(voiceAssistantLabelEl) voiceAssistantLabelEl.textContent = currentLang==='fr' ? 'Assistant vocal' : 'Voice assistant';
   if(document.getElementById('voiceAssistantContent')?.style.display !== 'none') updateVoiceAssistantText();
