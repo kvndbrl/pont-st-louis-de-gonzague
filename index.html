@@ -3336,7 +3336,7 @@ async function fetchLiftHistory() {
       const dt = new Date(h.lastLift);
       const fmt = dt.toLocaleString(currentLang === 'fr' ? 'fr-CA' : 'en-CA', {
         day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
-        timeZone: 'America/Toronto'
+        hour12: false, timeZone: 'America/Toronto'
       });
       const label = currentLang === 'fr' ? 'Dernière levée' : 'Last lift';
       el.textContent = label + ' : ' + fmt;
@@ -3959,6 +3959,56 @@ document.addEventListener('visibilitychange',()=>{
   </div>
 </div>
 
+
+<script>
+const BRIDGE_MAP_COORDS = {
+  gonzague: { nameFr: 'Pont St-Louis', nameEn: 'St-Louis Bridge', lat: '45.2314064', lon: '-74.0004653', zoom: 14 },
+  larocque: { nameFr: 'Pont Larocque', nameEn: 'Larocque Bridge', lat: '45.2240497', lon: '-74.1177633', zoom: 14 },
+};
+
+function updateMapBtnLabels() {
+  const isFr = currentLang === 'fr';
+  document.querySelectorAll('.map-btn-label').forEach(el => {
+    el.textContent = isFr ? 'Vue en temps réel' : 'Real-time View';
+  });
+}
+
+function showMapModal(bridge) {
+  const b = BRIDGE_MAP_COORDS[bridge];
+  if (!b) return;
+  const C = bridge.charAt(0).toUpperCase() + bridge.slice(1);
+  const sourceCard = document.getElementById('card' + C);
+
+  const bridgeNameEl = sourceCard ? sourceCard.querySelector('.bridge-name') : null;
+  const bridgeNameContainer = document.getElementById('mapModalBridgeName');
+  if (bridgeNameContainer && bridgeNameEl) {
+    bridgeNameContainer.innerHTML = bridgeNameEl.outerHTML;
+  }
+
+  const sourcePill = sourceCard ? sourceCard.querySelector('.status-pill') : null;
+  const pillContainer = document.getElementById('mapModalPill');
+  if (pillContainer) {
+    if (sourcePill) {
+      pillContainer.innerHTML = sourcePill.outerHTML;
+      pillContainer.style.display = 'block';
+    } else {
+      pillContainer.style.display = 'none';
+    }
+  }
+
+  const url = `https://www.vesselfinder.com/aismap?zoom=${b.zoom}&lat=${b.lat}&lon=${b.lon}&width=100%25&height=380&names=1&track=1`;
+  document.getElementById('mapModalFrame').src = url;
+  document.getElementById('mapModalOverlay').style.display = 'flex';
+}
+
+function closeMapModal() {
+  document.getElementById('mapModalOverlay').style.display = 'none';
+  document.getElementById('mapModalFrame').src = '';
+}
+
+document.addEventListener('DOMContentLoaded', updateMapBtnLabels);
+updateMapBtnLabels();
+</script>
 
 <script>
 (function() {
