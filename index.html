@@ -366,6 +366,16 @@
     .lang-btn{background:var(--surface2);border:1.5px solid var(--border);font-family:var(--sans);font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;letter-spacing:.5px;padding:8px 18px;border-radius:50px;transition:all .18s;}
     .lang-btn:active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
+    .about-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9200;backdrop-filter:blur(8px);align-items:flex-end;justify-content:center;}
+    .about-overlay.open{display:flex;}
+    .about-modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-width:500px;overflow:hidden;position:relative;}
+    .about-photo-wrap{display:flex;justify-content:center;padding:28px 0 0;}
+    .about-photo{width:96px;height:96px;object-fit:cover;object-position:center 20%;display:block;border-radius:50%;border:3px solid var(--accent);}
+    .about-body{padding:16px 24px 32px;text-align:center;}
+    .about-name{font-size:20px;font-weight:800;color:var(--text);font-family:var(--sans);}
+    .about-role{font-size:11px;color:var(--accent);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:4px 0 14px;}
+    .about-text{font-size:14px;color:var(--text);font-family:var(--sans);line-height:1.7;opacity:.85;}
+    .about-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.45);border:none;color:#fff;font-size:16px;width:34px;height:34px;border-radius:50%;cursor:pointer;}
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script async src="https://cloud.umami.is/script.js" data-website-id="1786c8da-b13f-4fec-b8d2-7d2e7102c29b"></script>
@@ -718,6 +728,7 @@
       </div>
     </div>
 
+  <button onclick="event.preventDefault();event.stopPropagation();openAboutModal();" id="aboutBtn" style="background:none;border:none;color:var(--accent);font-size:12px;font-family:var(--mono);cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-top:10px;padding:4px 0;display:block;width:100%;text-align:center;font-weight:600;">À propos du développeur</button>
   </a>
 </div>
 <span id="mostAppreciatedBadge" style="display:none;">⭐ CONTRIBUTION EXEMPLAIRE</span>
@@ -2686,6 +2697,12 @@ function applyTrans(){
   const lb=document.getElementById('langBtn');lb.textContent=currentLang==='fr'?'EN':'FR';lb.setAttribute('aria-label',t.ll2);
   applyDonationTrans(currentLang==='fr');
   const isFrBn = currentLang==='fr';
+  const _aT=document.getElementById('aboutText');
+  if(_aT)_aT.textContent=isFrBn
+    ?'Salut ! Je m’appelle Kevin, designer UX établi à Saint-Louis-de-Gonzague depuis septembre dernier. J’emprunte le pont Saint-Louis plusieurs fois par semaine — et comme vous, j’en ai eu assez d’être pris par surprise. J’ai créé cette app pour que plus personne dans notre communauté n’ait à attendre sans le savoir. Elle est gratuite, sans pub, et je la maintiens sur mon temps libre. Un petit don aide à couvrir les coûts des serveurs et à garder l’app vivante pour tous. Merci !'
+    :'Hey! I’m Kevin, a UX designer who moved to Saint-Louis-de-Gonzague last September. I cross the Saint-Louis bridge several times a week — and like you, I got tired of being caught off guard. I built this app so no one in our community has to wait without knowing why. It’s free, ad-free, and I maintain it on my own time. A small donation helps cover server costs and keeps the app alive for everyone. Thank you!';
+  const _aB=document.getElementById('aboutBtn');
+  if(_aB)_aB.textContent=isFrBn?'À propos du développeur':'About the developer';
   const _itTitle=document.getElementById('installTopTitle');if(_itTitle)_itTitle.textContent=isFrBn?"Installer l'app":"Install the app";
   const _itSub=document.getElementById('installTopSub');if(_itSub)_itSub.textContent=isFrBn?'Recevez des notifications push sur votre téléphone':'Get push notifications on your phone';
   const _itBtn=document.getElementById('installTopBtn');if(_itBtn)_itBtn.textContent=isFrBn?'Installer':'Install';
@@ -4047,4 +4064,29 @@ function doInstall() {
     showInstallModal();
   }
 }
+</script>
+
+<!-- About modal -->
+<div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)closeAboutModal()">
+  <div class="about-modal">
+    <button class="about-close" onclick="closeAboutModal()">×</button>
+    <div class="about-photo-wrap"><img class="about-photo" src="/kevin.jpg" alt="Kevin" /></div>
+    <div class="about-body">
+      <div class="about-name">Kevin</div>
+      <div class="about-role" id="aboutRole">Designer UX · Saint-Louis-de-Gonzague</div>
+      <div class="about-text" id="aboutText">Salut ! Je m’appelle Kevin, designer UX établi à Saint-Louis-de-Gonzague depuis septembre dernier. J’emprunte le pont Saint-Louis plusieurs fois par semaine — et comme vous, j’en ai eu assez d’être pris par surprise. J’ai créé cette app pour que plus personne dans notre communauté n’ait à attendre sans le savoir. Elle est gratuite, sans pub, et je la maintiens sur mon temps libre. Un petit don aide à couvrir les coûts des serveurs et à garder l’app vivante pour tous. Merci !</div>
+    </div>
+  </div>
+</div>
+<script>
+function openAboutModal(){
+  // Apply correct language before showing
+  const isFr = (localStorage.getItem('appLang')||'fr')==='fr';
+  const t = document.getElementById('aboutText');
+  if(t) t.textContent = isFr
+    ? 'Salut ! Je m’appelle Kevin, designer UX établi à Saint-Louis-de-Gonzague depuis septembre dernier. J’emprunte le pont Saint-Louis plusieurs fois par semaine — et comme vous, j’en ai eu assez d’être pris par surprise. J’ai créé cette app pour que plus personne dans notre communauté n’ait à attendre sans le savoir. Elle est gratuite, sans pub, et je la maintiens sur mon temps libre. Un petit don aide à couvrir les coûts des serveurs et à garder l’app vivante pour tous. Merci !'
+    : 'Hey! I’m Kevin, a UX designer who moved to Saint-Louis-de-Gonzague last September. I cross the Saint-Louis bridge several times a week — and like you, I got tired of being caught off guard. I built this app so no one in our community has to wait without knowing why. It’s free, ad-free, and I maintain it on my own time. A small donation helps cover server costs and keeps the app alive for everyone. Thank you!';
+  document.getElementById('aboutOverlay').classList.add('open');
+}
+function closeAboutModal(){document.getElementById('aboutOverlay').classList.remove('open');}
 </script>
