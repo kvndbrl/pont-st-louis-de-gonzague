@@ -376,6 +376,13 @@
     .about-role{font-size:11px;color:var(--accent);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin:4px 0 14px;}
     .about-text{font-size:14px;color:var(--text);font-family:var(--sans);line-height:1.7;opacity:.85;margin-top:12px;}
     .about-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.45);border:none;color:#fff;font-size:16px;width:34px;height:34px;border-radius:50%;cursor:pointer;}
+    .dismiss-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9100;backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px;}
+    .dismiss-overlay.open{display:flex;}
+    .dismiss-modal{background:var(--surface);border-radius:20px;padding:24px;width:100%;max-width:360px;text-align:center;}
+    .dismiss-title{font-size:16px;font-weight:800;color:var(--text);font-family:var(--sans);margin-bottom:10px;}
+    .dismiss-text{font-size:13px;color:var(--text2);font-family:var(--sans);line-height:1.6;margin-bottom:20px;}
+    .dismiss-donate-btn{display:block;width:100%;padding:13px;border-radius:12px;background:#FFDD00;border:none;font-size:14px;font-weight:800;color:#000;font-family:var(--sans);cursor:pointer;text-decoration:none;margin-bottom:10px;}
+    .dismiss-close-btn{display:block;width:100%;padding:11px;border-radius:12px;background:none;border:1px solid var(--border);font-size:13px;color:var(--text3);font-family:var(--sans);cursor:pointer;}
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
   <script async src="https://cloud.umami.is/script.js" data-website-id="1786c8da-b13f-4fec-b8d2-7d2e7102c29b"></script>
@@ -696,7 +703,8 @@
   </div>
 </div>
 
-<div style="padding:0 16px 6px;margin-top:-4px;">
+<div id="donateBannerWrap" style="padding:0 16px 6px;margin-top:-4px;position:relative;">
+  <button onclick="showDismissModal()" aria-label="Fermer" style="position:absolute;top:10px;right:24px;z-index:2;background:rgba(0,0,0,.2);border:none;color:var(--text2);width:24px;height:24px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
   <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer"
     onclick="track('donation_clicked',{source:'main_banner'});"
     style="display:block;background:var(--surface);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);border:1px solid var(--border);text-decoration:none;">
@@ -2697,6 +2705,10 @@ function applyTrans(){
   const lb=document.getElementById('langBtn');lb.textContent=currentLang==='fr'?'EN':'FR';lb.setAttribute('aria-label',t.ll2);
   applyDonationTrans(currentLang==='fr');
   const isFrBn = currentLang==='fr';
+  const _dt=document.getElementById('dismissTitle');if(_dt)_dt.textContent=isFrBn?'Un instant !':'Hold on!';
+  const _dx=document.getElementById('dismissText');if(_dx)_dx.textContent=isFrBn?'Cette app est gratuite et sans pub. Je la maintiens sur mon temps libre — les dons aident à payer le serveur, le domaine et à garder l’app vivante pour toute la communauté. Même 1 $ fait une différence. Merci !':'This app is free and ad-free. I maintain it on my own time — donations help pay for the server, the domain and keep the app alive for everyone. Even $1 makes a difference. Thank you!';
+  const _db=document.getElementById('dismissDonateBtn');if(_db)_db.textContent=isFrBn?'☕ Faire un don':'☕ Make a donation';
+  const _dc=document.getElementById('dismissCloseBtn');if(_dc)_dc.textContent=isFrBn?'Fermer quand même':'Close anyway';
   const _aT=document.getElementById('aboutText');
   if(_aT)_aT.textContent=isFrBn?"Je m’appelle Kevin, designer UX établi à Saint-Louis-de-Gonzague depuis septembre dernier. J’emprunte le pont Saint-Louis plusieurs fois par semaine — et comme vous, j’en ai eu assez d’être pris par surprise. J’ai créé cette app pour que plus personne dans notre communauté n’ait à attendre sans le savoir. Elle est gratuite, sans pub, et je la maintiens sur mon temps libre. Passionné de pêche, de musique et d’impression 3D, je construis des outils numériques utiles entre deux projets. Un petit don aide à couvrir les coûts des serveurs et à garder l’app vivante pour tous. Merci !":"I’m Kevin, a UX designer from Saint-Louis-de-Gonzague. I cross the Saint-Louis bridge several times a week — and like you, I got tired of being caught off guard. I built this app so no one in our community has to wait without knowing why. It’s free, ad-free, and I maintain it on my own time. When I’m not designing, I enjoy fishing, music and 3D printing. A small donation helps cover server costs and keeps the app alive for everyone. Thank you!";
   const _aB=document.getElementById('aboutBtn');
@@ -4087,4 +4099,37 @@ function openAboutModal(){track('about_developer_clicked');
   document.getElementById('aboutOverlay').classList.add('open');
 }
 function closeAboutModal(){document.getElementById('aboutOverlay').classList.remove('open');}
+</script>
+
+<!-- Dismiss donation banner modal -->
+<div class="dismiss-overlay" id="dismissOverlay" onclick="if(event.target===this)closeDismissModal()">
+  <div class="dismiss-modal">
+    <div class="dismiss-title" id="dismissTitle">Un instant !</div>
+    <div class="dismiss-text" id="dismissText">Cette app est gratuite et sans pub. Je la maintiens sur mon temps libre — les dons aident à payer le serveur, le domaine et à garder l'app vivante pour toute la communauté. Même 1 $ fait une différence. Merci !</div>
+    <a href="https://buymeacoffee.com/kvndbrl" target="_blank" rel="noopener noreferrer" class="dismiss-donate-btn" onclick="track('donation_clicked',{source:'dismiss_modal'});closeDismissModal();dismissBanner();" id="dismissDonateBtn">☕ Faire un don</a>
+    <button class="dismiss-close-btn" onclick="dismissBanner();closeDismissModal();" id="dismissCloseBtn">Fermer quand même</button>
+  </div>
+</div>
+
+<script>
+function showDismissModal() {
+  track('donation_banner_dismiss_attempted');
+  document.getElementById('dismissOverlay').classList.add('open');
+}
+function closeDismissModal() {
+  document.getElementById('dismissOverlay').classList.remove('open');
+}
+function dismissBanner() {
+  const wrap = document.getElementById('donateBannerWrap');
+  if (wrap) wrap.style.display = 'none';
+  localStorage.setItem('donateBannerDismissed', Date.now());
+}
+// Hide banner if dismissed in last 7 days
+(function() {
+  const d = localStorage.getItem('donateBannerDismissed');
+  if (d && Date.now() - parseInt(d) < 7 * 24 * 60 * 60 * 1000) {
+    const wrap = document.getElementById('donateBannerWrap');
+    if (wrap) wrap.style.display = 'none';
+  }
+})();
 </script>
