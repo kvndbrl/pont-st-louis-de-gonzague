@@ -511,8 +511,8 @@ async function sendScheduledLiftNotification(bridge, times) {
   const timesArr = Array.isArray(times) ? times : [times];
   // Build widget statuses with scheduled info appended
   const statuses = {
-    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null, scheduledTimes: bridge === 'gonzague' ? timesArr : null },
-    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null, scheduledTimes: bridge === 'larocque' ? timesArr : null },
+    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), avgLoweringDuration: getAvgLoweringDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null, scheduledTimes: bridge === 'gonzague' ? timesArr : null },
+    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), avgLoweringDuration: getAvgLoweringDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null, scheduledTimes: bridge === 'larocque' ? timesArr : null },
   };
   let sent = 0, skipped = 0, failed = 0;
   for (const sub of [...subscriptions]) {
@@ -590,13 +590,16 @@ function buildWidgetBody(sub, bridgeStatuses) {
     // Add reopen time if lifted or lowering
     if ((d.status === 'leve' || d.status === 'lowering' || d.status === 'raising') && d.avgLiftDuration) {
       let reopenTime;
-      if (d.liftingSince) {
-        // Use actual lift start time for more accurate estimate
+      const avgTotal = (d.avgLiftDuration || 12) + (d.avgLoweringDuration || 3);
+      if (d.status === 'lowering') {
+        // Bridge lowering — only a few minutes left
+        reopenTime = new Date(Date.now() + (d.avgLoweringDuration || 3) * 60000);
+      } else if (d.liftingSince) {
         const elapsed = (Date.now() - d.liftingSince) / 60000;
-        const remaining = Math.max(1, d.avgLiftDuration - elapsed);
+        const remaining = Math.max(1, avgTotal - elapsed);
         reopenTime = new Date(Date.now() + remaining * 60000);
       } else {
-        reopenTime = new Date(Date.now() + d.avgLiftDuration * 60000);
+        reopenTime = new Date(Date.now() + avgTotal * 60000);
       }
       const hm = reopenTime.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
       line += isFr ? ` \u00b7 R\u00e9ouverture ~${hm}` : ` \u00b7 Reopen ~${hm}`;
@@ -718,8 +721,8 @@ async function monitor() {
       clearTimeout(widgetUpdateTimeout);
       widgetUpdateTimeout = setTimeout(async () => {
         await sendWidgetUpdate({
-          gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null },
-          larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null },
+          gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), avgLoweringDuration: getAvgLoweringDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null },
+          larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), avgLoweringDuration: getAvgLoweringDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null },
         });
       }, 2 * 60 * 1000);
     }
