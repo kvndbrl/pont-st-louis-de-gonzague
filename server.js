@@ -592,7 +592,6 @@ function buildWidgetBody(sub, bridgeStatuses) {
       let reopenTime;
       const avgTotal = (d.avgLiftDuration || 12) + (d.avgLoweringDuration || 3);
       if (d.status === 'lowering') {
-        // Bridge lowering — only a few minutes left
         reopenTime = new Date(Date.now() + (d.avgLoweringDuration || 3) * 60000);
       } else if (d.liftingSince) {
         const elapsed = (Date.now() - d.liftingSince) / 60000;
@@ -600,6 +599,23 @@ function buildWidgetBody(sub, bridgeStatuses) {
         reopenTime = new Date(Date.now() + remaining * 60000);
       } else {
         reopenTime = new Date(Date.now() + avgTotal * 60000);
+      }
+      // If another vessel is scheduled soon after reopen, delay reopen estimate
+      if (d.scheduledTimes && d.scheduledTimes.length > 0) {
+        const nowEST = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Toronto' }));
+        for (const t of d.scheduledTimes) {
+          const match = t.replace('*','').trim().match(/(\d{1,2}):(\d{2})/);
+          if (!match) continue;
+          const scheduled = new Date(nowEST);
+          scheduled.setHours(parseInt(match[1]), parseInt(match[2]), 0, 0);
+          if (scheduled < nowEST) scheduled.setDate(scheduled.getDate() + 1);
+          // If next vessel arrives within 20 min after our reopen estimate, push reopen further
+          const gap = (scheduled - reopenTime) / 60000;
+          if (gap >= 0 && gap <= 20) {
+            const nextReopen = new Date(scheduled.getTime() + avgTotal * 60000);
+            if (nextReopen > reopenTime) reopenTime = nextReopen;
+          }
+        }
       }
       const hm = reopenTime.toLocaleTimeString(isFr ? 'fr-CA' : 'en-CA', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Toronto' });
       line += isFr ? ` \u00b7 R\u00e9ouverture ~${hm}` : ` \u00b7 Reopen ~${hm}`;
