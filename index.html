@@ -2062,16 +2062,37 @@ function trackLiftStatus(bridge, status, raisedSince){
 
 function getLiftTimerText(bridge,status,lang){
   const start=liftStartTimes[bridge];
-  const avgMin=(lastData&&lastData[bridge]?.avgLiftDuration)||liftAvgMin;
+  const d=lastData&&lastData[bridge];
+  const avgLift=Math.max(5,(d?.avgLiftDuration)||liftAvgMin);
+  const avgLow=Math.max(2,(d?.avgLoweringDuration)||3);
+  let avgMin=avgLift+avgLow;
+
+  // Adjust for upcoming vessels — if next vessel arrives before reopen, extend estimate
+  if(d?.next_lifts && start) {
+    const nowEST=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Toronto'}));
+    const reopenEst=new Date(start+avgMin*60000);
+    const lines=(d.next_lifts||'').split('\n');
+    for(const line of lines){
+      const m=line.replace('*','').match(/(\d{1,2}):(\d{2})/);
+      if(!m) continue;
+      const sched=new Date(nowEST);
+      sched.setHours(parseInt(m[1]),parseInt(m[2]),0,0);
+      if(sched<nowEST) sched.setDate(sched.getDate()+1);
+      const gap=(sched-reopenEst)/60000;
+      if(gap>=0&&gap<=20){
+        const extMin=Math.round((sched-new Date(start))/60000)+avgMin;
+        if(extMin>avgMin) avgMin=extMin;
+      }
+    }
+  }
+
   if(!start){
-    // Don't know when it started — just show average
     return lang==='fr'
       ?'Dur\u00E9e moyenne\u00A0: ~'+avgMin+'\u00A0min'
       :'Average duration: ~'+avgMin+' min';
   }
   const elapsedMs=Date.now()-start;
   const elapsedMin=Math.floor(elapsedMs/60000);
-  // If elapsed > 2h, liftStartTime is stale — fallback to average
   if(elapsedMin > 120) {
     return lang==='fr'
       ?'Dur\u00E9e moyenne\u00A0: ~'+avgMin+'\u00A0min'
