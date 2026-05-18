@@ -594,8 +594,9 @@ function buildWidgetBody(sub, bridgeStatuses) {
       if (d.status === 'lowering') {
         reopenTime = new Date(Date.now() + (d.avgLoweringDuration || 3) * 60000);
       } else if (d.liftingSince) {
-        const elapsed = (Date.now() - d.liftingSince) / 60000;
-        const remaining = Math.max(1, avgTotal - elapsed);
+        // Bug fix 1: liftingSince est un timestamp UTC ms — calcul direct sans conversion fuseau
+        const elapsedMin = Math.max(0, (Date.now() - d.liftingSince) / 60000);
+        const remaining = Math.max(1, avgTotal - elapsedMin);
         reopenTime = new Date(Date.now() + remaining * 60000);
       } else {
         reopenTime = new Date(Date.now() + avgTotal * 60000);
@@ -609,9 +610,9 @@ function buildWidgetBody(sub, bridgeStatuses) {
           const scheduled = new Date(nowEST);
           scheduled.setHours(parseInt(match[1]), parseInt(match[2]), 0, 0);
           if (scheduled < nowEST) scheduled.setDate(scheduled.getDate() + 1);
-          // If next vessel arrives within 20 min after our reopen estimate, push reopen further
+          // Bug fix 2: pousser la réouverture si un navire arrive AVANT ou dans les 20 min APRÈS l'estimation actuelle
           const gap = (scheduled - reopenTime) / 60000;
-          if (gap >= 0 && gap <= 20) {
+          if (gap <= 20) {
             const nextReopen = new Date(scheduled.getTime() + avgTotal * 60000);
             if (nextReopen > reopenTime) reopenTime = nextReopen;
           }
@@ -683,14 +684,16 @@ async function sendWidgetUpdate(bridgeStatuses) {
 async function sendNotifications(bridge, status, bridgeData = {}) {
   // Build current statuses from lastStatus + this update
   const statuses = {
-    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null },
-    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null },
+    gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), avgLoweringDuration: getAvgLoweringDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null, scheduledTimes: parseScheduledLifts(bridgeData.next_lifts_gonzague || '') },
+    larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), avgLoweringDuration: getAvgLoweringDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null, scheduledTimes: parseScheduledLifts(bridgeData.next_lifts_larocque || '') },
   };
   statuses[bridge] = {
     status,
     avgLiftDuration: bridgeData.avgLiftDuration || getAvgLiftDuration(bridge),
+    avgLoweringDuration: bridgeData.avgLoweringDuration || getAvgLoweringDuration(bridge),
     outageEnd: bridgeData.outageEnd || null,
     liftingSince: liftActive[bridge]?.raisedAt || null,
+    scheduledTimes: parseScheduledLifts(bridgeData.next_lifts || ''),
   };
   await sendWidgetUpdate(statuses);
   log(`Notification widget [${bridge}] ${status}`);
@@ -709,7 +712,11 @@ async function monitor() {
       } else if (prev !== curr) {
         log(`Changement [${bridge}]: ${prev} -> ${curr}`);
         trackStatusTransition(bridge, prev, curr);
-        notifications.push(sendNotifications(bridge, curr, data[bridge]));
+        notifications.push(sendNotifications(bridge, curr, {
+          ...data[bridge],
+          next_lifts_gonzague: data.gonzague.next_lifts,
+          next_lifts_larocque: data.larocque.next_lifts,
+        }));
       }
     }
     for (const bridge of ['gonzague', 'larocque']) {
@@ -744,8 +751,8 @@ async function monitor() {
       clearTimeout(widgetUpdateTimeout);
       widgetUpdateTimeout = setTimeout(async () => {
         await sendWidgetUpdate({
-          gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), avgLoweringDuration: getAvgLoweringDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null },
-          larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), avgLoweringDuration: getAvgLoweringDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null },
+          gonzague: { status: lastStatus.gonzague || 'disponible', avgLiftDuration: getAvgLiftDuration('gonzague'), avgLoweringDuration: getAvgLoweringDuration('gonzague'), outageEnd: null, liftingSince: liftActive.gonzague?.raisedAt || null, scheduledTimes: parseScheduledLifts(data.gonzague.next_lifts) },
+          larocque: { status: lastStatus.larocque || 'disponible', avgLiftDuration: getAvgLiftDuration('larocque'), avgLoweringDuration: getAvgLoweringDuration('larocque'), outageEnd: null, liftingSince: liftActive.larocque?.raisedAt || null, scheduledTimes: parseScheduledLifts(data.larocque.next_lifts) },
         });
       }, 2 * 60 * 1000);
     }
