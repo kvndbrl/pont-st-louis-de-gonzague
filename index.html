@@ -787,6 +787,7 @@
       <div>
         <div class="lifts-label" id="liftsTitleGonzague">Levages — 60 min</div>
         <div class="lifts-value" id="liftsGonzague" aria-live="polite">—</div>
+        <div id="liftsNoteGonzague" style="display:none;font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:3px;line-height:1.4;"></div>
       </div>
       <div class="refresh-time" id="refreshGonzague">—</div>
     </div>
@@ -842,6 +843,7 @@
       <div>
         <div class="lifts-label" id="liftsTitleLarocque">Levages — 60 min</div>
         <div class="lifts-value" id="liftsLarocque" aria-live="polite">—</div>
+        <div id="liftsNoteLarocque" style="display:none;font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:3px;line-height:1.4;"></div>
       </div>
       <div class="refresh-time" id="refreshLarocque">—</div>
     </div>
@@ -2564,6 +2566,19 @@ function updateDisplay(){
       } else {
         const lines = liftsRaw.split('\n').map(l => translateLifts(l, currentLang));
         liftsEl.innerHTML = lines.map(l => `<div>${l}</div>`).join('');
+        // Show asterisk note if applicable
+        const noteEl = document.getElementById('liftsNote'+C);
+        if (noteEl) {
+          const hasAsterisk = liftsRaw.includes('*');
+          if (hasAsterisk) {
+            noteEl.textContent = currentLang === 'fr'
+              ? '* Heure approximative, susceptible de changer.'
+              : '* Approximate time, subject to change.';
+            noteEl.style.display = 'block';
+          } else {
+            noteEl.style.display = 'none';
+          }
+        }
       }
     }
     document.getElementById('refresh'+C).innerHTML=formatRefresh(lastData.last_refreshed,currentLang);
