@@ -766,7 +766,8 @@
       <span class="timer-icon" aria-hidden="true">&#x23F1;&#xFE0F;</span>
       <span class="timer-text" id="timerGonzague">—</span>
     </div>
-      <div id="vesselNameGonzague" style="display:none;margin:4px 16px 6px;font-size:12px;color:var(--text2);font-family:var(--sans);font-weight:500;"></div>
+    <div id="delayWarningGonzague" style="display:none;margin:6px 16px 2px;padding:7px 10px;border-radius:8px;background:rgba(240,176,32,.08);border:1px solid rgba(240,176,32,.2);font-size:11px;color:#d4a000;font-family:var(--mono);line-height:1.5;"></div>
+
     <div class="bridge-timeline" id="timelineGonzague">
       <div class="timeline-track">
         <div class="timeline-step"><div class="timeline-dot" id="tDot0Gonzague"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor"><rect x="2" y="44" width="16" height="3" rx="1.5"/><rect x="46" y="44" width="16" height="3" rx="1.5"/><rect x="17" y="18" width="4" height="29" rx="1.5"/><rect x="43" y="18" width="4" height="29" rx="1.5"/><rect x="21" y="43" width="22" height="3" rx="1.5"/><path d="M19 18 Q19 35 19 44" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/><path d="M45 18 Q45 35 45 44" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/><rect x="30" y="4" width="4" height="14" rx="2" fill="currentColor"/><rect x="30" y="21" width="4" height="4" rx="2" fill="currentColor"/></svg></div><span class="timeline-label" id="tLbl0Gonzague">Bientôt levé</span></div>
@@ -820,7 +821,8 @@
       <span class="timer-icon" aria-hidden="true">&#x23F1;&#xFE0F;</span>
       <span class="timer-text" id="timerLarocque">—</span>
     </div>
-      <div id="vesselNameLarocque" style="display:none;margin:4px 16px 6px;font-size:12px;color:var(--text2);font-family:var(--sans);font-weight:500;"></div>
+    <div id="delayWarningLarocque" style="display:none;margin:6px 16px 2px;padding:7px 10px;border-radius:8px;background:rgba(240,176,32,.08);border:1px solid rgba(240,176,32,.2);font-size:11px;color:#d4a000;font-family:var(--mono);line-height:1.5;"></div>
+
     <div class="bridge-timeline" id="timelineLarocque">
       <div class="timeline-track">
         <div class="timeline-step"><div class="timeline-dot" id="tDot0Larocque"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor"><rect x="2" y="44" width="16" height="3" rx="1.5"/><rect x="46" y="44" width="16" height="3" rx="1.5"/><rect x="17" y="18" width="4" height="29" rx="1.5"/><rect x="43" y="18" width="4" height="29" rx="1.5"/><rect x="21" y="43" width="22" height="3" rx="1.5"/><path d="M19 18 Q19 35 19 44" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/><path d="M45 18 Q45 35 45 44" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/><rect x="30" y="4" width="4" height="14" rx="2" fill="currentColor"/><rect x="30" y="21" width="4" height="4" rx="2" fill="currentColor"/></svg></div><span class="timeline-label" id="tLbl0Larocque">Bientôt levé</span></div>
@@ -2161,6 +2163,32 @@ function updateCards(){
       badge.style.display='none';
     }
   });
+
+  // Delay warning — show when bridge still lifted past estimate
+  for (const b of ['gonzague','larocque']) {
+    if (!lastData || !lastData[b]) continue;
+    const C = b.charAt(0).toUpperCase() + b.slice(1);
+    const d = lastData[b];
+    const status = d.status;
+    const dwEl = document.getElementById('delayWarning'+C);
+    if (!dwEl) continue;
+    const isFr = currentLang === 'fr';
+    if (['leve','raising'].includes(status) && d.liftingSince) {
+      const avgTotal = (d.avgLiftDuration || 12) + (d.avgLoweringDuration || 3);
+      const elapsed = (Date.now() - d.liftingSince) / 60000;
+      if (elapsed > avgTotal) {
+        dwEl.innerHTML = isFr
+          ? '⚠️ Possible retard du navire — <a href="#" onclick="openMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Consultez la vue en temps réel</a>'
+          : '⚠️ Possible vessel delay — <a href="#" onclick="openMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Check the real-time view</a>';
+        dwEl.style.display = 'block';
+      } else {
+        dwEl.style.display = 'none';
+      }
+    } else {
+      dwEl.style.display = 'none';
+    }
+  }
+
 }
 
 function toggleDrivingGuide() {
@@ -2540,28 +2568,6 @@ function updateDisplay(){
     }
     document.getElementById('refresh'+C).innerHTML=formatRefresh(lastData.last_refreshed,currentLang);
 
-    // Vessel type line
-    const vnEl = document.getElementById('vesselName'+C);
-    if (vnEl) {
-      const bStatus = lastData[b].status;
-      const liftsRaw = lastData[b].next_lifts || '';
-      const isFrL = currentLang === 'fr';
-      const isActive = ['leve','raising','lowering','bientot_leve'].includes(bStatus);
-      if (isActive && liftsRaw) {
-        const isCommercial = /commercial/i.test(liftsRaw);
-        const isPleasure = /pleasure|plaisance/i.test(liftsRaw);
-        if (isCommercial) {
-          vnEl.textContent = isFrL ? '🚢 Navire commercial en transit' : '🚢 Commercial vessel in transit';
-        } else if (isPleasure) {
-          vnEl.textContent = isFrL ? '⛵ Embarcation de plaisance en transit' : '⛵ Pleasure craft in transit';
-        } else {
-          vnEl.textContent = isFrL ? '🚢 Navire en transit' : '🚢 Vessel in transit';
-        }
-        vnEl.style.display = 'block';
-      } else {
-        vnEl.style.display = 'none';
-      }
-    }
   });
   updateCards();
 }
