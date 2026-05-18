@@ -232,7 +232,7 @@ function getAvgLiftDuration(bridge) {
   if (!h || h.length === 0) return null;
   const recent = h.slice(-20);
   const avg = recent.reduce((a, b) => a + b.duration, 0) / recent.length;
-  return Math.round(avg / 60000);
+  return Math.max(5, Math.round(avg / 60000)); // minimum 5 min
 }
 
 function getAvgLoweringDuration(bridge) {
@@ -241,7 +241,7 @@ function getAvgLoweringDuration(bridge) {
   const withLowering = h.slice(-20).filter(e => e.loweringDuration);
   if (!withLowering.length) return null;
   const avg = withLowering.reduce((a, b) => a + b.loweringDuration, 0) / withLowering.length;
-  return Math.round(avg / 60000);
+  return Math.max(2, Math.round(avg / 60000)); // minimum 2 min
 }
 
 function isBusyPeriod(bridge) {
