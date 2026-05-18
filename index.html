@@ -2062,37 +2062,16 @@ function trackLiftStatus(bridge, status, raisedSince){
 
 function getLiftTimerText(bridge,status,lang){
   const start=liftStartTimes[bridge];
-  const d=lastData&&lastData[bridge];
-  const avgLift=Math.max(5,(d?.avgLiftDuration)||liftAvgMin);
-  const avgLow=Math.max(2,(d?.avgLoweringDuration)||3);
-  let avgMin=avgLift+avgLow;
-
-  // Adjust for upcoming vessels — if next vessel arrives before reopen, extend estimate
-  if(d?.next_lifts && start) {
-    const nowEST=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Toronto'}));
-    const reopenEst=new Date(start+avgMin*60000);
-    const lines=(d.next_lifts||'').split('\n');
-    for(const line of lines){
-      const m=line.replace('*','').match(/(\d{1,2}):(\d{2})/);
-      if(!m) continue;
-      const sched=new Date(nowEST);
-      sched.setHours(parseInt(m[1]),parseInt(m[2]),0,0);
-      if(sched<nowEST) sched.setDate(sched.getDate()+1);
-      const gap=(sched-reopenEst)/60000;
-      if(gap>=0&&gap<=20){
-        const extMin=Math.round((sched-new Date(start))/60000)+avgMin;
-        if(extMin>avgMin) avgMin=extMin;
-      }
-    }
-  }
-
+  const avgMin=(lastData&&lastData[bridge]?.avgLiftDuration)||liftAvgMin;
   if(!start){
+    // Don't know when it started — just show average
     return lang==='fr'
       ?'Dur\u00E9e moyenne\u00A0: ~'+avgMin+'\u00A0min'
       :'Average duration: ~'+avgMin+' min';
   }
   const elapsedMs=Date.now()-start;
   const elapsedMin=Math.floor(elapsedMs/60000);
+  // If elapsed > 2h, liftStartTime is stale — fallback to average
   if(elapsedMin > 120) {
     return lang==='fr'
       ?'Dur\u00E9e moyenne\u00A0: ~'+avgMin+'\u00A0min'
@@ -2196,13 +2175,32 @@ function updateCards(){
     const dwEl = document.getElementById('delayWarning'+C);
     if (!dwEl) continue;
     const isFr = currentLang === 'fr';
-    if (['leve','raising'].includes(status) && d.liftingSince) {
-      const avgTotal = (d.avgLiftDuration || 12) + (d.avgLoweringDuration || 3);
+    if (status === 'leve' && d.liftingSince) {
+      const avgLift2 = Math.max(5, d.avgLiftDuration || 12);
+      const avgLow2 = Math.max(2, d.avgLoweringDuration || 3);
+      let avgTotal = avgLift2 + avgLow2;
+      // Extend for upcoming vessel
+      if (d.next_lifts) {
+        const nowEST2 = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Toronto'}));
+        const reopenEst2 = new Date(d.liftingSince + avgTotal * 60000);
+        for (const line of (d.next_lifts||'').split('\n')) {
+          const m2 = line.replace('*','').match(/(\d{1,2}):(\d{2})/);
+          if (!m2) continue;
+          const sched2 = new Date(nowEST2);
+          sched2.setHours(parseInt(m2[1]), parseInt(m2[2]), 0, 0);
+          if (sched2 < nowEST2) sched2.setDate(sched2.getDate()+1);
+          const gap2 = (sched2 - reopenEst2) / 60000;
+          if (gap2 >= 0 && gap2 <= 20) {
+            const ext2 = Math.round((sched2 - new Date(d.liftingSince)) / 60000) + avgLow2;
+            if (ext2 > avgTotal) avgTotal = ext2;
+          }
+        }
+      }
       const elapsed = (Date.now() - d.liftingSince) / 60000;
-      if (elapsed > avgTotal) {
+      if (elapsed > avgTotal + 3) {
         dwEl.innerHTML = isFr
-          ? '⚠️ Possible retard du navire — <a href="#" onclick="showMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Consultez la vue en temps réel</a>'
-          : '⚠️ Possible vessel delay — <a href="#" onclick="showMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Check the real-time view</a>';
+          ? '⚠️ Possible retard du navire — <a href="#" onclick="openMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Consultez la vue en temps réel</a>'
+          : '⚠️ Possible vessel delay — <a href="#" onclick="openMapModal(\'' + b + '\');return false;" style="color:inherit;text-decoration:underline;">Check the real-time view</a>';
         dwEl.style.display = 'block';
       } else {
         dwEl.style.display = 'none';
