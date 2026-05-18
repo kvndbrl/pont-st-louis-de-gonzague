@@ -634,9 +634,10 @@ function buildWidgetBody(sub, bridgeStatuses) {
     // Add scheduled time if available
     if (d.scheduledTimes && d.scheduledTimes.length > 0 && d.status === 'disponible') {
       const times = d.scheduledTimes.join(', ');
-      line += isFr ? ` \u00b7 Lev\u00e9es pr\u00e9vues ${times}` : ` \u00b7 Lifts at ${times}`;
-    } else if (d.scheduledTime && d.status === 'disponible') {
-      line += isFr ? ` \u00b7 Lev\u00e9e pr\u00e9vue ${d.scheduledTime}` : ` \u00b7 Lift at ${d.scheduledTime}`;
+      const plural = d.scheduledTimes.length > 1;
+      line += isFr
+        ? ` \u00b7 ${plural ? 'Lev\u00e9es pr\u00e9vues' : 'Lev\u00e9e pr\u00e9vue'} ${times}`
+        : ` \u00b7 ${plural ? 'Lifts' : 'Lift'} at ${times}`;
     }
     lines.push(line);
   }
